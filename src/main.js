@@ -1,7 +1,7 @@
 // main.js
 import * as THREE from 'https://jspm.dev/three';
 import { PointerLockControls } from 'https://jspm.dev/three/examples/jsm/controls/PointerLockControls.js';
-import { keys, player, jump, speed, checkCollision } from './controls.js';
+import { keys, player, checkCollision, updateVelocity, updateJump, updateStamina } from './controls.js';
 
 const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -10,9 +10,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Define maximum stamina and initial stamina level
-const maxStamina = 100;
-let currentStamina = maxStamina;
-let isSprinting = false;
+
 
 // Create a UI element for the stamina bar
 const staminaBar = document.createElement('div');
@@ -25,8 +23,7 @@ staminaBar.style.backgroundColor = 'gray';
 document.body.appendChild(staminaBar);
 
 // Function to update the stamina bar UI
-function updateStaminaBar() {
-    const percentage = (currentStamina / maxStamina) * 100;
+export const updateStaminaBar = (percentage) => {
     staminaBar.style.width = `${percentage}%`;
 }
 
@@ -74,92 +71,16 @@ scene.add(ground);
 function animate() {
     requestAnimationFrame(animate);
 
-    // Update position of the camera
-    if (keys.w) {
-        if (isSprinting && currentStamina > 1) {
-            controls.moveForward(speed); // Sprinting speed
-        } else if (isSprinting && currentStamina < 1) {
-            controls.moveForward(speed / 2);
-        } else {
-            controls.moveForward(speed); // Normal speed
-        }
-    }
-    if (keys.a) {
-        if (isSprinting && currentStamina > 1) {
-            controls.moveRight(-speed); // Sprinting speed
-        } else if (isSprinting && currentStamina < 1) {
-            controls.moveRight(-speed / 2);
-        } else {
-            controls.moveRight(-speed); // Normal speed
-        }
-    }
-    if (keys.s) {
-        if (isSprinting && currentStamina > 1) {
-            controls.moveForward(-speed); // Sprinting speed
-        } else if (isSprinting && currentStamina < 1) {
-            controls.moveForward(-speed / 2);
-        } else {
-            controls.moveForward(-speed); // Normal speed
-        }
-    }
-    if (keys.d) {
-        if (isSprinting && currentStamina > 1) {
-            controls.moveRight(speed); // Sprinting speed
-        } else if (isSprinting && currentStamina < 1) {
-            controls.moveRight(speed / 2);
-        } else {
-            controls.moveRight(speed); // Normal speed
-        }
-    }
-    if (isSprinting && keys.w || isSprinting && keys.a || isSprinting && keys.s || isSprinting && keys.d) {
-        currentStamina -= 0.5;
-        if (currentStamina < 0) {
-            currentStamina = 0;
-        }
-    }
+    // Update velocity based on keys pressed
+    updateVelocity(controls);
 
-    if (jump.jumping) {
-        controls.getObject().position.y += jump.speed;
-        jump.speed -= jump.gravity;
-        if (controls.getObject().position.y <= player.height) {
-            controls.getObject().position.y = player.height;
-            jump.speed = 0;
-            jump.jumping = false;
-        }
-    }
+    // Update stamina
+    updateStamina();
 
-    if (checkCollision(THREE, controls, collisionCube)) {
-        const playerPosition = controls.getObject().position.clone();
-        const collisionPosition = collisionCube.position.clone();
-        const direction = playerPosition.sub(collisionPosition).normalize();
-        controls.getObject().position.add(direction.multiplyScalar(speed));
-    }
-
-    // Recharge stamina when not sprinting
-    if (isSprinting && !keys.w && currentStamina < maxStamina || isSprinting && !keys.a && currentStamina < maxStamina || isSprinting && !keys.s && currentStamina < maxStamina || isSprinting && !keys.d && currentStamina < maxStamina || !isSprinting && currentStamina < maxStamina) {
-        currentStamina += 0.2;
-        if (currentStamina > maxStamina) {
-            currentStamina = maxStamina;
-        }
-    }
-
-    // Update stamina bar UI
-    updateStaminaBar();
+    // Update jump
+    updateJump(controls);
 
     renderer.render(scene, camera);
 }
 
 animate();
-
-// Event listeners for keydown and keyup
-document.addEventListener('keydown', (e) => {
-    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        isSprinting = true;
-    }
-});
-
-document.addEventListener('keyup', (e) => {
-    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        isSprinting = false;
-    }
-});

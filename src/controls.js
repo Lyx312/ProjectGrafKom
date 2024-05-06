@@ -1,4 +1,5 @@
-import { camera } from "./main.js";
+import * as THREE from 'https://jspm.dev/three';
+import { camera, updateStaminaBar } from "./main.js";
 
 export var keys = {
     w: false,
@@ -10,19 +11,23 @@ export var keys = {
     c: false
 };
 
+const MAX_STAMINA = 100;
+const  SPRINT_MULTIPLIER = 2;
+const  CROUCH_MULTIPLIER = 0.5;
+
 export let player = {
     width: 1,
-    height: 5
+    height: 5,
+    baseSpeed: 1,
+    sprintMultiplier: 1,
+    crouchMultiplier: 1,
+    hVelocity: new THREE.Vector3(),
+    vVelocity: 0,
+    onGround: true,
+    currentStamina: MAX_STAMINA
 }
 
-export const jump = {
-    speed: 0,
-    gravity: 0.005,
-    jumping: false
-};
-
-
-export let speed = 0.1;
+let gravity = new THREE.Vector3(0, -0.005, 0);
 
 let crouchHeightChange = 1;
 
@@ -52,7 +57,7 @@ document.addEventListener('keydown', (e) => {
         case 'ShiftLeft':
         case 'ShiftRight':
             if (!keys.shift) {
-                speed *= 2;
+                player.sprintMultiplier *= SPRINT_MULTIPLIER;
                 keys.shift = true;
             }
             break;
@@ -60,7 +65,7 @@ document.addEventListener('keydown', (e) => {
             if (!keys.c) {
                 player.height -= crouchHeightChange;
                 camera.position.y -= crouchHeightChange;
-                speed *= 0.5;
+                player.crouchMultiplier *= CROUCH_MULTIPLIER;
                 keys.c = true;
             }
             break;
@@ -87,7 +92,7 @@ document.addEventListener('keyup', (e) => {
         case 'ShiftLeft':
         case 'ShiftRight':
             if (keys.shift) {
-                speed *= 0.5;
+                player.sprintMultiplier = 1;
                 keys.shift = false;
             }
             break;
@@ -95,14 +100,60 @@ document.addEventListener('keyup', (e) => {
             if (keys.c) {
                 player.height += crouchHeightChange;
                 camera.position.y += crouchHeightChange;
-                speed *= 2;
+                player.crouchMultiplier = 1;
                 keys.c = false;
             }
             break;
     }
 });
 
-export function checkCollision(THREE, controls, collisionCube) {
+export function updateVelocity(controls) {
+    player.hVelocity.x -= player.hVelocity.x * 1.0 * player.baseSpeed;
+    player.hVelocity.z -= player.hVelocity.z * 1.0 * player.baseSpeed;
+
+    if (keys.w) player.hVelocity.z -= 0.1 * player.baseSpeed * player.sprintMultiplier * player.crouchMultiplier;
+    if (keys.a) player.hVelocity.x += 0.1 * player.baseSpeed * player.sprintMultiplier * player.crouchMultiplier;
+    if (keys.s) player.hVelocity.z += 0.1 * player.baseSpeed * player.sprintMultiplier * player.crouchMultiplier;
+    if (keys.d) player.hVelocity.x -= 0.1 * player.baseSpeed * player.sprintMultiplier * player.crouchMultiplier;
+
+    controls.moveRight(-player.hVelocity.x);
+    controls.moveForward(-player.hVelocity.z);
+}
+
+export function updateJump(controls) {
+    if (!player.onGround) {
+        player.vVelocity = Math.max(player.vVelocity + gravity.y, -0.2);
+        controls.getObject().position.y += player.vVelocity; // Apply vertical velocity to player position
+        if (controls.getObject().position.y <= player.height) {
+            controls.getObject().position.y = player.height;
+            player.vVelocity = 0;
+            player.onGround = true;
+        }
+    } else if (keys.space) {
+        player.vVelocity = 0.2; // Set initial jump velocity
+        player.onGround = false;
+    }
+}
+
+
+export function updateStamina() {
+    if (keys.shift && ( keys.w || keys.a || keys.s || keys.d )) {
+        if (player.currentStamina > 0) {
+            player.currentStamina -= 0.5;
+        } else {
+            player.sprintMultiplier = 1;
+            // keys.shift = false;
+        }
+    } else if (player.currentStamina < MAX_STAMINA) {
+        player.currentStamina += 0.2;
+    }
+
+    // Update stamina bar UI
+    updateStaminaBar((player.currentStamina / MAX_STAMINA) * 100);
+}
+
+
+export function checkCollision(controls, collisionCube) {
     const playerBox = new THREE.Box3().setFromObject(controls.getObject());
     const collisionBox = new THREE.Box3().setFromObject(collisionCube);
     return playerBox.intersectsBox(collisionBox);
