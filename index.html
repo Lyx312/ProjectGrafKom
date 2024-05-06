@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafkom</title>
+</head>
+
+<body>
+    <script type="module">
+        // Import necessary modules from three.js
+        import * as THREE from 'https://jspm.dev/three';
+        import { PointerLockControls } from 'https://jspm.dev/three/examples/jsm/controls/PointerLockControls.js';
+    
+        // Create a scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Add PointerLockControls
+        const controls = new PointerLockControls(camera, renderer.domElement);
+        scene.add(controls.getObject()); // Add controls to the scene
+
+        // Add an event listener for the 'click' event on the document
+        document.addEventListener('click', function () {
+            controls.lock();
+        }, false);
+
+        // Create a geometry and material for a cube
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+        // Add the cube to the scene
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        // Set up key state
+        const keys = {
+            w: false,
+            a: false,
+            s: false,
+            d: false
+        };
+
+        // Add event listeners for keydown and keyup
+        document.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        // Animate the scene
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Update position of the camera
+            var speed = 0.1;
+            if (keys.w) controls.getObject().translateZ(-speed);
+            if (keys.a) controls.getObject().translateX(-speed);
+            if (keys.s) controls.getObject().translateZ(speed);
+            if (keys.d) controls.getObject().translateX(speed);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+
+</html>
