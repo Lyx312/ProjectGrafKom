@@ -12,7 +12,7 @@
         // Import necessary modules from three.js
         import * as THREE from 'https://jspm.dev/three';
         import { PointerLockControls } from 'https://jspm.dev/three/examples/jsm/controls/PointerLockControls.js';
-    
+
         // Create a scene, camera, and renderer
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -21,9 +21,15 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
+        // Change the background color of the scene
+        scene.background = new THREE.Color(0xdddddd);
+
         // Add PointerLockControls
         const controls = new PointerLockControls(camera, renderer.domElement);
         scene.add(controls.getObject()); // Add controls to the scene
+
+        // Set initial position of the camera
+        controls.getObject().position.y = 5;
 
         // Add an event listener for the 'click' event on the document
         document.addEventListener('click', function () {
@@ -37,6 +43,26 @@
         // Add the cube to the scene
         const cube = new THREE.Mesh(geometry, material);
         scene.add(cube);
+
+        // Create a texture loader
+        const textureLoader = new THREE.TextureLoader();
+
+        // Load the texture for the ground
+        const groundTexture = textureLoader.load('./assets/images/bricks.png');
+
+        // Repeat the texture across the ground
+        groundTexture.wrapS = THREE.RepeatWrapping;
+        groundTexture.wrapT = THREE.RepeatWrapping;
+        groundTexture.repeat.set(100, 100); // Adjust the number of repetitions as needed
+
+        // Create a ground material using the texture
+        const groundMaterial = new THREE.MeshBasicMaterial({ map: groundTexture });
+
+        // Create a ground plane
+        const groundGeometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2; // Rotate to lay flat
+        scene.add(ground);
 
         // Set up key state
         const keys = {
@@ -61,10 +87,25 @@
 
             // Update position of the camera
             var speed = 0.1;
-            if (keys.w) controls.getObject().translateZ(-speed);
-            if (keys.a) controls.getObject().translateX(-speed);
-            if (keys.s) controls.getObject().translateZ(speed);
-            if (keys.d) controls.getObject().translateX(speed);
+            var delta = 0.01;
+
+            if (keys.w) {
+                controls.moveForward(speed);
+            }
+            if (keys.a) {
+                controls.moveRight(-speed);
+            }
+            if (keys.s) {
+                controls.moveForward(-speed);
+            }
+            if (keys.d) {
+                controls.moveRight(speed);
+            }
+
+            // Collision detection with the ground
+            if (controls.getObject().position.y < 5) {
+                controls.getObject().position.y = 5;
+            }
 
             renderer.render(scene, camera);
         }
