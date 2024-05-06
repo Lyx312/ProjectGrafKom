@@ -44,11 +44,17 @@
         const cube = new THREE.Mesh(geometry, material);
         scene.add(cube);
 
+        // Create a second cube for collision
+        const collisionCube = new THREE.Mesh(geometry, material);
+        collisionCube.position.set(0, 2, -10); // Position the collision cube in front of the player
+        collisionCube.scale.set(3, 3, 3); // Set the scale to make it bigger
+        scene.add(collisionCube);
+
         // Create a texture loader
         const textureLoader = new THREE.TextureLoader();
 
         // Load the texture for the ground
-        const groundTexture = textureLoader.load('./assets/images/bricks.png');
+        const groundTexture = textureLoader.load('./assets/bricks.png');
 
         // Repeat the texture across the ground
         groundTexture.wrapS = THREE.RepeatWrapping;
@@ -69,25 +75,65 @@
             w: false,
             a: false,
             s: false,
-            d: false
+            d: false,
+            space: false
         };
+
+        let shiftPressed = false; // Track if Shift key is pressed separately
+
+        const jump = {
+            speed: 0,
+            gravity: 0.01,
+            jumping: false
+        };
+
+        let speed = 0.1;
 
         // Add event listeners for keydown and keyup
         document.addEventListener('keydown', (e) => {
             keys[e.key] = true;
+            if (e.code === "Space" && !jump.jumping) {
+                jump.speed = 0.5;
+                jump.jumping = true;
+            }
+            // Sprint mechanic
+            if (e.key === "Shift") {
+                shiftPressed = true;
+                speed = shiftPressed ? 0.2 : 0.1; // Adjust speed based on shift state
+            }
+            // Crouch mechanic
+            if (e.key === "c") {
+                camera.position.y = 4; // Lower the camera position by 1
+                speed = 0.05; // Halve the speed while crouching
+            }
         });
 
         document.addEventListener('keyup', (e) => {
             keys[e.key] = false;
+            // Reset sprint mechanic
+            if (e.key === "Shift") {
+                shiftPressed = false;
+                speed = shiftPressed ? 0.2 : 0.1; // Adjust speed based on shift state
+            }
+            // Reset crouch mechanic
+            if (e.key === "c") {
+                camera.position.y = 5; // Raise the camera position by 1
+                speed = 0.1; // Reset speed to normal when releasing C
+            }
         });
+
+        // Check collision between player and collision cube
+        function checkCollision() {
+            const playerBox = new THREE.Box3().setFromObject(controls.getObject());
+            const collisionBox = new THREE.Box3().setFromObject(collisionCube);
+            return playerBox.intersectsBox(collisionBox);
+        }
 
         // Animate the scene
         function animate() {
             requestAnimationFrame(animate);
 
             // Update position of the camera
-            var speed = 0.1;
-            var delta = 0.01;
 
             if (keys.w) {
                 controls.moveForward(speed);
@@ -102,9 +148,25 @@
                 controls.moveRight(speed);
             }
 
-            // Collision detection with the ground
-            if (controls.getObject().position.y < 5) {
-                controls.getObject().position.y = 5;
+            // Jumping
+            if (jump.jumping) {
+                controls.getObject().position.y += jump.speed;
+                jump.speed -= jump.gravity;
+                if (controls.getObject().position.y <= 5) {
+                    controls.getObject().position.y = 5;
+                    jump.speed = 0;
+                    jump.jumping = false;
+                }
+            }
+
+            // Check collision and handle player movement
+            if (checkCollision()) {
+                const playerPosition = controls.getObject().position.clone();
+                const collisionPosition = collisionCube.position.clone();
+
+                const direction = playerPosition.sub(collisionPosition).normalize();
+
+                controls.getObject().position.add(direction.multiplyScalar(speed));
             }
 
             renderer.render(scene, camera);
