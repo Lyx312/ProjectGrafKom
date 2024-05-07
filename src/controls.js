@@ -1,5 +1,6 @@
 import * as THREE from 'https://jspm.dev/three';
-import { camera, updateStaminaBar } from "./main.js";
+import { camera } from "./sceneSetup.js";
+import { updateStaminaBar } from './uiSetup.js';
 
 export var keys = {
     w: false,
