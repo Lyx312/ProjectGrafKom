@@ -49,10 +49,6 @@ document.addEventListener('keydown', (e) => {
             break;
         case 'Space':
             keys.space = true;
-            if (!jump.jumping) {
-                jump.speed = 0.2;
-                jump.jumping = true;
-            }
             break;
         case 'ShiftLeft':
         case 'ShiftRight':
@@ -107,18 +103,43 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
-export function updateVelocity(controls) {
-    player.hVelocity.x -= player.hVelocity.x * 1.0 * player.baseSpeed;
-    player.hVelocity.z -= player.hVelocity.z * 1.0 * player.baseSpeed;
+export function updateVelocity(controls, objects) {
+    let potentialPositionX = controls.getObject().position.clone();
+    let potentialPositionZ = controls.getObject().position.clone();
+
+    // Reset horizontal velocity
+    player.hVelocity.set(0, 0, 0);
 
     if (keys.w) player.hVelocity.z -= 0.1 * player.baseSpeed * player.sprintMultiplier * player.crouchMultiplier;
     if (keys.a) player.hVelocity.x += 0.1 * player.baseSpeed * player.sprintMultiplier * player.crouchMultiplier;
     if (keys.s) player.hVelocity.z += 0.1 * player.baseSpeed * player.sprintMultiplier * player.crouchMultiplier;
     if (keys.d) player.hVelocity.x -= 0.1 * player.baseSpeed * player.sprintMultiplier * player.crouchMultiplier;
 
-    controls.moveRight(-player.hVelocity.x);
-    controls.moveForward(-player.hVelocity.z);
+    // Calculate potential position
+    potentialPositionX.add(new THREE.Vector3(player.hVelocity.x, 0, 0));
+    potentialPositionZ.add(new THREE.Vector3(0, 0, player.hVelocity.z));
+
+    // Check for potential collisions
+    let collisionX = false;
+    let collisionZ = false;
+    for (let object of objects) {
+        if (checkCollision(potentialPositionX, object)) {
+            collisionX = true;
+        }
+        if (checkCollision(potentialPositionZ, object)) {
+            collisionZ = true;
+        }
+    }
+
+    // Only update position if no collision is detected
+    if (!collisionX) {
+        controls.moveRight(-player.hVelocity.x);
+    }
+    if (!collisionZ) {
+        controls.moveForward(-player.hVelocity.z);
+    }
 }
+
 
 export function updateJump(controls) {
     if (!player.onGround) {
@@ -153,8 +174,14 @@ export function updateStamina() {
 }
 
 
-export function checkCollision(controls, collisionCube) {
-    const playerBox = new THREE.Box3().setFromObject(controls.getObject());
-    const collisionBox = new THREE.Box3().setFromObject(collisionCube);
-    return playerBox.intersectsBox(collisionBox);
+export function checkCollision(position, object) {
+    // Create a bounding box for the player
+    const playerBox = new THREE.Box3();
+    playerBox.setFromCenterAndSize(position, new THREE.Vector3(player.width, player.height, player.width));
+
+    // Create a bounding box for the object
+    const objectBox = new THREE.Box3().setFromObject(object);
+
+    // Return true if the two bounding boxes intersect
+    return playerBox.intersectsBox(objectBox);
 }

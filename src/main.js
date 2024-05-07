@@ -9,9 +9,6 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Define maximum stamina and initial stamina level
-
-
 // Create a UI element for the stamina bar
 const staminaBar = document.createElement('div');
 staminaBar.style.position = 'absolute';
@@ -49,6 +46,7 @@ document.addEventListener('click', function () {
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(geometry, material);
+cube.position.set(1, 1, 1);
 scene.add(cube);
 
 const collisionCube = new THREE.Mesh(geometry, material);
@@ -72,13 +70,16 @@ function animate() {
     requestAnimationFrame(animate);
 
     // Update velocity based on keys pressed
-    updateVelocity(controls);
+    updateVelocity(controls, [cube, collisionCube]);
 
     // Update stamina
     updateStamina();
 
     // Update jump
     updateJump(controls);
+
+    // // Check for collision with collisionCube
+    // checkCollision(collisionCube);
 
     renderer.render(scene, camera);
 }
