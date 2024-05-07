@@ -36,7 +36,7 @@ scene.add(collisionCube);
 
 loadObject(scene, "deer_small", [3, 0, -9], [1, 1, 1], [0, 0, 0], collidable);
 loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0], collidable);
-loadModel(scene, "modular_gym", [0, 0, -50], [1, 1, 1], [0, 90, 0]);
+loadModel(scene, "modular_gym", [0, 0.1, -50], [1, 1, 1], [0, 90, 0]);
 
 function animate() {
     requestAnimationFrame(animate);

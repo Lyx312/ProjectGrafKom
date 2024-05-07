@@ -22,6 +22,8 @@ export let player = {
     baseSpeed: 1,
     sprintMultiplier: 1,
     crouchMultiplier: 1,
+    jumpStrength: 0.3,
+    crouchHeightChange: 0.8,
     hVelocity: new THREE.Vector3(),
     vVelocity: 0,
     onGround: true,
@@ -29,9 +31,6 @@ export let player = {
 }
 
 let gravity = new THREE.Vector3(0, -0.005, 0);
-
-let crouchHeightChange = 1;
-
 
 // Add event listeners for keydown and keyup
 document.addEventListener('keydown', (e) => {
@@ -60,8 +59,8 @@ document.addEventListener('keydown', (e) => {
             break;
         case 'KeyC':
             if (!keys.c) {
-                player.height -= crouchHeightChange;
-                camera.position.y -= crouchHeightChange;
+                camera.position.y -= player.height * (1 - player.crouchHeightChange);
+                player.height *= player.crouchHeightChange;
                 player.crouchMultiplier *= CROUCH_MULTIPLIER;
                 keys.c = true;
             }
@@ -95,8 +94,8 @@ document.addEventListener('keyup', (e) => {
             break;
         case 'KeyC':
             if (keys.c) {
-                player.height += crouchHeightChange;
-                camera.position.y += crouchHeightChange;
+                camera.position.y += player.height * (1 - player.crouchHeightChange);
+                player.height /= player.crouchHeightChange;
                 player.crouchMultiplier = 1;
                 keys.c = false;
             }
@@ -144,7 +143,7 @@ export function updateVelocity(controls, objects) {
 
 export function updateJump(controls) {
     if (!player.onGround) {
-        player.vVelocity = Math.max(player.vVelocity + gravity.y, -0.2);
+        player.vVelocity = Math.max(player.vVelocity + gravity.y, -player.jumpStrength);
         controls.getObject().position.y += player.vVelocity; // Apply vertical velocity to player position
         if (controls.getObject().position.y <= player.height) {
             controls.getObject().position.y = player.height;
@@ -152,7 +151,7 @@ export function updateJump(controls) {
             player.onGround = true;
         }
     } else if (keys.space) {
-        player.vVelocity = 0.2; // Set initial jump velocity
+        player.vVelocity = player.jumpStrength; // Set initial jump velocity
         player.onGround = false;
     }
 }
