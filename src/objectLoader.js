@@ -7,7 +7,7 @@ const MTL_PATH = '../assets/mtl/';
 const OBJ_PATH = '../assets/objects/';
 const MODEL_PATH = '../assets/models/';
 
-export function loadObject(scene, fileName, position, scale, rotation, collidable) {
+export function loadObject(scene, fileName, position, scale, rotation, octree) {
     const mtlLoader = new MTLLoader();
     mtlLoader.load(`${MTL_PATH}${fileName}.mtl`, function(materials) {
         materials.preload();
@@ -18,14 +18,14 @@ export function loadObject(scene, fileName, position, scale, rotation, collidabl
             object.position.set(...position);
             object.scale.set(...scale); 
             object.rotation.set(...rotation.map(deg => deg * Math.PI / 180));
-            collidable.push(object)
+            octree.fromGraphNode(object);
             scene.add( object );
         });
     });
 }
 
 // Load the model
-export function loadModel(scene, folder, position, scale, rotation) {
+export function loadModel(scene, folder, position, scale, rotation, octree) {
     const loader = new GLTFLoader();
     loader.load(
         `${MODEL_PATH}${folder}/scene.gltf`,
@@ -36,6 +36,7 @@ export function loadModel(scene, folder, position, scale, rotation) {
             // Set the scale of the model
             model.scale.set(...scale);
             model.rotation.set(...rotation.map(deg => deg * Math.PI / 180));
+            // octree.fromGraphNode(model)
             scene.add(model);
         },
         undefined,
@@ -45,7 +46,7 @@ export function loadModel(scene, folder, position, scale, rotation) {
     );
 }
 
-export function loadModelInterior(scene, file, position, scale, rotation) {
+export function loadModelInterior(scene, file, position, scale, rotation, octree) {
     const loader = new GLTFLoader();
     loader.load(
         `${MODEL_PATH}individual_equipments/${file}.glb`,
@@ -56,6 +57,7 @@ export function loadModelInterior(scene, file, position, scale, rotation) {
             // Set the scale of the model
             model.scale.set(...scale);
             model.rotation.set(...rotation.map(deg => deg * Math.PI / 180));
+            octree.fromGraphNode(model);
             scene.add(model);
         },
         undefined,
