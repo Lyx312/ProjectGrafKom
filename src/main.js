@@ -1,7 +1,6 @@
 // main.js
-import * as THREE from 'https://jspm.dev/three';
-import { PointerLockControls } from 'https://jspm.dev/three/examples/jsm/controls/PointerLockControls.js';
-import { keys, player, checkCollision, updateVelocity, updateJump, updateStamina } from './controls.js';
+import * as THREE from 'three';
+import { updateVelocity, updateJump, updateStamina } from './controls.js';
 import { loadObject, loadModel } from './objectLoader.js';
 import { scene, camera } from './sceneSetup.js';
 import renderer from './sceneSetup.js';

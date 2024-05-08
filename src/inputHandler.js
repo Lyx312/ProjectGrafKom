@@ -1,5 +1,5 @@
 // inputHandler.js
-import { PointerLockControls } from 'https://jspm.dev/three/examples/jsm/controls/PointerLockControls.js';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { keys, player } from './controls.js';
 import { camera, scene } from './sceneSetup.js';
 import renderer from './sceneSetup.js';

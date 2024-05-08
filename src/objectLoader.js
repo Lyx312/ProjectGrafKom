@@ -1,8 +1,7 @@
 // objectLoader.js
-import * as THREE from 'https://jspm.dev/three';
-import { MTLLoader } from 'https://jspm.dev/three/examples/jsm/loaders/MTLLoader.js';
-import { OBJLoader } from 'https://jspm.dev/three/examples/jsm/loaders/OBJLoader.js';
-import { GLTFLoader } from 'https://jspm.dev/three/examples/jsm/loaders/GLTFLoader.js';
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const MTL_PATH = '../assets/mtl/';
 const OBJ_PATH = '../assets/objects/';

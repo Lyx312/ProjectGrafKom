@@ -1,4 +1,4 @@
-import * as THREE from 'https://jspm.dev/three';
+import * as THREE from 'three';
 import { camera } from "./sceneSetup.js";
 import { updateStaminaBar } from './uiSetup.js';
 
