@@ -44,3 +44,23 @@ export function loadModel(scene, folder, position, scale, rotation) {
         }
     );
 }
+
+export function loadModelInterior(scene, file, position, scale, rotation) {
+    const loader = new GLTFLoader();
+    loader.load(
+        `${MODEL_PATH}individual_equipments/${file}.glb`,
+        function (gltf) {
+            const model = gltf.scene;
+            // Set the position of the model
+            model.position.set(...position);
+            // Set the scale of the model
+            model.scale.set(...scale);
+            model.rotation.set(...rotation.map(deg => deg * Math.PI / 180));
+            scene.add(model);
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+}
