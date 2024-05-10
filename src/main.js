@@ -10,6 +10,8 @@ export const worldOctree = new Octree();
 export const boundingBox = [];
 const clock = new THREE.Clock();
 
+const mixers = {};
+
 // Set up the ground
 const textureLoader = new THREE.TextureLoader();
 const groundTexture = textureLoader.load('./assets/images/bricks.png');
@@ -30,7 +32,15 @@ createBoundingBox(scene, [2.6, 0.5, -7.7], [2, 15.5, 7], [0, 0, 0], worldOctree,
 loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
 createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
 
-loadModel(scene, "modular_gym", [0, 0.1, -50], [1, 1, 1], [0, 90, 0]);
+loadModelInterior(scene, "roof_light_gym", [0, 0.1, -50], [1, 1, 1], [0, 90, 0]);
+
+loadModel(scene, "ceiling_fan", [20, 0, 0], [5, 2, 5], [0, 90, 0], "Cylinder.001Action", (animationMixer) => {
+    mixers["ceiling_fan"] = animationMixer;
+});
+
+loadModel(scene, "casual_male", [-20, 0, 0], [3.5, 3.5, 3.5], [0, 90, 0], "Rig|new_man_walk_in_place", (animationMixer) => {
+    mixers["casual_male"] = animationMixer;
+});
 
 loadModelInterior(scene, "barbell_chair", [0, 0, 50], [10, 10, 10], [0, 90, 0]);
 createBoundingBox(scene, [0.13, 0.5, 49.85], [7, 4.6, 2.9], [0, 0, 0], worldOctree, boundingBox);
@@ -52,6 +62,12 @@ function animate() {
     updatePlayer(deltaTime);
     // Update stamina
     updateStamina();
+
+    for (const mixerName in mixers) {
+        if (mixers.hasOwnProperty(mixerName)) {
+            mixers[mixerName].update(deltaTime);
+        }
+    }
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
