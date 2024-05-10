@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { camera, scene } from "./sceneSetup.js";
 import { updateStaminaBar } from './uiSetup.js';
-import { worldOctree } from './main.js';
+import { worldOctree, boundingBox } from './main.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import renderer from './sceneSetup.js';
@@ -13,7 +13,8 @@ const keys = {
     d: false,
     space: false,
     shift: false,
-    c: false
+    c: false,
+    f: false,
 };
 
 const MAX_STAMINA = 100;
@@ -32,6 +33,8 @@ const player = {
     onGround: true,
     currentStamina: MAX_STAMINA
 }
+
+let debug = false;
 
 const playerCollider = new Capsule(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, player.height, 0), 1);
 
@@ -75,6 +78,17 @@ document.addEventListener('keydown', (e) => {
                 keys.c = true;
             }
             break;
+        case 'KeyF':
+            if (!keys.f) {
+                console.log("preesed");
+                boundingBox.forEach(box => {
+                    box.cube.material.opacity = debug? 0 : 0.5;
+                    box.line.material.opacity = debug? 0 : 1;
+                });
+                debug = !debug;
+                keys.f = true;
+            }
+            break;
     }
 });
 
@@ -109,6 +123,9 @@ document.addEventListener('keyup', (e) => {
                 player.crouchMultiplier = 1;
                 keys.c = false;
             }
+            break;
+        case 'KeyF':
+            keys.f = false;
             break;
     }
 });

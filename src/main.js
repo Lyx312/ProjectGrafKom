@@ -2,11 +2,12 @@
 import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
 import { updateStamina, updatePlayer, playerControls } from './controls.js';
-import { loadObject, loadModel, loadModelInterior } from './objectLoader.js';
+import { loadObject, loadModel, loadModelInterior, createBoundingBox } from './objectLoader.js';
 import { scene, camera } from './sceneSetup.js';
 import renderer from './sceneSetup.js';
 
 export const worldOctree = new Octree();
+export const boundingBox = [];
 const clock = new THREE.Clock();
 
 // Set up the ground
@@ -23,23 +24,20 @@ ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 worldOctree.fromGraphNode(ground);
 
-// Set up the objects
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-cube.position.set(1, 1, 1);
-scene.add(cube);
+loadObject(scene, "deer_small", [3, 0, -9], [1, 1, 1], [0, 0, 0]);
+createBoundingBox(scene, [2.6, 0.5, -7.7], [2, 15.5, 7], [0, 0, 0], worldOctree, boundingBox);
 
-const collisionCube = new THREE.Mesh(geometry, material);
-collisionCube.position.set(0, 2, -10);
-collisionCube.scale.set(3, 3, 3);
-scene.add(collisionCube);
+loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
+createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
 
-loadObject(scene, "deer_small", [3, 0, -9], [1, 1, 1], [0, 0, 0], worldOctree);
-loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0], worldOctree);
-loadModel(scene, "modular_gym", [0, 0.1, -50], [1, 1, 1], [0, 90, 0], worldOctree);
-loadModelInterior(scene, "barbell_set", [0, 0, 50], [10, 10, 10], [0, 90, 0], worldOctree);
-loadModelInterior(scene, "barbells", [10, 0, 50], [10, 10, 10], [0, 90, 0], worldOctree);
+loadModel(scene, "modular_gym", [0, 0.1, -50], [1, 1, 1], [0, 90, 0]);
+
+loadModelInterior(scene, "barbell_set", [0, 0, 50], [10, 10, 10], [0, 90, 0]);
+createBoundingBox(scene, [12.4, 0.5, 38.9], [7, 4.6, 2.9], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [9.4, 5.5, 38.9], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree, boundingBox);
+
+loadModelInterior(scene, "barbells", [10, 0, 50], [10, 10, 10], [0, 90, 0]);
+createBoundingBox(scene, [16.4, 5.2, 51.3], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree, boundingBox);
 
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta())
@@ -55,3 +53,4 @@ function animate() {
 }
 
 animate();
+console.log(worldOctree);
