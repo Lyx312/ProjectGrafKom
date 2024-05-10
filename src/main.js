@@ -32,12 +32,17 @@ createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctre
 
 loadModel(scene, "modular_gym", [0, 0.1, -50], [1, 1, 1], [0, 90, 0]);
 
-loadModelInterior(scene, "barbell_set", [0, 0, 50], [10, 10, 10], [0, 90, 0]);
-createBoundingBox(scene, [12.4, 0.5, 38.9], [7, 4.6, 2.9], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [9.4, 5.5, 38.9], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree, boundingBox);
+loadModelInterior(scene, "barbell_chair", [0, 0, 50], [10, 10, 10], [0, 90, 0]);
+createBoundingBox(scene, [0.13, 0.5, 49.85], [7, 4.6, 2.9], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(scene, "barbells", [10, 0, 50], [10, 10, 10], [0, 90, 0]);
-createBoundingBox(scene, [16.4, 5.2, 51.3], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree, boundingBox);
+loadModelInterior(scene, "barbells", [0, 0, 50], [10, 10, 10], [0, 90, 0]);
+createBoundingBox(scene, [-2.9, 5.5, 50], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree, boundingBox);
+
+loadModelInterior(scene, "treadmill", [10, 0, 50], [9, 9, 9], [0, 90, 0]);
+createBoundingBox(scene, [9.4, 0, 50], [6.8, 2.45, 4], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [13.7, 2.45, 50], [1.8, 7, 4], [0, 0, 0], worldOctree, boundingBox);  
+createBoundingBox(scene, [12, 2.45, 51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);  
+createBoundingBox(scene, [12, 2.45, 48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);  
 
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta())
