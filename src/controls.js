@@ -24,8 +24,9 @@ const GRAVITY = 120;
 
 const player = {
     height: 5,
-    baseSpeed: 0.1,
-    sprintMultiplier: 1.5,
+    width: 2,
+    baseSpeed: 128,
+    sprintMultiplier: 1,
     crouchMultiplier: 1,
     crouchHeightChange: 0.8,
     velocity: new THREE.Vector3(),
@@ -36,7 +37,7 @@ const player = {
 
 let debug = false;
 
-const playerCollider = new Capsule(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, player.height, 0), 1);
+const playerCollider = new Capsule(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, player.height, 0), player.width/2);
 
 const controls = new PointerLockControls(camera, renderer.domElement);
 scene.add(controls.getObject());
@@ -73,14 +74,12 @@ document.addEventListener('keydown', (e) => {
         case 'KeyC':
             if (!keys.c) {
                 playerCollider.end.y -= player.height * (1 - player.crouchHeightChange);
-                player.height *= player.crouchHeightChange;
                 player.crouchMultiplier *= CROUCH_MULTIPLIER;
                 keys.c = true;
             }
             break;
         case 'KeyF':
             if (!keys.f) {
-                console.log("preesed");
                 boundingBox.forEach(box => {
                     box.cube.material.opacity = debug? 0 : 0.5;
                     box.line.material.opacity = debug? 0 : 1;
@@ -119,7 +118,6 @@ document.addEventListener('keyup', (e) => {
         case 'KeyC':
             if (keys.c) {
                 playerCollider.end.y += player.height * (1 - player.crouchHeightChange);
-                player.height /= player.crouchHeightChange;
                 player.crouchMultiplier = 1;
                 keys.c = false;
             }
@@ -185,7 +183,7 @@ function getSideVector() {
 export function playerControls(deltaTime) {
 
     // gives a bit of air control
-    const speedDelta = deltaTime * player.sprintMultiplier * player.crouchMultiplier * (player.onGround ? 100 : 16);
+    const speedDelta = deltaTime * player.sprintMultiplier * player.crouchMultiplier * (player.onGround ? player.baseSpeed : player.baseSpeed/3);
 
     if (keys.w) {
         player.velocity.add(getForwardVector().multiplyScalar(speedDelta));
