@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
 import { updateStamina, updatePlayer, playerControls } from './controls.js';
-import { loadObject, loadModel, loadModelInterior, createBoundingBox } from './objectLoader.js';
+import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer } from './objectLoader.js';
 import { scene, camera } from './sceneSetup.js';
 import renderer from './sceneSetup.js';
 
@@ -10,6 +10,7 @@ export const worldOctree = new Octree();
 export const boundingBox = [];
 const clock = new THREE.Clock();
 
+let casualMaleModel;
 const mixers = {};
 
 // Set up the ground
@@ -38,8 +39,9 @@ loadModel(scene, "ceiling_fan", [20, 0, 0], [5, 2, 5], [0, 90, 0], "Cylinder.001
     mixers["ceiling_fan"] = animationMixer;
 });
 
-loadModel(scene, "casual_male", [-20, 0, 0], [3.5, 3.5, 3.5], [0, 90, 0], "Rig|new_man_walk_in_place", (animationMixer) => {
-    mixers["casual_male"] = animationMixer;
+loadPlayer(scene, "casual_male", [0, 0, 0], [3, 3, 3], [0, 90, 0], "Rig|new_man_walk_in_place", (model, mixer) => {
+    casualMaleModel = model;
+    mixers["casual_male"] = mixer;
 });
 
 loadModelInterior(scene, "barbell_chair", [0, 0, 50], [10, 10, 10], [0, 90, 0]);
@@ -55,13 +57,22 @@ createBoundingBox(scene, [12, 2.45, 51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, 
 createBoundingBox(scene, [12, 2.45, 48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);  
 
 function animate() {
-    const deltaTime = Math.min(0.05, clock.getDelta())
+    const deltaTime = Math.min(0.05, clock.getDelta());
 
     playerControls(deltaTime);
 
     updatePlayer(deltaTime);
     // Update stamina
     updateStamina();
+
+    // Check if casualMaleModel is assigned before accessing its position
+    if (casualMaleModel) {
+        // Update the position of the casual male model to match the camera's position
+        const cameraPosition = camera.position;
+        casualMaleModel.position.copy(cameraPosition);
+        casualMaleModel.position.y -= 5;
+        casualMaleModel.position.x -= 0.4;
+    }
 
     for (const mixerName in mixers) {
         if (mixers.hasOwnProperty(mixerName)) {
