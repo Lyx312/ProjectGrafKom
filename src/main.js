@@ -34,7 +34,7 @@ worldOctree.fromGraphNode(ground);
 // loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
 // createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(scene, "roof_gym", [0, 0.1, -50], [1.5, 1.5, 1.5], [0, 90, 0]);
+loadModel(scene, "carpet_tile", [0, 0.1, -30], [0.1, 0.1, 0.1], [0, 90, 0]);
 
 loadModel(scene, "ceiling_fan", [0, 11, -45], [10, 2, 10], [0, 90, 0], "Cylinder.001Action", (animationMixer) => {
     mixers["ceiling_fan_1"] = animationMixer;
