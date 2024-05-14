@@ -21,15 +21,17 @@ const keys = {
 const MAX_STAMINA = 100;
 const SPRINT_MULTIPLIER = 2;
 const CROUCH_MULTIPLIER = 0.5;
-const GRAVITY = 120;
+const PLAYER_SIZE = 1;
+const GRAVITY = PLAYER_SIZE*120;
 
 export const player = {
-    height: 6,
-    width: 2,
-    baseSpeed: 128,
+    height: PLAYER_SIZE*6,
+    width: PLAYER_SIZE*2,
+    baseSpeed: PLAYER_SIZE*128,
     sprintMultiplier: 1,
     crouchMultiplier: 1,
     crouchHeightChange: 0.8,
+    jumpStrength: PLAYER_SIZE*50,
     velocity: new THREE.Vector3(),
     direction: new THREE.Vector3(),
     onGround: true,
@@ -38,8 +40,8 @@ export const player = {
 }
 
 const cameraOffset = {
-    firstPerson: 1,
-    thirdPerson: -8
+    firstPerson: PLAYER_SIZE,
+    thirdPerson: -PLAYER_SIZE*8
 }
 
 let debug = false;
@@ -222,7 +224,7 @@ export function playerControls(deltaTime) {
     }
     if (player.onGround) {
         if (keys.space) {
-            player.velocity.y = 50;
+            player.velocity.y = player.jumpStrength;
         }
     }
 }
