@@ -28,16 +28,20 @@ ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 worldOctree.fromGraphNode(ground);
 
-loadObject(scene, "deer_small", [3, 0, -9], [1, 1, 1], [0, 0, 0]);
-createBoundingBox(scene, [2.6, 0.5, -7.7], [2, 15.5, 7], [0, 0, 0], worldOctree, boundingBox);
+// loadObject(scene, "deer_small", [3, 0, -9], [1, 1, 1], [0, 0, 0]);
+// createBoundingBox(scene, [2.6, 0.5, -7.7], [2, 15.5, 7], [0, 0, 0], worldOctree, boundingBox);
 
-loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
-createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
+// loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
+// createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(scene, "roof_light_gym", [0, 0.1, -50], [1.5, 1.5, 1.5], [0, 90, 0]);
+loadModelInterior(scene, "roof_gym", [0, 0.1, -50], [1.5, 1.5, 1.5], [0, 90, 0]);
 
-loadModel(scene, "ceiling_fan", [20, 0, 0], [5, 2, 5], [0, 90, 0], "Cylinder.001Action", (animationMixer) => {
-    mixers["ceiling_fan"] = animationMixer;
+loadModel(scene, "ceiling_fan", [0, 11, -45], [10, 2, 10], [0, 90, 0], "Cylinder.001Action", (animationMixer) => {
+    mixers["ceiling_fan_1"] = animationMixer;
+});
+
+loadModel(scene, "ceiling_fan", [0, 11, -75], [10, 2, 10], [0, 90, 0], "Cylinder.001Action", (animationMixer) => {
+    mixers["ceiling_fan_2"] = animationMixer;
 });
 
 loadPlayer(scene, "casual_male", [0, 0, 0], [player.height * 0.72, player.height * 0.72, player.height * 0.72], [0, 0, 0], (model, mixer, animations) => {
@@ -46,17 +50,17 @@ loadPlayer(scene, "casual_male", [0, 0, 0], [player.height * 0.72, player.height
     playerAnimations = animations;
 });
 
-loadModelInterior(scene, "barbell_chair", [0, 0, 50], [10, 10, 10], [0, 90, 0]);
-createBoundingBox(scene, [0.13, 0.5, 49.85], [7, 4.6, 2.9], [0, 0, 0], worldOctree, boundingBox);
+loadModelInterior(scene, "barbell_chair", [-10, 0, -40], [10, 10, 10], [0, 90, 0]);
+createBoundingBox(scene, [-10.13, 0.5, -40.15], [7, 4.6, 2.9], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(scene, "barbells", [0, 0, 50], [10, 10, 10], [0, 90, 0]);
-createBoundingBox(scene, [-2.9, 5.5, 50], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree, boundingBox);
+loadModelInterior(scene, "barbells", [-10, 0, -40], [10, 10, 10], [0, 90, 0]);
+createBoundingBox(scene, [-12.9, 5.5, -40], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(scene, "treadmill", [10, 0, 50], [9, 9, 9], [0, 90, 0]);
-createBoundingBox(scene, [9.4, 0, 50], [6.8, 2.45, 4], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [13.7, 2.45, 50], [1.8, 7, 4], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [12, 2.45, 51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [12, 2.45, 48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
+loadModelInterior(scene, "treadmill", [10, 0, -50], [9, 9, 9], [0, 90, 0]);
+createBoundingBox(scene, [9.4, 0, -50], [6.8, 2.45, 4], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [13.7, 2.45, -50], [1.8, 7, 4], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [12, 2.45, -51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [12, 2.45, -48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 
 createBoundingBox(scene, [30, player.height+player.width+0.5, 1], [player.width*2, 1, player.width*2], [0, 0, 0], worldOctree, boundingBox)
 
