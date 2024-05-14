@@ -10,6 +10,7 @@ const MODEL_PATH = '../assets/models/';
 
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshBasicMaterial({ color: 0x808080, transparent: true, opacity: 0 });
+const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0 });
 
 function setPositionScaleRotation(object, position, scale, rotation) {
     object.position.set(...position);
@@ -84,8 +85,10 @@ export function createBoundingBox(scene, position, scale, rotation, octree, boun
     scene.add(cube);
 
     const edges = new THREE.EdgesGeometry(cube.geometry);
-    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0 }));
-    setPositionScaleRotation(line, position, scale, rotation);
+    const line = new THREE.LineSegments(edges, lineMaterial);
+    line.position.copy(cube.position);
+    line.scale.copy(cube.scale);
+    line.rotation.copy(cube.rotation);
     scene.add(line);
 
     boundingBox.push({
