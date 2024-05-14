@@ -94,7 +94,7 @@ export function createBoundingBox(scene, position, scale, rotation, octree, boun
     })
 }
 
-export function loadPlayer(scene, folder, position, scale, rotation, animationName, callback) {
+export function loadPlayer(scene, folder, position, scale, rotation, callback) {
     const loader = new GLTFLoader();
     loader.load(
         `${MODEL_PATH}${folder}/scene.gltf`,
@@ -104,19 +104,18 @@ export function loadPlayer(scene, folder, position, scale, rotation, animationNa
             scene.add(model);
 
             let mixer;
+            let animations = {};
 
             if (gltf.animations && gltf.animations.length > 0) {
                 mixer = new THREE.AnimationMixer(model);
                 gltf.animations.forEach((clip) => {
-                    if (clip.name === animationName) {
-                        mixer.clipAction(clip).play();
-                    }
+                    animations[clip.name] = mixer.clipAction(clip);
                 });
             }
 
-            // Pass the model and mixer to the callback function
+            // Pass the model, mixer, and animations to the callback function
             if (callback && typeof callback === 'function') {
-                callback(model, mixer);
+                callback(model, mixer, animations);
             }
         },
         undefined,
@@ -125,3 +124,4 @@ export function loadPlayer(scene, folder, position, scale, rotation, animationNa
         }
     );
 }
+

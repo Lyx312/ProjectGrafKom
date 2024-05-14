@@ -15,6 +15,7 @@ const keys = {
     shift: false,
     c: false,
     f: false,
+    p: false,
 };
 
 const MAX_STAMINA = 100;
@@ -22,8 +23,8 @@ const SPRINT_MULTIPLIER = 2;
 const CROUCH_MULTIPLIER = 0.5;
 const GRAVITY = 120;
 
-const player = {
-    height: 5,
+export const player = {
+    height: 6,
     width: 2,
     baseSpeed: 128,
     sprintMultiplier: 1,
@@ -32,14 +33,22 @@ const player = {
     velocity: new THREE.Vector3(),
     direction: new THREE.Vector3(),
     onGround: true,
-    currentStamina: MAX_STAMINA
+    currentStamina: MAX_STAMINA,
+    thirdPerson: false,
+}
+
+const cameraOffset = {
+    firstPerson: 0.8,
+    thirdPerson: -5
 }
 
 let debug = false;
 
 const playerCollider = new Capsule(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, player.height, 0), player.width/2);
 
-const controls = new PointerLockControls(camera, renderer.domElement);
+export const controls = new PointerLockControls(camera, renderer.domElement);
+controls.minPolarAngle = 0.001; // radians
+controls.maxPolarAngle = Math.PI - 0.001; // radians
 scene.add(controls.getObject());
 
 document.addEventListener('click', function () {
@@ -88,6 +97,12 @@ document.addEventListener('keydown', (e) => {
                 keys.f = true;
             }
             break;
+        case 'KeyP': 
+            if (!keys.p) {
+                keys.p = true;
+                player.thirdPerson = !player.thirdPerson;
+            }
+            break;
     }
 });
 
@@ -124,6 +139,9 @@ document.addEventListener('keyup', (e) => {
             break;
         case 'KeyF':
             keys.f = false;
+            break;
+        case 'KeyP': 
+            keys.p = false;
             break;
     }
 });
@@ -218,4 +236,27 @@ export function updateStamina() {
 
     // Update stamina bar UI
     updateStaminaBar((player.currentStamina / MAX_STAMINA) * 100);
+}
+
+export function getPlayerLookDirection() {
+    let direction = new THREE.Vector3();
+    controls.getDirection(direction);
+
+    // Calculate the angle
+    let angleRadians = Math.atan2(direction.z, direction.x);
+
+    // Return the angle in radians
+    return angleRadians;
+}
+
+export function getMoveDirection() {
+    if (keys.w || keys.s) return "forward";
+    if (keys.a) return "left";
+    if (keys.d) return "right";
+    return "none";
+}
+
+export function getCameraOffset() {
+    if (player.thirdPerson) return cameraOffset.thirdPerson;
+    return cameraOffset.firstPerson;
 }

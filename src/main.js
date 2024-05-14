@@ -1,7 +1,7 @@
 // main.js
 import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
-import { updateStamina, updatePlayer, playerControls } from './controls.js';
+import { updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset } from './controls.js';
 import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer } from './objectLoader.js';
 import { scene, camera } from './sceneSetup.js';
 import renderer from './sceneSetup.js';
@@ -12,6 +12,7 @@ const clock = new THREE.Clock();
 
 let casualMaleModel;
 const mixers = {};
+let playerAnimations;
 
 // Set up the ground
 const textureLoader = new THREE.TextureLoader();
@@ -33,15 +34,16 @@ createBoundingBox(scene, [2.6, 0.5, -7.7], [2, 15.5, 7], [0, 0, 0], worldOctree,
 loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
 createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(scene, "roof_light_gym", [0, 0.1, -50], [1, 1, 1], [0, 90, 0]);
+loadModelInterior(scene, "roof_light_gym", [0, 0.1, -50], [1.5, 1.5, 1.5], [0, 90, 0]);
 
 loadModel(scene, "ceiling_fan", [20, 0, 0], [5, 2, 5], [0, 90, 0], "Cylinder.001Action", (animationMixer) => {
     mixers["ceiling_fan"] = animationMixer;
 });
 
-loadPlayer(scene, "casual_male", [0, 0, 0], [3, 3, 3], [0, 90, 0], "Rig|new_man_walk_in_place", (model, mixer) => {
+loadPlayer(scene, "casual_male", [0, 0, 0], [3, 3, 3], [0, 0, 0], (model, mixer, animations) => {
     casualMaleModel = model;
     mixers["casual_male"] = mixer;
+    playerAnimations = animations;
 });
 
 loadModelInterior(scene, "barbell_chair", [0, 0, 50], [10, 10, 10], [0, 90, 0]);
@@ -52,9 +54,9 @@ createBoundingBox(scene, [-2.9, 5.5, 50], [2.7, 2.7, 10.2], [0, 0, 0], worldOctr
 
 loadModelInterior(scene, "treadmill", [10, 0, 50], [9, 9, 9], [0, 90, 0]);
 createBoundingBox(scene, [9.4, 0, 50], [6.8, 2.45, 4], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [13.7, 2.45, 50], [1.8, 7, 4], [0, 0, 0], worldOctree, boundingBox);  
-createBoundingBox(scene, [12, 2.45, 51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);  
-createBoundingBox(scene, [12, 2.45, 48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);  
+createBoundingBox(scene, [13.7, 2.45, 50], [1.8, 7, 4], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [12, 2.45, 51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [12, 2.45, 48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
@@ -67,11 +69,44 @@ function animate() {
 
     // Check if casualMaleModel is assigned before accessing its position
     if (casualMaleModel) {
-        // Update the position of the casual male model to match the camera's position
-        const cameraPosition = camera.position;
-        casualMaleModel.position.copy(cameraPosition);
+        // Get the player's look direction
+        let lookDirection = getPlayerLookDirection();
+
+        // Calculate a position slightly behind the camera in the look direction
+        let modelOffset = new THREE.Vector3(Math.cos(lookDirection), 0, Math.sin(lookDirection));
+        modelOffset.multiplyScalar(getCameraOffset()); // Adjust this value to change the distance behind the camera
+
+        casualMaleModel.position.copy(camera.position);
+        camera.position.add(modelOffset);
         casualMaleModel.position.y -= 5;
-        casualMaleModel.position.x -= 0.4;
+
+        // Rotate the model to face the direction the camera is looking
+        casualMaleModel.rotation.y = -lookDirection + Math.PI / 2;
+        const moveDirection = getMoveDirection()
+
+        // Play the correct animation
+        if (moveDirection == "forward") {
+            playerAnimations["Rig|new_man_idle"].stop();
+            playerAnimations["Rig|new_man_walk_left_in_place"].stop();
+            playerAnimations["Rig|new_man_walk_right_in_place"].stop();
+            playerAnimations["Rig|new_man_walk_in_place"].play();
+        } else if (moveDirection == "left") {
+            playerAnimations["Rig|new_man_idle"].stop();
+            playerAnimations["Rig|new_man_walk_in_place"].stop();
+            playerAnimations["Rig|new_man_walk_right_in_place"].stop();
+            playerAnimations["Rig|new_man_walk_left_in_place"].play();
+        } else if (moveDirection == "right") {
+            playerAnimations["Rig|new_man_idle"].stop();
+            playerAnimations["Rig|new_man_walk_in_place"].stop();
+            playerAnimations["Rig|new_man_walk_left_in_place"].stop();
+            playerAnimations["Rig|new_man_walk_right_in_place"].play();
+        } else {
+            playerAnimations["Rig|new_man_walk_in_place"].stop();
+            playerAnimations["Rig|new_man_walk_left_in_place"].stop();
+            playerAnimations["Rig|new_man_walk_right_in_place"].stop();
+            playerAnimations["Rig|new_man_idle"].play();
+        }
+        
     }
 
     for (const mixerName in mixers) {
@@ -85,4 +120,3 @@ function animate() {
 }
 
 animate();
-console.log(worldOctree);
