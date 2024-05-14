@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { camera, scene } from "./sceneSetup.js";
 import { updateStaminaBar } from './uiSetup.js';
-import { worldOctree, boundingBox } from './main.js';
+import { worldOctree, boundingBox, capsuleMesh } from './main.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import renderer from './sceneSetup.js';
@@ -38,7 +38,7 @@ export const player = {
 }
 
 const cameraOffset = {
-    firstPerson: 0.8,
+    firstPerson: 1,
     thirdPerson: -5
 }
 
@@ -93,6 +93,7 @@ document.addEventListener('keydown', (e) => {
                     box.cube.material.opacity = debug? 0 : 0.5;
                     box.line.material.opacity = debug? 0 : 1;
                 });
+                capsuleMesh.visible = !capsuleMesh.visible;
                 debug = !debug;
                 keys.f = true;
             }
@@ -179,6 +180,9 @@ export function updatePlayer(deltaTime) {
     playerCollisions();
 
     camera.position.copy(playerCollider.end);
+
+    capsuleMesh.position.copy(playerCollider.start);
+    capsuleMesh.position.y += player.height / 2; // Adjust for the fact that CylinderGeometry is centered at its midpoint
 }
 
 function getForwardVector() {

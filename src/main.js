@@ -1,7 +1,7 @@
 // main.js
 import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
-import { updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset } from './controls.js';
+import { updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player} from './controls.js';
 import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer } from './objectLoader.js';
 import { scene, camera } from './sceneSetup.js';
 import renderer from './sceneSetup.js';
@@ -40,7 +40,7 @@ loadModel(scene, "ceiling_fan", [20, 0, 0], [5, 2, 5], [0, 90, 0], "Cylinder.001
     mixers["ceiling_fan"] = animationMixer;
 });
 
-loadPlayer(scene, "casual_male", [0, 0, 0], [3, 3, 3], [0, 0, 0], (model, mixer, animations) => {
+loadPlayer(scene, "casual_male", [0, 0, 0], [player.height*8/11, player.height*8/11, player.height*8/11], [0, 0, 0], (model, mixer, animations) => {
     casualMaleModel = model;
     mixers["casual_male"] = mixer;
     playerAnimations = animations;
@@ -58,6 +58,15 @@ createBoundingBox(scene, [13.7, 2.45, 50], [1.8, 7, 4], [0, 0, 0], worldOctree, 
 createBoundingBox(scene, [12, 2.45, 51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [12, 2.45, 48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 
+createBoundingBox(scene, [1, 8.5, 1], [5, 1, 5], [0, 0, 0], worldOctree, boundingBox)
+
+const geometry = new THREE.CylinderGeometry(player.width/2, player.width/2, player.height+player.width, 32);
+const material = new THREE.MeshBasicMaterial({color: 0xffff00, wireframe: true}); // Yellow, wireframe material
+export const capsuleMesh = new THREE.Mesh(geometry, material);
+capsuleMesh.visible = false;
+scene.add(capsuleMesh);
+
+
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
 
@@ -70,38 +79,50 @@ function animate() {
     // Check if casualMaleModel is assigned before accessing its position
     if (casualMaleModel) {
         // Get the player's look direction
-        let lookDirection = getPlayerLookDirection();
+        const lookDirection = getPlayerLookDirection();
+        const moveDirection = getMoveDirection();
 
         // Calculate a position slightly behind the camera in the look direction
         let modelOffset = new THREE.Vector3(Math.cos(lookDirection), 0, Math.sin(lookDirection));
-        modelOffset.multiplyScalar(getCameraOffset()); // Adjust this value to change the distance behind the camera
+        modelOffset.multiplyScalar(getCameraOffset()+((player.sprintMultiplier!=1 && moveDirection=="forward")?0.5:0));
 
         casualMaleModel.position.copy(camera.position);
         camera.position.add(modelOffset);
-        casualMaleModel.position.y -= 5;
+        camera.position.y += player.height/17;
+        casualMaleModel.position.y -= player.height+player.width/2;
 
         // Rotate the model to face the direction the camera is looking
         casualMaleModel.rotation.y = -lookDirection + Math.PI / 2;
-        const moveDirection = getMoveDirection()
+        
 
         // Play the correct animation
-        if (moveDirection == "forward") {
+        if (moveDirection == "forward" && player.sprintMultiplier!=1) {
             playerAnimations["Rig|new_man_idle"].stop();
+            playerAnimations["Rig|new_man_walk_in_place"].stop();
+            playerAnimations["Rig|new_man_walk_left_in_place"].stop();
+            playerAnimations["Rig|new_man_walk_right_in_place"].stop();
+            playerAnimations["Rig|new_man_run_in_place"].play();
+        } else if (moveDirection == "forward") {
+            playerAnimations["Rig|new_man_idle"].stop();
+            playerAnimations["Rig|new_man_run_in_place"].stop();
             playerAnimations["Rig|new_man_walk_left_in_place"].stop();
             playerAnimations["Rig|new_man_walk_right_in_place"].stop();
             playerAnimations["Rig|new_man_walk_in_place"].play();
         } else if (moveDirection == "left") {
             playerAnimations["Rig|new_man_idle"].stop();
             playerAnimations["Rig|new_man_walk_in_place"].stop();
+            playerAnimations["Rig|new_man_run_in_place"].stop();
             playerAnimations["Rig|new_man_walk_right_in_place"].stop();
             playerAnimations["Rig|new_man_walk_left_in_place"].play();
         } else if (moveDirection == "right") {
             playerAnimations["Rig|new_man_idle"].stop();
             playerAnimations["Rig|new_man_walk_in_place"].stop();
+            playerAnimations["Rig|new_man_run_in_place"].stop();
             playerAnimations["Rig|new_man_walk_left_in_place"].stop();
             playerAnimations["Rig|new_man_walk_right_in_place"].play();
         } else {
             playerAnimations["Rig|new_man_walk_in_place"].stop();
+            playerAnimations["Rig|new_man_run_in_place"].stop();
             playerAnimations["Rig|new_man_walk_left_in_place"].stop();
             playerAnimations["Rig|new_man_walk_right_in_place"].stop();
             playerAnimations["Rig|new_man_idle"].play();
