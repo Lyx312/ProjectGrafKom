@@ -34,12 +34,12 @@ export const player = {
     direction: new THREE.Vector3(),
     onGround: true,
     currentStamina: MAX_STAMINA,
-    thirdPerson: false,
+    viewMode: 0,
 }
 
 const cameraOffset = {
     firstPerson: 1,
-    thirdPerson: -5
+    thirdPerson: -8
 }
 
 let debug = false;
@@ -101,7 +101,8 @@ document.addEventListener('keydown', (e) => {
         case 'KeyP': 
             if (!keys.p) {
                 keys.p = true;
-                player.thirdPerson = !player.thirdPerson;
+                player.viewMode++;
+                player.viewMode%=2;
             }
             break;
     }
@@ -261,6 +262,6 @@ export function getMoveDirection() {
 }
 
 export function getCameraOffset() {
-    if (player.thirdPerson) return cameraOffset.thirdPerson;
-    return cameraOffset.firstPerson;
+    if (player.viewMode == 0) return cameraOffset.firstPerson;
+    return cameraOffset.thirdPerson;
 }
