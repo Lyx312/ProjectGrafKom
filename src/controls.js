@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { camera, scene } from "./sceneSetup.js";
+import { camera } from "./sceneSetup.js";
 import { updateStaminaBar } from './uiSetup.js';
 import { worldOctree, boundingBox, capsuleMesh } from './main.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
@@ -52,7 +52,6 @@ const playerCollider = new Capsule(new THREE.Vector3(0, 0, 0), new THREE.Vector3
 export const controls = new PointerLockControls(camera, renderer.domElement);
 controls.minPolarAngle = 0.001; // radians
 controls.maxPolarAngle = Math.PI - 0.001; // radians
-scene.add(controls.getObject());
 
 document.addEventListener('click', function () {
     controls.lock();
@@ -178,6 +177,8 @@ function playerCollisions() {
     }
 }
 
+// Create these once outside of your render loop
+const deltaPosition = new THREE.Vector3();
 export function updatePlayer(deltaTime) {
     let damping = Math.exp(- 8 * deltaTime) - 1;
 
@@ -190,7 +191,7 @@ export function updatePlayer(deltaTime) {
 
     player.velocity.addScaledVector(player.velocity, damping);
 
-    const deltaPosition = player.velocity.clone().multiplyScalar(deltaTime);
+    deltaPosition.copy(player.velocity).multiplyScalar(deltaTime);
     playerCollider.translate(deltaPosition);
 
     playerCollisions();

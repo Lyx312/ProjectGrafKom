@@ -63,13 +63,13 @@ createBoundingBox(scene, [13.7, 2.45, -50], [1.8, 7, 4], [0, 0, 0], worldOctree,
 createBoundingBox(scene, [12, 2.45, -51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [12, 2.45, -48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 
-createBoundingBox(scene, [28, 7, -28], [1, 5, 78], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [-27, 7, -28], [1, 5, 78], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [8.5, 7, 10], [1, 5, 38], [0, 90, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [-22, 7, 10], [1, 5, 9], [0, 90, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [0.5, 7, -66], [1, 5, 54], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [28, 10, -28], [1, 5, 78], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [-27, 10, -28], [1, 5, 78], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [8.5, 10, 10], [1, 5, 38], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [-22, 10, 10], [1, 5, 9], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [0.5, 10, -66], [1, 5, 54], [0, 90, 0], worldOctree, boundingBox);
 
-//createBoundingBox(scene, [30, player.height+player.width+0.5, 1], [player.width*2, 1, player.width*2], [0, 0, 0], worldOctree, boundingBox)
+createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
 const geometry = new THREE.CylinderGeometry(player.width / 2, player.width / 2, player.height + player.width, 32);
 const material = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }); // Yellow, wireframe material
@@ -77,6 +77,8 @@ export const capsuleMesh = new THREE.Mesh(geometry, material);
 capsuleMesh.visible = false;
 scene.add(capsuleMesh);
 
+let modelOffset = new THREE.Vector3();
+let cameraLookDirectionBack = new THREE.Vector3();
 
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
@@ -94,8 +96,8 @@ function animate() {
         const moveDirection = getMoveDirection();
 
         // Calculate a position slightly behind or in front of the camera in the look direction
-        let modelOffset = new THREE.Vector3(Math.cos(lookDirection), 0, Math.sin(lookDirection));
-        modelOffset.multiplyScalar(getCameraOffset() + ((player.sprintMultiplier != 1 && moveDirection == "forward") ? player.height*0.1 : 0));
+        modelOffset.set(Math.cos(lookDirection), 0, Math.sin(lookDirection));
+        modelOffset.multiplyScalar(getCameraOffset() + ((player.sprintMultiplier != 1 && moveDirection == "forward") ? player.height * 0.1 : 0));
 
         casualMaleModel.position.copy(camera.position);
         casualMaleModel.position.y -= player.height + player.width / 2;
@@ -109,7 +111,6 @@ function animate() {
                 camera.position.add(modelOffset);
                 break;
             case 1: // Third person back view
-                let cameraLookDirectionBack = new THREE.Vector3();
                 controls.getDirection(cameraLookDirectionBack);
                 camera.position.add(cameraLookDirectionBack.multiplyScalar(getCameraOffset()));
                 break;
@@ -118,35 +119,15 @@ function animate() {
 
         // Play the correct animation
         if (moveDirection == "forward" && player.sprintMultiplier != 1) {
-            playerAnimations["Rig|new_man_idle"].stop();
-            playerAnimations["Rig|new_man_walk_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_left_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_right_in_place"].stop();
-            playerAnimations["Rig|new_man_run_in_place"].play();
+            playAnimation("Rig|new_man_run_in_place");
         } else if (moveDirection == "forward") {
-            playerAnimations["Rig|new_man_idle"].stop();
-            playerAnimations["Rig|new_man_run_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_left_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_right_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_in_place"].play();
+            playAnimation("Rig|new_man_walk_in_place");
         } else if (moveDirection == "left") {
-            playerAnimations["Rig|new_man_idle"].stop();
-            playerAnimations["Rig|new_man_walk_in_place"].stop();
-            playerAnimations["Rig|new_man_run_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_right_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_left_in_place"].play();
+            playAnimation("Rig|new_man_walk_left_in_place");
         } else if (moveDirection == "right") {
-            playerAnimations["Rig|new_man_idle"].stop();
-            playerAnimations["Rig|new_man_walk_in_place"].stop();
-            playerAnimations["Rig|new_man_run_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_left_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_right_in_place"].play();
+            playAnimation("Rig|new_man_walk_right_in_place");
         } else {
-            playerAnimations["Rig|new_man_walk_in_place"].stop();
-            playerAnimations["Rig|new_man_run_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_left_in_place"].stop();
-            playerAnimations["Rig|new_man_walk_right_in_place"].stop();
-            playerAnimations["Rig|new_man_idle"].play();
+            playAnimation("Rig|new_man_idle");
         }
 
     }
@@ -166,6 +147,19 @@ function animate() {
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
+}
+
+
+function playAnimation(animationName) {
+    for (let anim in playerAnimations) {
+        if (playerAnimations.hasOwnProperty(anim)) {
+            if (anim === animationName) {
+                playerAnimations[anim].play();
+            } else {
+                playerAnimations[anim].stop();
+            }
+        }
+    }
 }
 
 animate();
