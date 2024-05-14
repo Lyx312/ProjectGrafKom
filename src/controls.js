@@ -16,6 +16,7 @@ const keys = {
     c: false,
     f: false,
     p: false,
+    e: false,
 };
 
 const MAX_STAMINA = 100;
@@ -107,6 +108,9 @@ document.addEventListener('keydown', (e) => {
                 player.viewMode%=2;
             }
             break;
+        case 'KeyE':
+            keys.e = true;
+            break;
     }
 });
 
@@ -147,8 +151,17 @@ document.addEventListener('keyup', (e) => {
         case 'KeyP': 
             keys.p = false;
             break;
+        case 'KeyE':
+            keys.e = false;
+            break;
     }
 });
+
+function vectorsApproximatelyEqual(vec1, vec2, tolerance = 5) {
+    return Math.abs(vec1.x - vec2.x) < tolerance &&
+           Math.abs(vec1.y - vec2.y) < tolerance &&
+           Math.abs(vec1.z - vec2.z) < tolerance;
+}
 
 function playerCollisions() {
     const result = worldOctree.capsuleIntersect(playerCollider);
@@ -181,6 +194,12 @@ export function updatePlayer(deltaTime) {
     playerCollider.translate(deltaPosition);
 
     playerCollisions();
+
+    if (vectorsApproximatelyEqual(playerCollider.end, new THREE.Vector3(-13, 7, 15))) {
+        playerCollider.end.set(0,7,0);
+        playerCollider.start.set(0,1,0)
+        camera.rotation.set(0,0,0);
+    }
 
     camera.position.copy(playerCollider.end);
 
@@ -226,6 +245,10 @@ export function playerControls(deltaTime) {
         if (keys.space) {
             player.velocity.y = player.jumpStrength;
         }
+    }
+    if (keys.e) {
+        //console.log(camera.rotation)
+        camera.rotation.set(1.5,0,0)
     }
 }
 

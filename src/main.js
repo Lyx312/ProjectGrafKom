@@ -13,6 +13,7 @@ const clock = new THREE.Clock();
 let casualMaleModel;
 const mixers = {};
 let playerAnimations;
+let fanModel = {};
 
 // Set up the ground
 const textureLoader = new THREE.TextureLoader();
@@ -34,14 +35,14 @@ worldOctree.fromGraphNode(ground);
 // loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
 // createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
 
-loadModel(scene, "carpet_tile", [0, 0.1, -30], [0.1, 0.1, 0.1], [0, 90, 0]);
+loadModelInterior(scene, "new_room", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
 
-loadModel(scene, "ceiling_fan", [0, 11, -45], [10, 2, 10], [0, 90, 0], "Cylinder.001Action", (animationMixer) => {
-    mixers["ceiling_fan_1"] = animationMixer;
+loadModel(scene, "ceiling_fan", [0, 11, -5], [10, 2, 10], [0, 90, 0], function(mixer) {
+    fanModel["one"] = mixer.getRoot();
 });
 
-loadModel(scene, "ceiling_fan", [0, 11, -75], [10, 2, 10], [0, 90, 0], "Cylinder.001Action", (animationMixer) => {
-    mixers["ceiling_fan_2"] = animationMixer;
+loadModel(scene, "ceiling_fan", [0, 11, -45], [10, 2, 10], [0, 90, 0], function(mixer) {
+    fanModel["two"] = mixer.getRoot();
 });
 
 loadPlayer(scene, "casual_male", [0, 0, 0], [player.height * 0.72, player.height * 0.72, player.height * 0.72], [0, 0, 0], (model, mixer, animations) => {
@@ -62,7 +63,13 @@ createBoundingBox(scene, [13.7, 2.45, -50], [1.8, 7, 4], [0, 0, 0], worldOctree,
 createBoundingBox(scene, [12, 2.45, -51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [12, 2.45, -48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 
-createBoundingBox(scene, [30, player.height+player.width+0.5, 1], [player.width*2, 1, player.width*2], [0, 0, 0], worldOctree, boundingBox)
+createBoundingBox(scene, [28, 7, -28], [1, 5, 78], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [-27, 7, -28], [1, 5, 78], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [8.5, 7, 10], [1, 5, 38], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [-22, 7, 10], [1, 5, 9], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [0.5, 7, -66], [1, 5, 54], [0, 90, 0], worldOctree, boundingBox);
+
+//createBoundingBox(scene, [30, player.height+player.width+0.5, 1], [player.width*2, 1, player.width*2], [0, 0, 0], worldOctree, boundingBox)
 
 const geometry = new THREE.CylinderGeometry(player.width / 2, player.width / 2, player.height + player.width, 32);
 const material = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }); // Yellow, wireframe material
@@ -142,6 +149,13 @@ function animate() {
             playerAnimations["Rig|new_man_idle"].play();
         }
 
+    }
+
+    for (const fanName in fanModel) {
+        if (fanModel.hasOwnProperty(fanName)) {
+            // Rotate the fan model on the x-axis
+            fanModel[fanName].rotation.y += deltaTime * 10; // Adjust the speed of rotation as needed
+        }
     }
 
     for (const mixerName in mixers) {

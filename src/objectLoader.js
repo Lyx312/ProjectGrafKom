@@ -31,7 +31,7 @@ export function loadObject(scene, fileName, position, scale, rotation) {
 }
 
 // Load the model
-export function loadModel(scene, folder, position, scale, rotation, animationName, callback) {
+export function loadModel(scene, folder, position, scale, rotation, callback) { // Remove animationName parameter
     const loader = new GLTFLoader();
     loader.load(
         `${MODEL_PATH}${folder}/scene.gltf`,
@@ -43,9 +43,9 @@ export function loadModel(scene, folder, position, scale, rotation, animationNam
             if (gltf.animations && gltf.animations.length > 0) {
                 const mixer = new THREE.AnimationMixer(model);
                 gltf.animations.forEach((clip) => {
-                    if (clip.name === animationName) {
-                        mixer.clipAction(clip).play();
-                    }
+                    // Removed the animationName condition
+
+                    mixer.clipAction(clip).play();
                 });
 
                 // Pass the mixer to the callback function
