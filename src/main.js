@@ -40,7 +40,7 @@ loadModel(scene, "ceiling_fan", [20, 0, 0], [5, 2, 5], [0, 90, 0], "Cylinder.001
     mixers["ceiling_fan"] = animationMixer;
 });
 
-loadPlayer(scene, "casual_male", [0, 0, 0], [player.height * 8 / 11, player.height * 8 / 11, player.height * 8 / 11], [0, 0, 0], (model, mixer, animations) => {
+loadPlayer(scene, "casual_male", [0, 0, 0], [player.height * 0.72, player.height * 0.72, player.height * 0.72], [0, 0, 0], (model, mixer, animations) => {
     casualMaleModel = model;
     mixers["casual_male"] = mixer;
     playerAnimations = animations;
@@ -58,7 +58,7 @@ createBoundingBox(scene, [13.7, 2.45, 50], [1.8, 7, 4], [0, 0, 0], worldOctree, 
 createBoundingBox(scene, [12, 2.45, 51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [12, 2.45, 48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 
-createBoundingBox(scene, [1, 8.5, 1], [5, 1, 5], [0, 0, 0], worldOctree, boundingBox)
+createBoundingBox(scene, [30, player.height+player.width+0.5, 1], [player.width*2, 1, player.width*2], [0, 0, 0], worldOctree, boundingBox)
 
 const geometry = new THREE.CylinderGeometry(player.width / 2, player.width / 2, player.height + player.width, 32);
 const material = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }); // Yellow, wireframe material
@@ -84,7 +84,7 @@ function animate() {
 
         // Calculate a position slightly behind or in front of the camera in the look direction
         let modelOffset = new THREE.Vector3(Math.cos(lookDirection), 0, Math.sin(lookDirection));
-        modelOffset.multiplyScalar(getCameraOffset() + ((player.sprintMultiplier != 1 && moveDirection == "forward") ? 0.5 : 0));
+        modelOffset.multiplyScalar(getCameraOffset() + ((player.sprintMultiplier != 1 && moveDirection == "forward") ? player.height*0.1 : 0));
 
         casualMaleModel.position.copy(camera.position);
         casualMaleModel.position.y -= player.height + player.width / 2;
