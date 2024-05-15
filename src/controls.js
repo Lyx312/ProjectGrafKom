@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { camera } from "./sceneSetup.js";
+import { camera, scene } from "./sceneSetup.js";
 import { updateStaminaBar } from './uiSetup.js';
-import { worldOctree, boundingBox, capsuleMesh } from './main.js';
+import { worldOctree, boundingBox, capsuleMesh, interactibles } from './main.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import renderer from './sceneSetup.js';
@@ -208,25 +208,17 @@ export function updatePlayer(deltaTime) {
 
     if (!player.cheat) playerCollisions();
 
-    // if (vectorsApproximatelyEqual(playerCollider.end, new THREE.Vector3(-13, 7, 15)) && keys.e) {
-    //     playerCollider.end.set(0,7,0);
-    //     playerCollider.start.set(0,1,0)
-    //     camera.rotation.set(0,0,0);
-    // }
-    if (vectorsApproximatelyEqual(playerCollider.end, new THREE.Vector3(-10, 0, -40)) && keys.e) {
-        // playerCollider.end.set(0,7,0);
-        // playerCollider.start.set(0,1,0)
-        camera.rotation.set(1.5,0,0);
+    if (keys.e && vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position, 5)) {
+        console.log(interactibles["door"].model.position);
+        interactibles["door"].model.rotation.set(0, Math.PI, 0);
     }
-    // if (keys.e) {
-    //     playerCollider.end.set(0,7,30);
-    //     playerCollider.start.set(0,1,30)
-    //     //camera.rotation.set(0,0,0);
-    // }
+
     camera.position.copy(playerCollider.end);
 
-    capsuleMesh.position.copy(playerCollider.start);
-    capsuleMesh.position.y += player.height / 2; // Adjust for the fact that CylinderGeometry is centered at its midpoint
+    if (!player.cheat) {
+        capsuleMesh.position.copy(playerCollider.start);
+        capsuleMesh.position.y += player.height / 2; // Adjust for the fact that CylinderGeometry is centered at its midpoint
+    }
 }
 
 function getForwardVector() {
@@ -270,10 +262,6 @@ export function playerControls(deltaTime) {
         if (keys.shift && player.cheat) {
             player.velocity.y = - player.jumpStrength / 1 * player.crouchMultiplier;
         }
-    }
-    if (keys.e) {
-        //console.log(camera.rotation)
-        //camera.rotation.set(1.5,0,0)
     }
 }
 

@@ -15,6 +15,8 @@ const mixers = {};
 let playerAnimations;
 let fanModel = {};
 
+export const interactibles = {};
+
 // Set up the ground
 const textureLoader = new THREE.TextureLoader();
 const groundTexture = textureLoader.load('./assets/images/road.jpg');
@@ -37,7 +39,7 @@ worldOctree.fromGraphNode(ground);
 
 loadModelInterior(scene, "new_room_2", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
 
-loadModelInterior(scene, "door", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
+loadModelInterior(scene, "door", [0, 0.1, -30], [1, 1, 1], [90, 90, 0], interactibles, [-13, 7, 11]);
 
 loadModelInterior(scene, "yoga_mat", [20, 0.1, 0], [3, 3, 3], [0, 90, 0]);
 

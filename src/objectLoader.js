@@ -62,7 +62,7 @@ export function loadModel(scene, folder, position, scale, rotation, callback) { 
     );
 }
 
-export function loadModelInterior(scene, file, position, scale, rotation) {
+export function loadModelInterior(scene, file, position, scale, rotation, interactibles, worldPosition) {
     const loader = new GLTFLoader();
     loader.load(
         `${MODEL_PATH}individual_equipments/${file}.glb`,
@@ -70,6 +70,12 @@ export function loadModelInterior(scene, file, position, scale, rotation) {
             const model = gltf.scene;
             setPositionScaleRotation(model, position, scale, rotation);
             scene.add(model);
+
+            if (interactibles && worldPosition) {
+                interactibles[file] = {}
+                interactibles[file].position = new THREE.Vector3(...worldPosition);
+                interactibles[file].model = model;
+            }
         },
         undefined,
         function (error) {
