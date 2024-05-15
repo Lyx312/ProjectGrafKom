@@ -27,6 +27,8 @@ staText.style.top = '215px';
 staText.style.left = '12px';
 staText.style.fontWeight = 'bold';
 staText.style.fontSize = '10px';
+staText.style.color = 'red';
+//staText.style.textShadow = '0 0 2px white';
 document.body.appendChild(staText);
 
 export const updateStaminaBar = (percentage) => {

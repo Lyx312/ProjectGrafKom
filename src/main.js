@@ -17,7 +17,7 @@ let fanModel = {};
 
 // Set up the ground
 const textureLoader = new THREE.TextureLoader();
-const groundTexture = textureLoader.load('./assets/images/bricks.png');
+const groundTexture = textureLoader.load('./assets/images/road.jpg');
 groundTexture.wrapS = THREE.RepeatWrapping;
 groundTexture.wrapT = THREE.RepeatWrapping;
 groundTexture.repeat.set(100, 100);
@@ -35,13 +35,21 @@ worldOctree.fromGraphNode(ground);
 // loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
 // createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(scene, "new_room", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
+loadModelInterior(scene, "new_room_2", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
 
-loadModel(scene, "ceiling_fan", [0, 11, -5], [10, 2, 10], [0, 90, 0], function(mixer) {
+loadModelInterior(scene, "door", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
+
+loadModelInterior(scene, "yoga_mat", [20, 0.1, 0], [3, 3, 3], [0, 90, 0]);
+
+loadModelInterior(scene, "gym_decoration_1", [-32, 0.1, -28], [9, 9, 9], [0, 90, 0]);
+
+loadModelInterior(scene, "gym_decoration_2", [28.5, 3, -28], [9, 9, 9], [0, -90, 0]);
+
+loadModel(scene, "ceiling_fan", [0, 11, -10], [10, 2.8, 10], [0, 90, 0], function(mixer) {
     fanModel["one"] = mixer.getRoot();
 });
 
-loadModel(scene, "ceiling_fan", [0, 11, -45], [10, 2, 10], [0, 90, 0], function(mixer) {
+loadModel(scene, "ceiling_fan", [0, 11, -45], [10, 2.8, 10], [0, 90, 0], function(mixer) {
     fanModel["two"] = mixer.getRoot();
 });
 
@@ -63,13 +71,13 @@ createBoundingBox(scene, [13.7, 2.45, -50], [1.8, 7, 4], [0, 0, 0], worldOctree,
 createBoundingBox(scene, [12, 2.45, -51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [12, 2.45, -48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 
-createBoundingBox(scene, [28, 10, -28], [1, 5, 78], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [-27, 10, -28], [1, 5, 78], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [8.5, 10, 10], [1, 5, 38], [0, 90, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [-22, 10, 10], [1, 5, 9], [0, 90, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [0.5, 10, -66], [1, 5, 54], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [30, 7, -27.5], [3, 5, 80], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [-28, 7, -28], [3, 5, 80], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [9, 7, 11.5], [2.5, 5, 39.5], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 5, 12], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 5, 57], [0, 90, 0], worldOctree, boundingBox);
 
-createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
+//createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
 const geometry = new THREE.CylinderGeometry(player.width / 2, player.width / 2, player.height + player.width, 32);
 const material = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }); // Yellow, wireframe material
