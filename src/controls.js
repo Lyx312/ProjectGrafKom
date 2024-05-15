@@ -188,7 +188,7 @@ function playerCollisions() {
         playerCollider.translate(result.normal.multiplyScalar(result.depth));
     }
 }
-
+let doorOpen = false;
 // Create these once outside of your render loop
 const deltaPosition = new THREE.Vector3();
 export function updatePlayer(deltaTime) {
@@ -208,9 +208,14 @@ export function updatePlayer(deltaTime) {
 
     if (!player.cheat) playerCollisions();
 
-    if (keys.e && vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position, 5)) {
+    if (!doorOpen && keys.e && vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position, 5)) {
         console.log(interactibles["door"].model.position);
         interactibles["door"].model.rotation.set(0, Math.PI, 0);
+        doorOpen = true;
+    }
+    else if(doorOpen && keys.e && vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position, 5)) {
+        interactibles["door"].model.rotation.set(0, 90, 0);
+        doorOpen = false;
     }
 
     camera.position.copy(playerCollider.end);
