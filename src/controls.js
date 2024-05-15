@@ -168,7 +168,7 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
-function vectorsApproximatelyEqual(vec1, vec2, tolerance = 5) {
+function vectorsApproximatelyEqual(vec1, vec2, tolerance = 10) {
     return Math.abs(vec1.x - vec2.x) < tolerance &&
            Math.abs(vec1.y - vec2.y) < tolerance &&
            Math.abs(vec1.z - vec2.z) < tolerance;
@@ -208,12 +208,21 @@ export function updatePlayer(deltaTime) {
 
     if (!player.cheat) playerCollisions();
 
-    if (vectorsApproximatelyEqual(playerCollider.end, new THREE.Vector3(-13, 7, 15))) {
-        playerCollider.end.set(0,7,0);
-        playerCollider.start.set(0,1,0)
-        camera.rotation.set(0,0,0);
+    // if (vectorsApproximatelyEqual(playerCollider.end, new THREE.Vector3(-13, 7, 15)) && keys.e) {
+    //     playerCollider.end.set(0,7,0);
+    //     playerCollider.start.set(0,1,0)
+    //     camera.rotation.set(0,0,0);
+    // }
+    if (vectorsApproximatelyEqual(playerCollider.end, new THREE.Vector3(-10, 0, -40)) && keys.e) {
+        // playerCollider.end.set(0,7,0);
+        // playerCollider.start.set(0,1,0)
+        camera.rotation.set(1.5,0,0);
     }
-
+    // if (keys.e) {
+    //     playerCollider.end.set(0,7,30);
+    //     playerCollider.start.set(0,1,30)
+    //     //camera.rotation.set(0,0,0);
+    // }
     camera.position.copy(playerCollider.end);
 
     capsuleMesh.position.copy(playerCollider.start);
@@ -264,7 +273,7 @@ export function playerControls(deltaTime) {
     }
     if (keys.e) {
         //console.log(camera.rotation)
-        camera.rotation.set(1.5,0,0)
+        //camera.rotation.set(1.5,0,0)
     }
 }
 
