@@ -91,41 +91,46 @@ function animate() {
 
     // Check if casualMaleModel is assigned before accessing its position
     if (casualMaleModel) {
-        // Get the player's look direction
-        const lookDirection = getPlayerLookDirection();
-        const moveDirection = getMoveDirection();
+        if (!player.cheat) {
 
-        // Calculate a position slightly behind or in front of the camera in the look direction
-        modelOffset.set(Math.cos(lookDirection), 0, Math.sin(lookDirection));
-        modelOffset.multiplyScalar(getCameraOffset() + ((player.sprintMultiplier != 1 && moveDirection == "forward") ? player.height * 0.1 : 0));
-
-        casualMaleModel.position.copy(camera.position);
-        casualMaleModel.position.y -= player.height + player.width / 2;
-
-        // Rotate the model to face the direction the camera is looking
-        casualMaleModel.rotation.y = -lookDirection + Math.PI / 2;
-
-        // Adjust the camera position based on the view mode
-        switch (player.viewMode) {
-            case 0: // First person view
-                camera.position.add(modelOffset);
-                break;
-            case 1: // Third person back view
-                controls.getDirection(cameraLookDirectionBack);
-                camera.position.add(cameraLookDirectionBack.multiplyScalar(getCameraOffset()));
-                break;
-        }
-        camera.position.y += player.height / 17;
-
-        // Play the correct animation
-        if (moveDirection == "forward" && player.sprintMultiplier != 1) {
-            playAnimation("Rig|new_man_run_in_place");
-        } else if (moveDirection == "forward") {
-            playAnimation("Rig|new_man_walk_in_place");
-        } else if (moveDirection == "left") {
-            playAnimation("Rig|new_man_walk_left_in_place");
-        } else if (moveDirection == "right") {
-            playAnimation("Rig|new_man_walk_right_in_place");
+            // Get the player's look direction
+            const lookDirection = getPlayerLookDirection();
+            const moveDirection = getMoveDirection();
+    
+            // Calculate a position slightly behind or in front of the camera in the look direction
+            modelOffset.set(Math.cos(lookDirection), 0, Math.sin(lookDirection));
+            modelOffset.multiplyScalar(getCameraOffset() + ((player.sprintMultiplier != 1 && moveDirection == "forward") ? player.height * 0.1 : 0));
+    
+            casualMaleModel.position.copy(camera.position);
+            casualMaleModel.position.y -= player.height + player.width / 2;
+    
+            // Rotate the model to face the direction the camera is looking
+            casualMaleModel.rotation.y = -lookDirection + Math.PI / 2;
+    
+            // Adjust the camera position based on the view mode
+            switch (player.viewMode) {
+                case 0: // First person view
+                    camera.position.add(modelOffset);
+                    break;
+                case 1: // Third person back view
+                    controls.getDirection(cameraLookDirectionBack);
+                    camera.position.add(cameraLookDirectionBack.multiplyScalar(getCameraOffset()));
+                    break;
+            }
+            camera.position.y += player.height / 17;
+    
+            // Play the correct animation
+            if (moveDirection == "forward" && player.sprintMultiplier != 1) {
+                playAnimation("Rig|new_man_run_in_place");
+            } else if (moveDirection == "forward") {
+                playAnimation("Rig|new_man_walk_in_place");
+            } else if (moveDirection == "left") {
+                playAnimation("Rig|new_man_walk_left_in_place");
+            } else if (moveDirection == "right") {
+                playAnimation("Rig|new_man_walk_right_in_place");
+            } else {
+                playAnimation("Rig|new_man_idle");
+            }
         } else {
             playAnimation("Rig|new_man_idle");
         }

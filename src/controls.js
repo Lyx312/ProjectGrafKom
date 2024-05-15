@@ -17,6 +17,8 @@ const keys = {
     f: false,
     p: false,
     e: false,
+    o: false,
+    ctrl: false,
 };
 
 const MAX_STAMINA = 100;
@@ -38,6 +40,7 @@ export const player = {
     onGround: true,
     currentStamina: MAX_STAMINA,
     viewMode: 0,
+    cheat: false,
 }
 
 const cameraOffset = {
@@ -110,6 +113,12 @@ document.addEventListener('keydown', (e) => {
         case 'KeyE':
             keys.e = true;
             break;
+        case 'KeyO': 
+            if (!keys.o) {
+                keys.o = true;
+                player.cheat = !player.cheat;
+            }
+            break;
     }
 });
 
@@ -153,6 +162,9 @@ document.addEventListener('keyup', (e) => {
         case 'KeyE':
             keys.e = false;
             break;
+        case 'KeyO':
+            keys.o = false;
+            break;
     }
 });
 
@@ -182,7 +194,7 @@ const deltaPosition = new THREE.Vector3();
 export function updatePlayer(deltaTime) {
     let damping = Math.exp(- 8 * deltaTime) - 1;
 
-    if (!player.onGround) {
+    if (!player.onGround && !player.cheat) {
         player.velocity.y -= GRAVITY * deltaTime;
 
         // small air resistance
@@ -194,7 +206,7 @@ export function updatePlayer(deltaTime) {
     deltaPosition.copy(player.velocity).multiplyScalar(deltaTime);
     playerCollider.translate(deltaPosition);
 
-    playerCollisions();
+    if (!player.cheat) playerCollisions();
 
     if (vectorsApproximatelyEqual(playerCollider.end, new THREE.Vector3(-13, 7, 15))) {
         playerCollider.end.set(0,7,0);
@@ -228,23 +240,26 @@ function getSideVector() {
 export function playerControls(deltaTime) {
 
     // gives a bit of air control
-    const speedDelta = deltaTime * player.sprintMultiplier * player.crouchMultiplier * (player.onGround ? player.baseSpeed : player.baseSpeed/3);
+    const speedDelta = deltaTime * player.sprintMultiplier * player.crouchMultiplier * ((player.onGround || player.cheat)? player.baseSpeed : player.baseSpeed/3);
 
     if (keys.w) {
-        player.velocity.add(getForwardVector().multiplyScalar(speedDelta));
+        player.velocity.add(getForwardVector().multiplyScalar(speedDelta * (player.cheat?3/player.sprintMultiplier:1)));
     }
     if (keys.s) {
-        player.velocity.add(getForwardVector().multiplyScalar(- speedDelta));
+        player.velocity.add(getForwardVector().multiplyScalar(- speedDelta * (player.cheat?3/player.sprintMultiplier:1) ));
     }
     if (keys.a) {
-        player.velocity.add(getSideVector().multiplyScalar(- speedDelta));
+        player.velocity.add(getSideVector().multiplyScalar(- speedDelta * (player.cheat?3/player.sprintMultiplier:1)));
     }
     if (keys.d) {
-        player.velocity.add(getSideVector().multiplyScalar(speedDelta));
+        player.velocity.add(getSideVector().multiplyScalar(speedDelta * (player.cheat?3/player.sprintMultiplier:1)));
     }
-    if (player.onGround) {
+    if (player.onGround || player.cheat) {
         if (keys.space) {
-            player.velocity.y = player.jumpStrength;
+            player.velocity.y = (player.cheat? player.jumpStrength / 1 * player.crouchMultiplier  : player.jumpStrength);
+        }
+        if (keys.shift && player.cheat) {
+            player.velocity.y = - player.jumpStrength / 1 * player.crouchMultiplier;
         }
     }
     if (keys.e) {
@@ -255,7 +270,7 @@ export function playerControls(deltaTime) {
 
 
 export function updateStamina() {
-    if (keys.shift && (keys.w || keys.a || keys.s || keys.d)) {
+    if (!player.cheat && keys.shift && (keys.w || keys.a || keys.s || keys.d)) {
         if (player.currentStamina > 0) {
             player.currentStamina -= 0.5;
         } else {
