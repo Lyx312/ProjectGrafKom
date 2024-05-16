@@ -26,7 +26,7 @@ let ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 // Add a directional light
-const directionalLight = new THREE.DirectionalLight(0x00ff00, 2.5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
 directionalLight.position.set(0, 9, 1);
 directionalLight.castShadow = true;
 directionalLight.shadow.camera.near = 0.01;
