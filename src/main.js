@@ -43,11 +43,17 @@ loadModelInterior(scene, "new_room_2", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
 loadModelInterior(scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [0, 90, 0], interactibles, [-12, 9, 12])
 // createBoundingBox(scene, [-14, 7, 11.5], [2.5, 13, 6.5], [0, 90, 0], worldOctree, boundingBox)
 
-loadModelInterior(scene, "yoga_mat", [20, 0.5, 0], [3, 3, 3], [0, 90, 0]);
+loadModelInterior(scene, "yoga_mat", [20, 0.1, 0], [3, 3, 3], [0, 90, 0]);
 
-loadModelInterior(scene, "gym_decoration_1", [-32, 0.1, -28], [9, 9, 9], [0, 90, 0]);
+loadModelInterior(scene, "gym_decoration_1_v2", [-24, 0.1, -29], [11, 11, 11], [0, 90, 0]);
+
+loadModelInterior(scene, "punching_bag_1", [-20.035, 0.1, 1.2], [11, 11, 11], [0, 90, 0]);
+
+loadModelInterior(scene, "punching_bag_2", [-19.69, 0.1, -13.2], [11, 11, 11], [0, 90, 0]);
 
 loadModelInterior(scene, "gym_decoration_2", [28.5, 3, -28], [9, 9, 9], [0, -90, 0]);
+
+loadModelInterior(scene, "gym_decoration_3", [-10, 0.1, -50], [10, 10, 10], [0, 90, 0]);
 
 loadModel(scene, "ceiling_fan", [0, 11, -10], [10, 2.8, 10], [0, 90, 0], function(mixer) {
     fanModel["one"] = mixer.getRoot();
@@ -69,9 +75,9 @@ createBoundingBox(scene, [-10.13, 0.5, -40.15], [7, 4.6, 2.9], [0, 0, 0], worldO
 loadModelInterior(scene, "barbells", [-10, 0, -40], [10, 10, 10], [0, 90, 0]);
 createBoundingBox(scene, [-12.9, 5.5, -40], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(scene, "treadmill", [10, 0, -50], [9, 9, 9], [0, 90, 0]);
+loadModelInterior(scene, "treadmill", [10, 0, -50], [10, 10, 10], [0, 90, 0]);
 createBoundingBox(scene, [9.4, 0, -50], [6.8, 2.45, 4], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [13.7, 2.45, -50], [1.8, 7, 4], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [14, 2.45, -50], [2, 8.3, 4], [0, 0, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [12, 2.45, -51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [12, 2.45, -48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 
