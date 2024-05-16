@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { camera, scene } from "./sceneSetup.js";
-import { updateStaminaBar } from './uiSetup.js';
+import { updateStaminaBar, showInteractables, hideInteractables } from './uiSetup.js';
 import { worldOctree, boundingBox, capsuleMesh, interactibles } from './main.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
@@ -207,6 +207,14 @@ export function updatePlayer(deltaTime) {
     playerCollider.translate(deltaPosition);
 
     if (!player.cheat) playerCollisions();
+    if(interactibles["door"] != undefined){
+        if (vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position)) {
+            showInteractables('E');
+        }
+        else {
+            hideInteractables();
+        }
+    }
 
     if (keys.e && vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position) && !interactibles["door"].isAnimating) {
         interactibles["door"].isAnimating = true;
