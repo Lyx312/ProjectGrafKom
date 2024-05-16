@@ -18,6 +18,18 @@ function setPositionScaleRotation(object, position, scale, rotation) {
     object.rotation.set(...rotation.map(deg => deg * Math.PI / 180));
 }
 
+function addShadow(gltf) {
+    gltf.scene.traverse(child => {
+        if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            if (child.material.map) {
+                child.material.map.anisotropy = 4;
+            }
+        }
+    });
+}
+
 export function loadObject(scene, fileName, position, scale, rotation) {
     const mtlLoader = new MTLLoader();
     mtlLoader.load(`${MTL_PATH}${fileName}.mtl`, function (materials) {
@@ -39,6 +51,7 @@ export function loadModel(scene, folder, position, scale, rotation, callback) {
         function (gltf) {
             const model = gltf.scene;
             setPositionScaleRotation(model, position, scale, rotation);
+            addShadow(gltf);
             scene.add(model);
 
             if (gltf.animations && gltf.animations.length > 0) {
@@ -67,6 +80,7 @@ export function loadModelInterior(scene, file, position, scale, rotation, intera
         function (gltf) {
             const model = gltf.scene;
             setPositionScaleRotation(model, position, scale, rotation);
+            addShadow(gltf);
             scene.add(model);
 
             if (interactibles && worldPosition) {

@@ -6,6 +6,7 @@ export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
 
 let resizeTimeout;
@@ -25,8 +26,19 @@ let ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 // Add a directional light
-let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-directionalLight.position.set(1, 1, 1);
+const directionalLight = new THREE.DirectionalLight(0x00ff00, 2.5);
+directionalLight.position.set(0, 9, 1);
+directionalLight.castShadow = true;
+directionalLight.shadow.camera.near = 0.01;
+directionalLight.shadow.camera.far = 100;
+directionalLight.shadow.camera.right = 50;
+directionalLight.shadow.camera.left = -30;
+directionalLight.shadow.camera.top = 50;
+directionalLight.shadow.camera.bottom = -30;
+directionalLight.shadow.mapSize.width = 1024;
+directionalLight.shadow.mapSize.height = 1024;
+directionalLight.shadow.radius = 4;
+directionalLight.shadow.bias = - 0.00006;
 scene.add(directionalLight);
 
 export default renderer;
@@ -43,7 +55,7 @@ export function updateBackground(clock) {
     let elapsedTime = clock.getElapsedTime();
 
     // Calculate the current hour (we assume that every second in real time is an hour in the simulation)
-    let currentHour = ( elapsedTime + 60 ) % 240;
+    let currentHour = (elapsedTime + 60) % 240;
 
     // Create a new color object to store the interpolated color
     let currentColor = new THREE.Color();

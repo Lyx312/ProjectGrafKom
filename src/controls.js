@@ -208,7 +208,7 @@ export function updatePlayer(deltaTime) {
 
     if (!player.cheat) playerCollisions();
     if(interactibles["door"] != undefined){
-        if (vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position)) {
+        if (vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position) && !interactibles["door"].isAnimating) {
             showInteractables('E');
         }
         else {
