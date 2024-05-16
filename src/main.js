@@ -3,8 +3,9 @@ import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player } from './controls.js';
 import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer } from './objectLoader.js';
-import { scene, camera } from './sceneSetup.js';
+import { scene, camera, updateBackground } from './sceneSetup.js';
 import renderer from './sceneSetup.js';
+import { doorAnimation } from './objectAnimation.js';
 
 export const worldOctree = new Octree();
 export const boundingBox = [];
@@ -22,10 +23,10 @@ const textureLoader = new THREE.TextureLoader();
 const groundTexture = textureLoader.load('./assets/images/road.jpg');
 groundTexture.wrapS = THREE.RepeatWrapping;
 groundTexture.wrapT = THREE.RepeatWrapping;
-groundTexture.repeat.set(100, 100);
+groundTexture.repeat.set(25, 25);
 
 const groundMaterial = new THREE.MeshBasicMaterial({ map: groundTexture });
-const groundGeometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
+const groundGeometry = new THREE.PlaneGeometry(1000, 1000, 100, 100);
 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
@@ -39,7 +40,8 @@ worldOctree.fromGraphNode(ground);
 
 loadModelInterior(scene, "new_room_2", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
 
-loadModelInterior(scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [0, 90, 0], interactibles, [-13, 7, 11]);
+loadModelInterior(scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [0, 90, 0], interactibles, [-12, 9, 12])
+// createBoundingBox(scene, [-14, 7, 11.5], [2.5, 13, 6.5], [0, 90, 0], worldOctree, boundingBox)
 
 loadModelInterior(scene, "yoga_mat", [20, 0.5, 0], [3, 3, 3], [0, 90, 0]);
 
@@ -73,11 +75,11 @@ createBoundingBox(scene, [13.7, 2.45, -50], [1.8, 7, 4], [0, 0, 0], worldOctree,
 createBoundingBox(scene, [12, 2.45, -51.7], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [12, 2.45, -48.3], [5, 6, 0.4], [0, 0, 0], worldOctree, boundingBox);
 
-createBoundingBox(scene, [30, 7, -27.5], [3, 5, 80], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [-28, 7, -28], [3, 5, 80], [0, 0, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [9, 7, 11.5], [2.5, 5, 39.5], [0, 90, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 5, 12], [0, 90, 0], worldOctree, boundingBox);
-createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 5, 57], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [30, 7, -27.5], [3, 8, 80], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [-28, 7, -28], [3, 8, 80], [0, 0, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [9, 7, 11.5], [2.5, 8, 39.5], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 8, 12], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 8, 57], [0, 90, 0], worldOctree, boundingBox);
 
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
@@ -92,6 +94,8 @@ let cameraLookDirectionBack = new THREE.Vector3();
 
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
+    
+    updateBackground(clock);
 
     playerControls(deltaTime);
 
@@ -159,6 +163,8 @@ function animate() {
             mixers[mixerName].update(deltaTime);
         }
     }
+
+    doorAnimation(interactibles);
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);

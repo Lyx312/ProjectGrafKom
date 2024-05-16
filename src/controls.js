@@ -24,7 +24,7 @@ const keys = {
 const MAX_STAMINA = 100;
 const SPRINT_MULTIPLIER = 2;
 const CROUCH_MULTIPLIER = 0.5;
-const PLAYER_SIZE = 1;
+const PLAYER_SIZE = 1.3;
 const GRAVITY = PLAYER_SIZE*120;
 
 export const player = {
@@ -188,7 +188,7 @@ function playerCollisions() {
         playerCollider.translate(result.normal.multiplyScalar(result.depth));
     }
 }
-let doorOpen = false;
+
 // Create these once outside of your render loop
 const deltaPosition = new THREE.Vector3();
 export function updatePlayer(deltaTime) {
@@ -208,14 +208,8 @@ export function updatePlayer(deltaTime) {
 
     if (!player.cheat) playerCollisions();
 
-    if (!doorOpen && keys.e && vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position, 5)) {
-        console.log(interactibles["door"].model.position);
-        interactibles["door"].model.rotation.set(0, Math.PI, 0);
-        doorOpen = true;
-    }
-    else if(doorOpen && keys.e && vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position, 5)) {
-        interactibles["door"].model.rotation.set(0, 90, 0);
-        doorOpen = false;
+    if (keys.e && vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position) && !interactibles["door"].isAnimating) {
+        interactibles["door"].isAnimating = true;
     }
 
     camera.position.copy(playerCollider.end);
@@ -224,6 +218,8 @@ export function updatePlayer(deltaTime) {
         capsuleMesh.position.copy(playerCollider.start);
         capsuleMesh.position.y += player.height / 2; // Adjust for the fact that CylinderGeometry is centered at its midpoint
     }
+
+    // console.log(playerCollider.end);
 }
 
 function getForwardVector() {

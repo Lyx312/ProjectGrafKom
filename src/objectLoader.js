@@ -32,7 +32,7 @@ export function loadObject(scene, fileName, position, scale, rotation) {
 }
 
 // Load the model
-export function loadModel(scene, folder, position, scale, rotation, callback) { // Remove animationName parameter
+export function loadModel(scene, folder, position, scale, rotation, callback) {
     const loader = new GLTFLoader();
     loader.load(
         `${MODEL_PATH}${folder}/scene.gltf`,
@@ -44,8 +44,6 @@ export function loadModel(scene, folder, position, scale, rotation, callback) { 
             if (gltf.animations && gltf.animations.length > 0) {
                 const mixer = new THREE.AnimationMixer(model);
                 gltf.animations.forEach((clip) => {
-                    // Removed the animationName condition
-
                     mixer.clipAction(clip).play();
                 });
 
@@ -75,6 +73,9 @@ export function loadModelInterior(scene, file, position, scale, rotation, intera
                 interactibles[file] = {}
                 interactibles[file].position = new THREE.Vector3(...worldPosition);
                 interactibles[file].model = model;
+                interactibles[file].isAnimating = false;
+                interactibles[file].state = 0;
+                interactibles[file].substate = 0;
             }
         },
         undefined,
@@ -84,7 +85,7 @@ export function loadModelInterior(scene, file, position, scale, rotation, intera
     );
 }
 
-export function createBoundingBox(scene, position, scale, rotation, octree, boundingBox) {
+export function createBoundingBox(scene, position, scale, rotation, octree, boundingBox, interactibles) {
     const cube = new THREE.Mesh(geometry, material);
     setPositionScaleRotation(cube, position, scale, rotation);
     octree.fromGraphNode(cube);
@@ -101,6 +102,14 @@ export function createBoundingBox(scene, position, scale, rotation, octree, boun
         cube: cube,
         line: line,
     })
+
+    if (interactibles) {
+        console.log("yay");
+        interactibles.boundingBox = {
+            cube: cube,
+            line: line,
+        }
+    }
 }
 
 export function loadPlayer(scene, folder, position, scale, rotation, callback) {
