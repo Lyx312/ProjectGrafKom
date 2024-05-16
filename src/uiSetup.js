@@ -68,7 +68,7 @@ export const showInteractables = (text) => {
     }
 
     // Set the text content
-    interact.textContent = text;
+    interact.innerHTML = `<div style="text-align: center;">E<br>${text}</div>`;
 
     // Position the interactable at the middle of the screen
     interact.style.top = '50%';

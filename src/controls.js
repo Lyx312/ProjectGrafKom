@@ -168,7 +168,7 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
-function vectorsApproximatelyEqual(vec1, vec2, tolerance = 10) {
+function vectorsApproximatelyEqual(vec1, vec2, tolerance = 5) {
     return Math.abs(vec1.x - vec2.x) < tolerance &&
            Math.abs(vec1.y - vec2.y) < tolerance &&
            Math.abs(vec1.z - vec2.z) < tolerance;
@@ -207,13 +207,19 @@ export function updatePlayer(deltaTime) {
     playerCollider.translate(deltaPosition);
 
     if (!player.cheat) playerCollisions();
-    if(interactibles["door"] != undefined){
-        if (vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position)) {
-            showInteractables('E');
+
+    let interactablePosition = false;
+    for (const key in interactibles) {
+        if (interactibles.hasOwnProperty(key)) {
+            const interactable = interactibles[key];
+            if (vectorsApproximatelyEqual(playerCollider.end, interactable.position)) {
+                showInteractables(key);
+                interactablePosition = true;
+            }
         }
-        else {
-            hideInteractables();
-        }
+    }
+    if (!interactablePosition) {
+        hideInteractables();
     }
 
     if (keys.e && vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position) && !interactibles["door"].isAnimating) {
