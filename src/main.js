@@ -29,6 +29,7 @@ const groundMaterial = new THREE.MeshBasicMaterial({ map: groundTexture });
 const groundGeometry = new THREE.PlaneGeometry(1000, 1000, 100, 100);
 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
 ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
 scene.add(ground);
 worldOctree.fromGraphNode(ground);
 
@@ -86,6 +87,7 @@ createBoundingBox(scene, [-28, 7, -28], [3, 8, 80], [0, 0, 0], worldOctree, boun
 createBoundingBox(scene, [9, 7, 11.5], [2.5, 8, 39.5], [0, 90, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 8, 12], [0, 90, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 8, 57], [0, 90, 0], worldOctree, boundingBox);
+createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree, boundingBox);
 
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 

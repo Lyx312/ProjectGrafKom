@@ -134,6 +134,7 @@ export function loadPlayer(scene, folder, position, scale, rotation, callback) {
             const model = gltf.scene;
             setPositionScaleRotation(model, position, scale, rotation);
             scene.add(model);
+            addShadow(gltf);
 
             let mixer;
             let animations = {};
