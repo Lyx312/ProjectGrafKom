@@ -7,6 +7,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const MTL_PATH = '../assets/mtl/';
 const OBJ_PATH = '../assets/objects/';
 const MODEL_PATH = '../assets/models/';
+const IMAGE_PATH = '../assets/images/';
 
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshBasicMaterial({ color: 0x808080, transparent: true, opacity: 0 });
@@ -158,3 +159,13 @@ export function loadPlayer(scene, folder, position, scale, rotation, callback) {
     );
 }
 
+export function loadImage(scene, file, position, scale, rotation) {
+    const texture = new THREE.TextureLoader().load(`${IMAGE_PATH}${file}.png`);
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const geometry = new THREE.PlaneGeometry(1, 1);
+    const mesh = new THREE.Mesh(geometry, material);
+
+    setPositionScaleRotation(mesh, position, scale, rotation);
+
+   scene.add(mesh);
+}

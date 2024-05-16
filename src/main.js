@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player } from './controls.js';
-import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer } from './objectLoader.js';
+import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage } from './objectLoader.js';
 import { scene, camera, updateBackground } from './sceneSetup.js';
 import renderer from './sceneSetup.js';
 import { doorAnimation } from './objectAnimation.js';
@@ -88,6 +88,8 @@ createBoundingBox(scene, [9, 7, 11.5], [2.5, 8, 39.5], [0, 90, 0], worldOctree, 
 createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 8, 12], [0, 90, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 8, 57], [0, 90, 0], worldOctree, boundingBox);
 createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree, boundingBox);
+
+loadImage(scene, "Gym_Poster", [-7,10,11], [4,4,4], [0,180,0]);
 
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
