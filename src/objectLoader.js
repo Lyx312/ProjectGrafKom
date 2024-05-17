@@ -207,6 +207,7 @@ export function loadGroundModel(scene, file, worldOctree, position, scale, rotat
     // Load the ground model
     loader.load(`${MODEL_PATH}individual_equipments/${file}.glb`, function (gltf) {
         const ground = gltf.scene;
+        addShadow(gltf);
 
         // Set the position, scale, and rotation of the ground model
         setPositionScaleRotation(ground, position, scale, rotation);
@@ -234,6 +235,7 @@ export function loadAnimatedModel(scene, folder, position, scale, rotation, anim
         function (gltf) {
             const model = gltf.scene;
             setPositionScaleRotation(model, position, scale, rotation);
+            addShadow(gltf);
             scene.add(model);
 
             if (gltf.animations && gltf.animations.length > 0) {

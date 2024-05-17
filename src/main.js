@@ -6,7 +6,7 @@ import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDir
 import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel } from './objectLoader.js';
 import { scene, camera, updateBackground, renderer } from './sceneSetup.js';
 import { composer, outlinePass } from './sceneSetup.js';
-import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation } from './objectAnimation.js';
+import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation } from './objectAnimation.js';
 import { hideInteractables, showInteractables, updateDebugScreen } from './uiSetup.js';
 
 export const worldOctree = new Octree();
@@ -60,7 +60,7 @@ let fanModel = {};
 export const interactibles = {};
 
 // Set up the ground
-loadGroundModel(scene, "ground_road", worldOctree, [0,-0.1,0], [100,1,100], [0,0,0]);
+loadGroundModel(scene, "ground_road", worldOctree, [0,-0.1,0], [10,10,10], [0,0,0]);
 
 // const textureLoader = new THREE.TextureLoader();
 // const groundTexture = textureLoader.load('./assets/images/road.jpg');
@@ -141,11 +141,23 @@ loadAnimatedModel(scene, "mujer_bodytech", [10, 0, -30], [0.13, 0.13, 0.13], [0,
     mixers["mujer_bodytech"] = animationMixer;
 });
 
-loadAnimatedModel(scene, "dr_ahmad_sitting_pose", [10, 0, 15], [3, 3, 3], [0, 0, 0], "mixamo.com", (animationMixer) => {
+loadAnimatedModel(scene, "dr_ahmad_sitting_pose", [10, 1, 20], [3, 3, 3], [0, 0, 0], "mixamo.com", (animationMixer) => {
     mixers["dr_ahmad_sitting_pose"] = animationMixer;
 });
 
-loadModel(scene, "lowpoly_car", [-50, 0, -20], [7, 7, 7], [0, 90, 0]);
+loadModelInterior(scene, "lowpoly_car", [-50, 0, -20], [7, 7, 7], [0, 90, 0], interactibles, [-50, 0, -20]);
+createBoundingBox(scene, [-22, 7, 50.5], [34, 8, 14], [0, 0, 0], worldOctree);
+
+loadModelInterior(scene, "exercise_bike", [-10, 0, -30], [3, 3, 3], [0, 90, 0]);
+loadModelInterior(scene, "bike_pedals", [-11.8, 2.4, -30], [3, 3, 3], [0, 180, 0], interactibles, [-11.8, 2.4, -30]);
+//createBoundingBox(scene, [-10.13, 0.5, -40.15], [7, 4.6, 2.9], [0, 0, 0], worldOctree);
+
+loadModelInterior(scene, "locker", [26, 0.2, -63.5], [8, 8, 8], [0, 0, 0]);
+loadModelInterior(scene, "locker_door", [28, 0.2, -61.5], [8, 8, 8], [0, 0, 0], interactibles, [-10, 0, -25]);
+//createBoundingBox(scene, [26, 0.2, -63.5], [4, 30, 4], [0, 0, 0], worldOctree);
+
+loadModelInterior(scene, "bench", [10, 0, 20], [8,8,8], [0, 0, 0]);
+createBoundingBox(scene, [10, 5, 18], [7, 7, 18], [0, 90, 0], worldOctree);
 
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
@@ -239,6 +251,8 @@ function animate() {
     punchingBag1Animation(interactibles);
     punchingBag2Animation(interactibles);
     barbellsAnimation(interactibles);
+    bikeAnimation(interactibles);
+    lockerAnimation(interactibles);
     treadmillAnimation(player,interactibles);
 
     stats.update();

@@ -23,7 +23,28 @@ export function doorAnimation(interactibles) {
     }
 }
 
+export function lockerAnimation(interactibles) {
+    const door = interactibles["locker_door"];
+    if (door && door.isAnimating) {
+        if (door.state === 0 && door.substate === 0) {
+            door.initialLookDirection = 1;
+        }
 
+        door.substate++;
+        const rotationChange = Math.PI/30;
+        door.model.rotation.y += door.state === 0 ? rotationChange : -rotationChange;
+
+        if (door.substate === 15) {
+            door.substate = 0;
+            if (door.state == 1 || door.state == -1) {
+                door.state = 0;
+            } else {
+                door.state = door.initialLookDirection;
+            }
+            door.isAnimating = false;
+        }
+    }
+}
 
 export function punchingBag1Animation(interactibles) {
     const punchingBag = interactibles["punching_bag_1"];
@@ -159,6 +180,22 @@ export function barbellsAnimation(interactibles) {
             barbells.state = 0; // Reset state to 0 for next cycle
             barbells.substate = 0;
             barbells.isAnimating = false; // End the animation
+        }
+    }
+}
+
+export function bikeAnimation(interactibles) {
+    const bike = interactibles["bike_pedals"];
+    if (bike && bike.isAnimating) {
+        // Increment the rotation angle
+        const rotationIncrement = Math.PI / 30; // 6 degrees per frame
+        bike.model.rotation.z += rotationIncrement;
+        
+        // Check if a full rotation (2*PI radians) has been completed
+        if (bike.model.rotation.z >= 2 * Math.PI) {
+            // Reset the rotation to 0 and stop animating
+            bike.model.rotation.z = 0;
+            bike.isAnimating = false;
         }
     }
 }
