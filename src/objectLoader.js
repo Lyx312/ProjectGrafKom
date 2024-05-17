@@ -10,8 +10,8 @@ const MODEL_PATH = '../assets/models/';
 const IMAGE_PATH = '../assets/images/';
 
 const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x808080, transparent: true, opacity: 0 });
-const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0 });
+export const boundingMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, transparent: true, opacity: 0 });
+export const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0 });
 
 function setPositionScaleRotation(object, position, scale, rotation) {
     object.position.set(...position);
@@ -100,8 +100,8 @@ export function loadModelInterior(scene, file, position, scale, rotation, intera
     );
 }
 
-export function createBoundingBox(scene, position, scale, rotation, octree, boundingBox, interactibles) {
-    const cube = new THREE.Mesh(geometry, material);
+export function createBoundingBox(scene, position, scale, rotation, octree, interactibles) {
+    const cube = new THREE.Mesh(geometry, boundingMaterial);
     setPositionScaleRotation(cube, position, scale, rotation);
     octree.fromGraphNode(cube);
     scene.add(cube);
@@ -113,11 +113,6 @@ export function createBoundingBox(scene, position, scale, rotation, octree, boun
     line.rotation.copy(cube.rotation);
     scene.add(line);
 
-    boundingBox.push({
-        cube: cube,
-        line: line,
-    })
-
     if (interactibles) {
         interactibles.boundingBox = {
             cube: cube,
@@ -126,9 +121,9 @@ export function createBoundingBox(scene, position, scale, rotation, octree, boun
     }
 }
 
-export function createBoundingCylinder(scene, position, scale, rotation, octree, boundingBox, interactibles) {
+export function createBoundingCylinder(scene, position, scale, rotation, octree, interactibles) {
     const geometry = new THREE.CylinderGeometry(1, 1, 1);
-    const cylinder = new THREE.Mesh(geometry, material);
+    const cylinder = new THREE.Mesh(geometry, boundingMaterial);
     setPositionScaleRotation(cylinder, position, scale, rotation);
     octree.fromGraphNode(cylinder);
     scene.add(cylinder);
@@ -139,11 +134,6 @@ export function createBoundingCylinder(scene, position, scale, rotation, octree,
     line.scale.copy(cylinder.scale);
     line.rotation.copy(cylinder.rotation);
     scene.add(line);
-
-    boundingBox.push({
-        cube: cylinder,
-        line: line,
-    })
 
     if (interactibles) {
         interactibles.boundingCylinder = {

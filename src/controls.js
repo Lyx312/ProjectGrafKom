@@ -1,10 +1,11 @@
 import * as THREE from 'three';
-import { camera, scene } from "./sceneSetup.js";
+import { camera } from "./sceneSetup.js";
 import { updateStaminaBar, showInteractables, hideInteractables } from './uiSetup.js';
-import { worldOctree, boundingBox, capsuleMesh, interactibles } from './main.js';
+import { worldOctree, capsuleMesh, interactibles } from './main.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import renderer from './sceneSetup.js';
+import { boundingMaterial, lineMaterial } from './objectLoader.js';
 
 const keys = {
     w: false,
@@ -94,10 +95,8 @@ document.addEventListener('keydown', (e) => {
             break;
         case 'KeyF':
             if (!keys.f) {
-                boundingBox.forEach(box => {
-                    box.cube.material.opacity = debug? 0 : 0.5;
-                    box.line.material.opacity = debug? 0 : 1;
-                });
+                boundingMaterial.opacity = debug? 0 : 0.5;
+                lineMaterial.opacity = debug? 0 : 1;
                 capsuleMesh.visible = !capsuleMesh.visible;
                 debug = !debug;
                 keys.f = true;
