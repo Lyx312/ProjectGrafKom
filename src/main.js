@@ -42,37 +42,6 @@ function raycasting() {
     }
 
 }
-export const stats = new Stats();
-
-
-//init raycasting
-const raycaster = new THREE.Raycaster(); 
-const pointer = new THREE.Vector2(); // posisi mouse
-// set pointer location to center of the window
-pointer.x = 0;
-pointer.y = 0;
-
-function raycasting() {
-    raycaster.setFromCamera(pointer, camera);
-    const intersects = raycaster.intersectObjects(scene.children);
-    // console.log('intersects:',intersects);
-    outlinePass.selectedObjects = [];
-    hideInteractables();
-    for (let i = 0; i < intersects.length; i++) {
-        if (intersects[i].object.name.startsWith("interactible") && intersects[i].distance < 20) {
-            // console.log(intersects[i].object.name);
-            outlinePass.selectedObjects = [intersects[i].object];
-            let name = intersects[i].object.name.replace("interactible ", "");
-            showInteractables(name);
-
-            if (isInteracting()) {
-                interactibles[name].isAnimating = true;
-            }
-            break;
-        }
-    }
-
-}
 
 let casualMaleModel;
 const mixers = {};
