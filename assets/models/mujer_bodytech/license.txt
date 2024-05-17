@@ -1,0 +1,11 @@
+Model Information:
+* title:	Mujer Bodytech
+* source:	https://sketchfab.com/3d-models/mujer-bodytech-aa56e7f6d92942b5880a349b9d0769b1
+* author:	Nextlatam (https://sketchfab.com/nextlatam)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Mujer Bodytech" (https://sketchfab.com/3d-models/mujer-bodytech-aa56e7f6d92942b5880a349b9d0769b1) by Nextlatam (https://sketchfab.com/nextlatam) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

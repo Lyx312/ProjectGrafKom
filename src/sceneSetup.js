@@ -1,13 +1,32 @@
 // sceneSetup.js
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-const renderer = new THREE.WebGLRenderer();
+export const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
+
+// post processing composer
+export const composer = new EffectComposer( renderer );
+
+const renderPass = new RenderPass( scene, camera );
+composer.addPass( renderPass );
+
+export const outlinePass = new OutlinePass( new THREE.Vector2( window.innerWidth, window.innerHeight ), scene, camera );
+outlinePass.edgeStrength = 5.0;
+outlinePass.edgeGlow = 1.0;
+outlinePass.edgeThickness = 3.0;
+outlinePass.pulsePeriod = 0;
+// outlinePass.usePatternTexture = false; // patter texture for an object mesh
+outlinePass.visibleEdgeColor.set("#1abaff"); // set basic edge color
+outlinePass.hiddenEdgeColor.set("#1abaff"); // set edge color when it hidden by other objects
+composer.addPass( outlinePass );
 
 let resizeTimeout;
 window.addEventListener("resize", () => {
@@ -20,14 +39,14 @@ window.addEventListener("resize", () => {
 });
 
 // Add an ambient light
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const ambientLight = new THREE.AmbientLight(0xffffff, 3);
 scene.add(ambientLight);
 
 // Add a directional light
 const pointLight = new THREE.PointLight(0xffffff, 100, 900, 1);
 pointLight.position.set(0, 15, -27);
 pointLight.castShadow = true;
-pointLight.shadow.camera.near = 0.01;
+pointLight.shadow.camera.near = 0.5;
 pointLight.shadow.camera.far = 10;
 pointLight.shadow.mapSize.width = 1024;
 pointLight.shadow.mapSize.height = 1024;
@@ -37,8 +56,6 @@ scene.add(pointLight);
 
 // const helper = new THREE.CameraHelper( pointLight.shadow.camera );
 // scene.add( helper );
-
-export default renderer;
 
 const morningColor = new THREE.Color(0xff8170);
 const noonColor = new THREE.Color('lightblue');

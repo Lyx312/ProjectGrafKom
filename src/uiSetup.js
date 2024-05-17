@@ -1,11 +1,11 @@
 // uiSetup.js
-// Create a UI element for the stamina bar
-import { interactibles } from './main.js';
+import { player, playerCollider } from './controls.js'
 
+// Create a UI element for the stamina bar
 const staminaBarBorder = document.createElement('div');
 staminaBarBorder.style.position = 'absolute';
 staminaBarBorder.style.top = '10px';
-staminaBarBorder.style.left = '10px';
+staminaBarBorder.style.right = '10px';
 staminaBarBorder.style.width = '20px';
 staminaBarBorder.style.height = '200px';
 staminaBarBorder.style.backgroundColor = 'gray';
@@ -15,7 +15,7 @@ document.body.appendChild(staminaBarBorder);
 const staminaBar = document.createElement('div');
 staminaBar.style.position = 'absolute';
 staminaBar.style.top = '10px';
-staminaBar.style.left = '10px';
+staminaBar.style.right = '10px';
 staminaBar.style.width = '20px';
 staminaBar.style.height = '100px';
 staminaBar.style.backgroundColor = 'yellow';
@@ -26,7 +26,7 @@ const staText = document.createElement('div');
 staText.textContent = 'STA';
 staText.style.position = 'absolute';
 staText.style.top = '215px';
-staText.style.left = '12px';
+staText.style.right = '12px';
 staText.style.fontWeight = 'bold';
 staText.style.fontSize = '10px';
 staText.style.color = 'red';
@@ -71,7 +71,7 @@ export const showInteractables = (text) => {
     interact.innerHTML = `<div style="text-align: center;">E<br>${text}</div>`;
 
     // Position the interactable at the middle of the screen
-    interact.style.top = '50%';
+    interact.style.top = '40%';
     interact.style.left = '50%';
     interact.style.transform = 'translate(-50%, -50%)';
 
@@ -84,4 +84,13 @@ export const hideInteractables = () => {
     if (interact) {
         interact.style.display = 'none';
     }
+}
+
+export function updateDebugScreen() {
+    document.getElementById('pos_x').innerText = "x: " + playerCollider.end.x;
+    document.getElementById('pos_y').innerText = "y: " + playerCollider.end.y;
+    document.getElementById('pos_z').innerText = "z: " + playerCollider.end.z;
+    document.getElementById('velocity_x').innerText = "vx: " + player.velocity.x;
+    document.getElementById('velocity_y').innerText = "vy: " + player.velocity.y;
+    document.getElementById('velocity_z').innerText = "vz: " + player.velocity.z;
 }

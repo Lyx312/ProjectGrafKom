@@ -1,0 +1,11 @@
+Model Information:
+* title:	Dr Ahmad Sitting Pose
+* source:	https://sketchfab.com/3d-models/dr-ahmad-sitting-pose-ac9e33cd8ece4a8081117d1bec3b613c
+* author:	p125445 (https://sketchfab.com/p125445)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Dr Ahmad Sitting Pose" (https://sketchfab.com/3d-models/dr-ahmad-sitting-pose-ac9e33cd8ece4a8081117d1bec3b613c) by p125445 (https://sketchfab.com/p125445) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
