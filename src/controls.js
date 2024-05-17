@@ -57,10 +57,6 @@ export const controls = new PointerLockControls(camera, renderer.domElement);
 controls.minPolarAngle = 0.001; // radians
 controls.maxPolarAngle = Math.PI - 0.001; // radians
 
-document.addEventListener('click', function () {
-    controls.lock();
-}, false);
-
 // Add event listeners for keydown and keyup
 document.addEventListener('keydown', (e) => {
     switch (e.code) {

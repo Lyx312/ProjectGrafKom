@@ -21,6 +21,7 @@ const pointer = new THREE.Vector2(); // posisi mouse
 pointer.x = 0;
 pointer.y = 0;
 
+let hoveredInteractible;
 function raycasting() {
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children);
@@ -32,15 +33,24 @@ function raycasting() {
             // console.log(intersects[i].object.name);
             outlinePass.selectedObjects = [intersects[i].object];
             let name = intersects[i].object.name.replace("interactible ", "");
-            if (!interactibles[name].isAnimating) showInteractables(name);
-            if (isInteracting()) {
-                interactibles[name].isAnimating = true;
-            }
+            // if (!interactibles[name].isAnimating) showInteractables(name);
+            // if (isInteracting()) {
+            //     interactibles[name].isAnimating = true;
+            // }
+            hoveredInteractible = interactibles[name]
             break;
         }
+        hoveredInteractible = null;
     }
-
 }
+
+document.addEventListener('click', function () {
+    if (controls.isLocked) {
+        hoveredInteractible.isAnimating = true;
+    } else {
+        controls.lock();
+    }
+}, false);
 
 let casualMaleModel;
 const mixers = {};
@@ -152,6 +162,7 @@ function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
 
     // console.log(getPlayerLookDirection() * 180 / Math.PI);
+    console.log(hoveredInteractible);
     
     updateBackground(clock);
 
