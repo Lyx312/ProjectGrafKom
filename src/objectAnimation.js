@@ -47,6 +47,7 @@ export function punchingBag1Animation(interactibles) {
     }
 }
 
+
 export function punchingBag2Animation(interactibles) {
     const punchingBag = interactibles["punching_bag_2"];
     if (punchingBag && punchingBag.isAnimating) {
