@@ -3,10 +3,10 @@ import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
 import Stats from 'three/addons/libs/stats.module.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player, isInteracting } from './controls.js';
-import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder } from './objectLoader.js';
-import { scene, camera, updateBackground } from './sceneSetup.js';
+import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel } from './objectLoader.js';
+import { scene, camera, updateBackground, renderer } from './sceneSetup.js';
 import { composer, outlinePass } from './sceneSetup.js';
-import { doorAnimation, punchingBag1Animation, punchingBag2Animation } from './objectAnimation.js';
+import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation } from './objectAnimation.js';
 import { hideInteractables, showInteractables, updateDebugScreen } from './uiSetup.js';
 
 export const worldOctree = new Octree();
@@ -50,19 +50,21 @@ let fanModel = {};
 export const interactibles = {};
 
 // Set up the ground
-const textureLoader = new THREE.TextureLoader();
-const groundTexture = textureLoader.load('./assets/images/road.jpg');
-groundTexture.wrapS = THREE.RepeatWrapping;
-groundTexture.wrapT = THREE.RepeatWrapping;
-groundTexture.repeat.set(25, 25);
+loadGroundModel(scene, "ground_road", worldOctree, [0,-0.1,0], [100,1,100], [0,0,0]);
 
-const groundMaterial = new THREE.MeshBasicMaterial({ map: groundTexture });
-const groundGeometry = new THREE.PlaneGeometry(1000, 1000, 100, 100);
-const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-ground.rotation.x = -Math.PI / 2;
-ground.receiveShadow = true;
-scene.add(ground);
-worldOctree.fromGraphNode(ground);
+// const textureLoader = new THREE.TextureLoader();
+// const groundTexture = textureLoader.load('./assets/images/road.jpg');
+// groundTexture.wrapS = THREE.RepeatWrapping;
+// groundTexture.wrapT = THREE.RepeatWrapping;
+// groundTexture.repeat.set(25, 25);
+
+// const groundMaterial = new THREE.MeshBasicMaterial({ map: groundTexture });
+// const groundGeometry = new THREE.PlaneGeometry(1000, 1000, 100, 100);
+// const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+// ground.rotation.x = -Math.PI / 2;
+// ground.receiveShadow = true;
+// scene.add(ground);
+// worldOctree.fromGraphNode(ground);
 
 // loadObject(scene, "deer_small", [3, 0, -9], [1, 1, 1], [0, 0, 0]);
 // createBoundingBox(scene, [2.6, 0.5, -7.7], [2, 15.5, 7], [0, 0, 0], worldOctree, boundingBox);
@@ -81,11 +83,14 @@ loadModelInterior(scene, "gym_decoration_1_v2", [-24, 0.1, -29], [11, 11, 11], [
 
 loadModelInterior(scene, "punching_bag_1", [-20.2, 0.1, 1.2], [11, 11, 11], [0, 0, 0], interactibles, [-20.035, 9, 1.2]);
 createBoundingCylinder(scene, [-20.1, 8, 1.1], [1.5, 2, 1.5], [0, 0, 0], worldOctree)
+createBoundingCylinder(scene, [-20.1, 8, 1.1], [1.5, 2, 1.5], [0, 0, 0], worldOctree)
 
 loadModelInterior(scene, "punching_bag_2", [-20, 0.1, -12.8], [11, 11, 11], [0, 0, 0], interactibles, [-19.69, 9, -13.2]);
 createBoundingCylinder(scene, [-20.1, 7, -13.1], [1.5, 5, 1.5], [0, 0, 0], worldOctree)
+createBoundingCylinder(scene, [-20.1, 7, -13.1], [1.5, 5, 1.5], [0, 0, 0], worldOctree)
 
 loadModelInterior(scene, "gym_decoration_2", [28.5, 3, -28], [9, 9, 9], [0, -90, 0]);
+createBoundingBox(scene, [26, 14, -23.3], [3, 1, 7.5], [0, 0, 0], worldOctree)
 
 loadModelInterior(scene, "gym_decoration_3", [-10, 0.1, -50], [10, 10, 10], [0, 90, 0]);
 
@@ -105,11 +110,17 @@ loadPlayer(scene, "casual_male", [0, 0, 0], [player.height * 0.72, player.height
 
 loadModelInterior(scene, "barbell_chair", [-10, 0, -40], [10, 10, 10], [0, 90, 0]);
 createBoundingBox(scene, [-10.13, 0.5, -40.15], [7, 4.6, 2.9], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-10.13, 0.5, -40.15], [7, 4.6, 2.9], [0, 0, 0], worldOctree);
 
 loadModelInterior(scene, "barbells", [-10, 0, -40], [10, 10, 10], [0, 90, 0], interactibles, [-10, 9, -40]);
 createBoundingBox(scene, [-12.9, 5.5, -40], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-12.9, 5.5, -40], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree);
 
 loadModelInterior(scene, "treadmill", [10, 0, -50], [10, 10, 10], [0, 90, 0], interactibles, [10, 9, -50]);
+createBoundingBox(scene, [9.4, 0, -50], [6.8, 2.45, 4], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [14, 2.45, -50], [2, 8.3, 4], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [12, 2.45, -51.7], [5, 6, 0.4], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [12, 2.45, -48.3], [5, 6, 0.4], [0, 0, 0], worldOctree);
 createBoundingBox(scene, [9.4, 0, -50], [6.8, 2.45, 4], [0, 0, 0], worldOctree);
 createBoundingBox(scene, [14, 2.45, -50], [2, 8.3, 4], [0, 0, 0], worldOctree);
 createBoundingBox(scene, [12, 2.45, -51.7], [5, 6, 0.4], [0, 0, 0], worldOctree);
@@ -121,8 +132,24 @@ createBoundingBox(scene, [9, 7, 11.5], [2.5, 8, 39.5], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 8, 12], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 8, 57], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [30, 7, -27.5], [3, 8, 80], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-28, 7, -28], [3, 8, 80], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [9, 7, 11.5], [2.5, 8, 39.5], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 8, 12], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 8, 57], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree);
 
-loadImage(scene, "Gym_Poster", [-7,10,11], [4,4,4], [0,180,0]);
+loadImage(scene, "Gym_Poster", [-7,10,11.2], [4,4,4], [0,180,0]);
+
+loadAnimatedModel(scene, "mujer_bodytech", [10, 0, -30], [0.13, 0.13, 0.13], [0, 90, 0], "Take 001", (animationMixer) => {
+    mixers["mujer_bodytech"] = animationMixer;
+});
+
+loadAnimatedModel(scene, "dr_ahmad_sitting_pose", [10, 0, 15], [3, 3, 3], [0, 0, 0], "mixamo.com", (animationMixer) => {
+    mixers["dr_ahmad_sitting_pose"] = animationMixer;
+});
+
+loadModel(scene, "lowpoly_car", [-50, 0, -20], [7, 7, 7], [0, 90, 0]);
 
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
@@ -141,6 +168,8 @@ function animate() {
     // console.log(getPlayerLookDirection() * 180 / Math.PI);
     
     updateBackground(clock);
+
+    raycasting();
 
     raycasting();
 
@@ -214,6 +243,8 @@ function animate() {
     doorAnimation(interactibles);
     punchingBag1Animation(interactibles);
     punchingBag2Animation(interactibles);
+    barbellsAnimation(interactibles);
+    treadmillAnimation(player,interactibles);
 
     stats.update();
     updateDebugScreen();

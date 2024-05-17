@@ -199,3 +199,60 @@ export function loadImage(scene, file, position, scale, rotation) {
 
    scene.add(mesh);
 }
+
+export function loadGroundModel(scene, file, worldOctree, position, scale, rotation) {
+    // Set up the GLTF loader
+    const loader = new GLTFLoader();
+
+    // Load the ground model
+    loader.load(`${MODEL_PATH}individual_equipments/${file}.glb`, function (gltf) {
+        const ground = gltf.scene;
+
+        // Set the position, scale, and rotation of the ground model
+        setPositionScaleRotation(ground, position, scale, rotation);
+
+        // Ensure the ground model receives shadows
+        ground.receiveShadow = true;
+
+        // Add the ground model to the scene
+        scene.add(ground);
+
+        // Add the ground model to the worldOctree if needed
+        if (worldOctree) {
+            worldOctree.fromGraphNode(ground);
+        }
+
+    }, undefined, function (error) {
+        console.error('An error occurred while loading the ground model:', error);
+    });
+}
+
+export function loadAnimatedModel(scene, folder, position, scale, rotation, animationName, callback) {
+    const loader = new GLTFLoader();
+    loader.load(
+        `${MODEL_PATH}${folder}/scene.gltf`,
+        function (gltf) {
+            const model = gltf.scene;
+            setPositionScaleRotation(model, position, scale, rotation);
+            scene.add(model);
+
+            if (gltf.animations && gltf.animations.length > 0) {
+                const mixer = new THREE.AnimationMixer(model);
+                gltf.animations.forEach((clip) => {
+                    if (clip.name === animationName) {
+                        mixer.clipAction(clip).play();
+                    }
+                });
+
+                // Pass the mixer to the callback function
+                if (callback && typeof callback === 'function') {
+                    callback(mixer);
+                }
+            }
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
+}
