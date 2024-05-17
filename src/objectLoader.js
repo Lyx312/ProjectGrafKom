@@ -119,9 +119,35 @@ export function createBoundingBox(scene, position, scale, rotation, octree, boun
     })
 
     if (interactibles) {
-        console.log("yay");
         interactibles.boundingBox = {
             cube: cube,
+            line: line,
+        }
+    }
+}
+
+export function createBoundingCylinder(scene, position, scale, rotation, octree, boundingBox, interactibles) {
+    const geometry = new THREE.CylinderGeometry(1, 1, 1);
+    const cylinder = new THREE.Mesh(geometry, material);
+    setPositionScaleRotation(cylinder, position, scale, rotation);
+    octree.fromGraphNode(cylinder);
+    scene.add(cylinder);
+
+    const edges = new THREE.EdgesGeometry(cylinder.geometry);
+    const line = new THREE.LineSegments(edges, lineMaterial);
+    line.position.copy(cylinder.position);
+    line.scale.copy(cylinder.scale);
+    line.rotation.copy(cylinder.rotation);
+    scene.add(line);
+
+    boundingBox.push({
+        cube: cylinder,
+        line: line,
+    })
+
+    if (interactibles) {
+        interactibles.boundingCylinder = {
+            cylinder: cylinder,
             line: line,
         }
     }

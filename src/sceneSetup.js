@@ -24,7 +24,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 // Add a directional light
-const pointLight = new THREE.PointLight(0xffffff, 100, 1000, 1);
+const pointLight = new THREE.PointLight(0xffffff, 100, 900, 1);
 pointLight.position.set(0, 15, -27);
 pointLight.castShadow = true;
 pointLight.shadow.camera.near = 0.01;

@@ -215,15 +215,15 @@ export function updatePlayer(deltaTime) {
             if (vectorsApproximatelyEqual(playerCollider.end, interactable.position) && !interactable.isAnimating) {
                 showInteractables(key);
                 interactablePosition = true;
+
+                if (keys.e) {
+                    interactable.isAnimating = true;
+                }
             }
         }
     }
     if (!interactablePosition) {
         hideInteractables();
-    }
-
-    if (keys.e && vectorsApproximatelyEqual(playerCollider.end, interactibles["door"].position) && !interactibles["door"].isAnimating) {
-        interactibles["door"].isAnimating = true;
     }
 
     camera.position.copy(playerCollider.end);

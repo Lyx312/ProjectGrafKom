@@ -2,10 +2,10 @@
 import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player } from './controls.js';
-import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage } from './objectLoader.js';
+import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder } from './objectLoader.js';
 import { scene, camera, updateBackground } from './sceneSetup.js';
 import renderer from './sceneSetup.js';
-import { doorAnimation } from './objectAnimation.js';
+import { doorAnimation, punchingBag1Animation, punchingBag2Animation } from './objectAnimation.js';
 
 export const worldOctree = new Octree();
 export const boundingBox = [];
@@ -48,9 +48,11 @@ loadModelInterior(scene, "yoga_mat", [20, 0.1, 0], [3, 3, 3], [0, 90, 0]);
 
 loadModelInterior(scene, "gym_decoration_1_v2", [-24, 0.1, -29], [11, 11, 11], [0, 90, 0]);
 
-loadModelInterior(scene, "punching_bag_1", [-20.035, 0.1, 1.2], [11, 11, 11], [0, 90, 0], interactibles, [-20.035, 9, 1.2]);
+loadModelInterior(scene, "punching_bag_1", [-20.2, 0.1, 1.2], [11, 11, 11], [0, 0, 0], interactibles, [-20.035, 9, 1.2]);
+createBoundingCylinder(scene, [-20.1, 8, 1.1], [1.5, 2, 1.5], [0, 0, 0], worldOctree, boundingBox)
 
-loadModelInterior(scene, "punching_bag_2", [-19.69, 0.1, -13.2], [11, 11, 11], [0, 90, 0], interactibles, [-19.69, 9, -13.2]);
+loadModelInterior(scene, "punching_bag_2", [-20, 0.1, -12.8], [11, 11, 11], [0, 0, 0], interactibles, [-19.69, 9, -13.2]);
+createBoundingCylinder(scene, [-20.1, 7, -13.1], [1.5, 5, 1.5], [0, 0, 0], worldOctree, boundingBox)
 
 loadModelInterior(scene, "gym_decoration_2", [28.5, 3, -28], [9, 9, 9], [0, -90, 0]);
 
@@ -175,6 +177,8 @@ function animate() {
     }
 
     doorAnimation(interactibles);
+    punchingBag1Animation(interactibles);
+    punchingBag2Animation(interactibles);
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
