@@ -1,14 +1,47 @@
 // main.js
 import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
-import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player } from './controls.js';
+import Stats from 'three/addons/libs/stats.module.js';
+import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player, isInteracting } from './controls.js';
 import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder } from './objectLoader.js';
-import { scene, camera, updateBackground } from './sceneSetup.js';
-import renderer from './sceneSetup.js';
+import { scene, camera, updateBackground, renderer } from './sceneSetup.js';
+import { composer, outlinePass } from './sceneSetup.js';
 import { doorAnimation, punchingBag1Animation, punchingBag2Animation } from './objectAnimation.js';
+import { hideInteractables, showInteractables, updateDebugScreen } from './uiSetup.js';
 
 export const worldOctree = new Octree();
 const clock = new THREE.Clock();
+export const stats = new Stats();
+
+
+//init raycasting
+const raycaster = new THREE.Raycaster(); 
+const pointer = new THREE.Vector2(); // posisi mouse
+// set pointer location to center of the window
+pointer.x = 0;
+pointer.y = 0;
+
+function raycasting() {
+    raycaster.setFromCamera(pointer, camera);
+    const intersects = raycaster.intersectObjects(scene.children);
+    // console.log('intersects:',intersects);
+    outlinePass.selectedObjects = [];
+    hideInteractables();
+    for (let i = 0; i < intersects.length; i++) {
+        if (intersects[i].object.name.startsWith("interactible") && intersects[i].distance < 20) {
+            // console.log(intersects[i].object.name);
+            outlinePass.selectedObjects = [intersects[i].object];
+            let name = intersects[i].object.name.replace("interactible ", "");
+            showInteractables(name);
+
+            if (isInteracting()) {
+                interactibles[name].isAnimating = true;
+            }
+            break;
+        }
+    }
+
+}
 
 let casualMaleModel;
 const mixers = {};
@@ -105,8 +138,12 @@ let cameraLookDirectionBack = new THREE.Vector3();
 
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
+
+    // console.log(getPlayerLookDirection());
     
     updateBackground(clock);
+
+    raycasting();
 
     playerControls(deltaTime);
 
@@ -179,7 +216,11 @@ function animate() {
     punchingBag1Animation(interactibles);
     punchingBag2Animation(interactibles);
 
-    renderer.render(scene, camera);
+    stats.update();
+    updateDebugScreen();
+    composer.render();
+
+    // renderer.render(scene, camera);
     requestAnimationFrame(animate);
 }
 

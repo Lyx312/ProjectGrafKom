@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { camera } from "./sceneSetup.js";
-import { updateStaminaBar, showInteractables, hideInteractables } from './uiSetup.js';
-import { worldOctree, capsuleMesh, interactibles } from './main.js';
+import { updateStaminaBar } from './uiSetup.js';
+import { worldOctree, capsuleMesh, stats } from './main.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
-import renderer from './sceneSetup.js';
+import { renderer } from './sceneSetup.js';
 import { boundingMaterial, lineMaterial } from './objectLoader.js';
 
 const keys = {
@@ -26,16 +26,16 @@ const MAX_STAMINA = 100;
 const SPRINT_MULTIPLIER = 2;
 const CROUCH_MULTIPLIER = 0.5;
 const PLAYER_SIZE = 1.3;
-const GRAVITY = PLAYER_SIZE*120;
+const GRAVITY = PLAYER_SIZE * 120;
 
 export const player = {
-    height: PLAYER_SIZE*6,
-    width: PLAYER_SIZE*2,
-    baseSpeed: PLAYER_SIZE*128,
+    height: PLAYER_SIZE * 6,
+    width: PLAYER_SIZE * 2,
+    baseSpeed: PLAYER_SIZE * 128,
     sprintMultiplier: 1,
     crouchMultiplier: 1,
     crouchHeightChange: 0.8,
-    jumpStrength: PLAYER_SIZE*50,
+    jumpStrength: PLAYER_SIZE * 50,
     velocity: new THREE.Vector3(),
     direction: new THREE.Vector3(),
     onGround: true,
@@ -46,12 +46,12 @@ export const player = {
 
 const cameraOffset = {
     firstPerson: PLAYER_SIZE,
-    thirdPerson: -PLAYER_SIZE*8
+    thirdPerson: -PLAYER_SIZE * 8
 }
 
 let debug = false;
 
-const playerCollider = new Capsule(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, player.height, 0), player.width/2);
+export const playerCollider = new Capsule(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, player.height, 0), player.width / 2);
 
 export const controls = new PointerLockControls(camera, renderer.domElement);
 controls.minPolarAngle = 0.001; // radians
@@ -95,24 +95,31 @@ document.addEventListener('keydown', (e) => {
             break;
         case 'KeyF':
             if (!keys.f) {
-                boundingMaterial.opacity = debug? 0 : 0.5;
-                lineMaterial.opacity = debug? 0 : 1;
-                capsuleMesh.visible = !capsuleMesh.visible;
                 debug = !debug;
+                if (debug) {
+                    document.body.appendChild(stats.dom);
+                    document.getElementById('pos').style.display = 'block';
+                } else {
+                    document.body.removeChild(stats.dom);
+                    document.getElementById('pos').style.display = 'none';
+                }
+                boundingMaterial.opacity = debug ? 0.5 : 0;
+                lineMaterial.opacity = debug ? 1 : 0;
+                capsuleMesh.visible = !capsuleMesh.visible;
                 keys.f = true;
             }
             break;
-        case 'KeyP': 
+        case 'KeyP':
             if (!keys.p) {
                 keys.p = true;
                 player.viewMode++;
-                player.viewMode%=2;
+                player.viewMode %= 2;
             }
             break;
         case 'KeyE':
             keys.e = true;
             break;
-        case 'KeyO': 
+        case 'KeyO':
             if (!keys.o) {
                 keys.o = true;
                 player.cheat = !player.cheat;
@@ -155,7 +162,7 @@ document.addEventListener('keyup', (e) => {
         case 'KeyF':
             keys.f = false;
             break;
-        case 'KeyP': 
+        case 'KeyP':
             keys.p = false;
             break;
         case 'KeyE':
@@ -169,8 +176,8 @@ document.addEventListener('keyup', (e) => {
 
 function vectorsApproximatelyEqual(vec1, vec2, tolerance = 5) {
     return Math.abs(vec1.x - vec2.x) < tolerance &&
-           Math.abs(vec1.y - vec2.y) < tolerance &&
-           Math.abs(vec1.z - vec2.z) < tolerance;
+        Math.abs(vec1.y - vec2.y) < tolerance &&
+        Math.abs(vec1.z - vec2.z) < tolerance;
 }
 
 function playerCollisions() {
@@ -207,23 +214,23 @@ export function updatePlayer(deltaTime) {
 
     if (!player.cheat) playerCollisions();
 
-    let interactablePosition = false;
-    for (const key in interactibles) {
-        if (interactibles.hasOwnProperty(key)) {
-            const interactable = interactibles[key];
-            if (vectorsApproximatelyEqual(playerCollider.end, interactable.position) && !interactable.isAnimating) {
-                showInteractables(key);
-                interactablePosition = true;
+    // let interactablePosition = false;
+    // for (const key in interactibles) {
+    //     if (interactibles.hasOwnProperty(key)) {
+    //         const interactable = interactibles[key];
+    //         if (vectorsApproximatelyEqual(playerCollider.end, interactable.position) && !interactable.isAnimating) {
+    //             showInteractables(key);
+    //             interactablePosition = true;
 
-                if (keys.e) {
-                    interactable.isAnimating = true;
-                }
-            }
-        }
-    }
-    if (!interactablePosition) {
-        hideInteractables();
-    }
+    //             if (keys.e) {
+    //                 interactable.isAnimating = true;
+    //             }
+    //         }
+    //     }
+    // }
+    // if (!interactablePosition) {
+    //     hideInteractables();
+    // }
 
     camera.position.copy(playerCollider.end);
 
@@ -255,23 +262,23 @@ function getSideVector() {
 export function playerControls(deltaTime) {
 
     // gives a bit of air control
-    const speedDelta = deltaTime * player.sprintMultiplier * player.crouchMultiplier * ((player.onGround || player.cheat)? player.baseSpeed : player.baseSpeed/3);
+    const speedDelta = deltaTime * player.sprintMultiplier * player.crouchMultiplier * ((player.onGround || player.cheat) ? player.baseSpeed : player.baseSpeed / 3);
 
     if (keys.w) {
-        player.velocity.add(getForwardVector().multiplyScalar(speedDelta * (player.cheat?3/player.sprintMultiplier:1)));
+        player.velocity.add(getForwardVector().multiplyScalar(speedDelta * (player.cheat ? 3 / player.sprintMultiplier : 1)));
     }
     if (keys.s) {
-        player.velocity.add(getForwardVector().multiplyScalar(- speedDelta * (player.cheat?3/player.sprintMultiplier:1) ));
+        player.velocity.add(getForwardVector().multiplyScalar(- speedDelta * (player.cheat ? 3 / player.sprintMultiplier : 1)));
     }
     if (keys.a) {
-        player.velocity.add(getSideVector().multiplyScalar(- speedDelta * (player.cheat?3/player.sprintMultiplier:1)));
+        player.velocity.add(getSideVector().multiplyScalar(- speedDelta * (player.cheat ? 3 / player.sprintMultiplier : 1)));
     }
     if (keys.d) {
-        player.velocity.add(getSideVector().multiplyScalar(speedDelta * (player.cheat?3/player.sprintMultiplier:1)));
+        player.velocity.add(getSideVector().multiplyScalar(speedDelta * (player.cheat ? 3 / player.sprintMultiplier : 1)));
     }
     if (player.onGround || player.cheat) {
         if (keys.space) {
-            player.velocity.y = (player.cheat? player.jumpStrength / 1 * player.crouchMultiplier  : player.jumpStrength);
+            player.velocity.y = (player.cheat ? player.jumpStrength / 1 * player.crouchMultiplier : player.jumpStrength);
         }
         if (keys.shift && player.cheat) {
             player.velocity.y = - player.jumpStrength / 1 * player.crouchMultiplier;
@@ -316,4 +323,8 @@ export function getMoveDirection() {
 export function getCameraOffset() {
     if (player.viewMode == 0) return cameraOffset.firstPerson;
     return cameraOffset.thirdPerson;
+}
+
+export function isInteracting() {
+    return keys.e;
 }

@@ -91,6 +91,7 @@ export function loadModelInterior(scene, file, position, scale, rotation, intera
                 interactibles[file].isAnimating = false;
                 interactibles[file].state = 0;
                 interactibles[file].substate = 0;
+                traverseThroughChildrenAndGiveName(model, "interactible " + file)
             }
         },
         undefined,
@@ -141,6 +142,19 @@ export function createBoundingCylinder(scene, position, scale, rotation, octree,
             line: line,
         }
     }
+}
+
+function traverseThroughChildrenAndGiveName(obj, name) {
+    obj.name = name;
+    if (obj.children.length != 0) {
+      obj.children.forEach(child => {
+        traverseThroughChildrenAndGiveName(child, name)
+      });
+    }
+  }
+
+export const createInteractionBox = (scene, name, position, scale, rotation) => {
+    
 }
 
 export function loadPlayer(scene, folder, position, scale, rotation, callback) {
