@@ -4,7 +4,7 @@ import { Octree } from 'three/addons/math/Octree.js';
 import Stats from 'three/addons/libs/stats.module.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player, isInteracting } from './controls.js';
 import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder } from './objectLoader.js';
-import { scene, camera, updateBackground, renderer } from './sceneSetup.js';
+import { scene, camera, updateBackground } from './sceneSetup.js';
 import { composer, outlinePass } from './sceneSetup.js';
 import { doorAnimation, punchingBag1Animation, punchingBag2Animation } from './objectAnimation.js';
 import { hideInteractables, showInteractables, updateDebugScreen } from './uiSetup.js';
@@ -32,8 +32,7 @@ function raycasting() {
             // console.log(intersects[i].object.name);
             outlinePass.selectedObjects = [intersects[i].object];
             let name = intersects[i].object.name.replace("interactible ", "");
-            showInteractables(name);
-
+            if (!interactibles[name].isAnimating) showInteractables(name);
             if (isInteracting()) {
                 interactibles[name].isAnimating = true;
             }
@@ -139,7 +138,7 @@ let cameraLookDirectionBack = new THREE.Vector3();
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
 
-    // console.log(getPlayerLookDirection());
+    // console.log(getPlayerLookDirection() * 180 / Math.PI);
     
     updateBackground(clock);
 
