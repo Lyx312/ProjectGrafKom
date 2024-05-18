@@ -8,6 +8,7 @@ import { scene, camera, updateBackground, renderer } from './sceneSetup.js';
 import { composer, outlinePass } from './sceneSetup.js';
 import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation } from './objectAnimation.js';
 import { updateDebugScreen } from './uiSetup.js';
+import { doctor, girl } from './npcInteraction.js';
 
 const loadingManager = new THREE.LoadingManager();
 export const worldOctree = new Octree();
@@ -34,21 +35,21 @@ function raycasting() {
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
     // console.log('intersects:',intersects);
-    hoveredInteractable = null;
+    hoveredInteractable = "";
     outlinePass.selectedObjects = [];
     // hideInteractables();
     for (const intersect of intersects) {
-        if (intersect.object.name.startsWith("interactable") && intersect.distance < 20) {
+        if (intersect.object.interact && intersect.distance < 20) {
             // console.log(intersect.object.name);
             const object = traverseUntilLastParent(intersect.object);
             outlinePass.selectedObjects = [object];
-            const name = intersect.object.name.replace("interactable ", "");
-            hoveredInteractable = interactables[name];
-            if (name == "exercise_bike") {
-                outlinePass.selectedObjects.push(traverseUntilLastParent(interactables["bike_pedals"].model));
-                hoveredInteractable = interactables["bike_pedals"];
-            } else if (name == "bike_pedals") {
-                outlinePass.selectedObjects.push(traverseUntilLastParent(interactables["exercise_bike"].model));
+            const name = intersect.object.interact;
+            hoveredInteractable = name;
+            if (name == "object_exercise_bike") {
+                outlinePass.selectedObjects.push(traverseUntilLastParent(interactables["object_bike_pedals"].model));
+                hoveredInteractable = "object_bike_pedals";
+            } else if (name == "object_bike_pedals") {
+                outlinePass.selectedObjects.push(traverseUntilLastParent(interactables["object_exercise_bike"].model));
             }
             // if (!interactables[name].isAnimating) showInteractables(name);
             // if (isInteracting()) {
@@ -59,10 +60,15 @@ function raycasting() {
     }
 }
 
+export let inDialog = false;
 document.addEventListener('click', function () {
-    if (controls.isLocked && hoveredInteractable) {
-        hoveredInteractable.isAnimating = true;
-    } else {
+    if (controls.isLocked) {
+        if (hoveredInteractable.startsWith("object")) {
+            interactables[hoveredInteractable].isAnimating = true;
+        } else if (hoveredInteractable.startsWith("npc")) {
+            interactables[hoveredInteractable].startDialogue();
+        }
+    } else if (!player.inDialog) {
         controls.lock();
     }
 }, false);
@@ -152,11 +158,11 @@ createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree);
 
 loadImage(loadingManager, scene, "Gym_Poster", [-7, 10, 11.2], [4, 4, 4], [0, 180, 0]);
 
-loadAnimatedModel(loadingManager, scene, "mujer_bodytech", [10, 0, -30], [0.13, 0.13, 0.13], [0, 90, 0], "Take 001", (animationMixer) => {
+loadAnimatedModel(loadingManager, scene, "mujer_bodytech", "workout_girl", girl, [10, 0, -30], [0.13, 0.13, 0.13], [0, 90, 0], "Take 001", interactables, (animationMixer) => {
     mixers["mujer_bodytech"] = animationMixer;
 });
 
-loadAnimatedModel(loadingManager, scene, "dr_ahmad_sitting_pose", [10, 1, 20], [3, 3, 3], [0, 0, 0], "mixamo.com", (animationMixer) => {
+loadAnimatedModel(loadingManager, scene, "dr_ahmad_sitting_pose", "Dr.Ahmad", doctor, [10, 1, 20], [3, 3, 3], [0, 0, 0], "mixamo.com", interactables, (animationMixer) => {
     mixers["dr_ahmad_sitting_pose"] = animationMixer;
 });
 
@@ -305,6 +311,6 @@ function playAnimation(animationName) {
 
 loadingManager.onLoad = function () {
     console.log('All assets loaded.');
-    console.log(interactables);
+    // console.log(interactables);
     animate(); // Start animation when all assets are loaded
 };

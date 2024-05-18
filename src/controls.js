@@ -42,6 +42,7 @@ export const player = {
     currentStamina: MAX_STAMINA,
     viewMode: 0,
     cheat: false,
+    inDialog: false
 }
 
 const cameraOffset = {
@@ -72,73 +73,69 @@ const keyMap = {
     'KeyO': 'o'
 };
 
-document.addEventListener('keydown', (e) => {
+export const onKeyDown = (e) => {
     const key = keyMap[e.code];
     if (key) {
-        handleKeyDown(key);
-    }
-});
-
-document.addEventListener('keyup', (e) => {
-    const key = keyMap[e.code];
-    if (key) {
-        handleKeyUp(key);
-    }
-});
-
-function handleKeyDown(key) {
-    switch (key) {
-        case 'w':
-        case 'a':
-        case 's':
-        case 'd':
-        case 'space':
-        case 'e':
-            keys[key] = true;
-            break;
-        case 'shift':
-            if (!keys.shift) {
-                player.sprintMultiplier *= SPRINT_MULTIPLIER;
-                keys.shift = true;
-            }
-            break;
-        case 'c':
-            if (!keys.c) {
-                playerCollider.end.y -= player.height * (1 - player.crouchHeightChange);
-                player.crouchMultiplier *= CROUCH_MULTIPLIER;
-                keys.c = true;
-            }
-            break;
-        case 'f':
-            if (!keys.f) {
-                toggleDebugMode();
-                keys.f = true;
-            }
-            break;
-        case 'p':
-            if (!keys.p) {
-                keys.p = true;
-                player.viewMode = (player.viewMode + 1) % 2;
-            }
-            break;
-        case 'o':
-            if (!keys.o) {
-                keys.o = true;
-                player.cheat = !player.cheat;
-            }
-            break;
+        switch (key) {
+            case 'w':
+            case 'a':
+            case 's':
+            case 'd':
+            case 'space':
+            case 'e':
+                keys[key] = true;
+                break;
+            case 'shift':
+                if (!keys.shift) {
+                    player.sprintMultiplier *= SPRINT_MULTIPLIER;
+                    keys.shift = true;
+                }
+                break;
+            case 'c':
+                if (!keys.c) {
+                    playerCollider.end.y -= player.height * (1 - player.crouchHeightChange);
+                    player.crouchMultiplier *= CROUCH_MULTIPLIER;
+                    keys.c = true;
+                }
+                break;
+            case 'f':
+                if (!keys.f) {
+                    toggleDebugMode();
+                    keys.f = true;
+                }
+                break;
+            case 'p':
+                if (!keys.p) {
+                    keys.p = true;
+                    player.viewMode = (player.viewMode + 1) % 2;
+                }
+                break;
+            case 'o':
+                if (!keys.o) {
+                    keys.o = true;
+                    player.cheat = !player.cheat;
+                }
+                break;
+        }
     }
 }
 
-function handleKeyUp(key) {
-    keys[key] = false;
-    if (key === 'shift') {
-        player.sprintMultiplier = 1;
-    } else if (key === 'c') {
-        playerCollider.end.y += player.height * (1 - player.crouchHeightChange);
-        player.crouchMultiplier = 1;
+export const onKeyUp = (e) => {
+    const key = keyMap[e.code];
+    if (key) {
+        keys[key] = false;
+        if (key === 'shift') {
+            player.sprintMultiplier = 1;
+        } else if (key === 'c') {
+            playerCollider.end.y += player.height * (1 - player.crouchHeightChange);
+            player.crouchMultiplier = 1;
+        }
     }
 }
+
+document.addEventListener('keydown', onKeyDown);
+document.addEventListener('keyup', onKeyUp);
+
 
 function playerCollisions() {
     const result = worldOctree.capsuleIntersect(playerCollider);

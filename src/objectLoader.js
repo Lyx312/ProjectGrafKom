@@ -32,7 +32,7 @@ function addShadow(gltf) {
 }
 
 function traverseThroughChildrenAndGiveName(obj, name) {
-    obj.name = name;
+    obj.interact = name;
     obj.children.forEach(child => traverseThroughChildrenAndGiveName(child, name));
 }
 
@@ -40,7 +40,7 @@ function handleError(error) {
     console.error(error);
 }
 
-function loadGLTF(loadingManager, path, file, scene, position, scale, rotation, interactables = null, octree=null, callback = null) {
+function loadGLTF(loadingManager, path, name, scene, position, scale, rotation, interactables = null, type=null, callFunction=null, octree=null, callback = null) {
     const loader = new GLTFLoader(loadingManager);
     loader.load(
         path,
@@ -55,13 +55,19 @@ function loadGLTF(loadingManager, path, file, scene, position, scale, rotation, 
             }
 
             if (interactables) {
-                interactables[file] = {
-                    model: model,
-                    isAnimating: false,
-                    state: 0,
-                    substate: 0
-                };
-                traverseThroughChildrenAndGiveName(model, `interactable ${file}`);
+                if (type == "object") {
+                    interactables["object_"+name] = {
+                        model: model,
+                        isAnimating: false,
+                        state: 0,
+                        substate: 0
+                    };
+                } else if (type == "npc") {
+                    interactables["npc_"+name] = {
+                        startDialogue: callFunction
+                    };
+                }
+                traverseThroughChildrenAndGiveName(model, `${type}_${name}`);
             }
 
             if (gltf.animations && gltf.animations.length > 0) {
@@ -92,11 +98,11 @@ export function loadObject(loadingManager, scene, fileName, position, scale, rot
 
 // Load the model
 export function loadModel(loadingManager, scene, folder, position, scale, rotation, callback) {
-    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, callback);
+    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, null, null, callback);
 }
 
 export function loadModelInterior(loadingManager, scene, file, position, scale, rotation, interactables) {
-    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file, scene, position, scale, rotation, interactables);
+    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file, scene, position, scale, rotation, interactables, "object");
 }
 
 export function createBoundingBox(scene, position, scale, rotation, octree) {
@@ -124,7 +130,7 @@ export function createBoundingCylinder(scene, position, scale, rotation, octree)
     scene.add(line);
 }
 export function loadPlayer(loadingManager, scene, folder, position, scale, rotation, callback) {
-    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, (mixer, model) => {
+    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, null, null, (mixer, model) => {
         const animations = {};
         if (mixer) {
             mixer._actions.forEach(action => animations[action._clip.name] = action);
@@ -145,11 +151,11 @@ export function loadImage(loadingManager, scene, file, position, scale, rotation
 }
 
 export function loadGroundModel(loadingManager, scene, file, worldOctree, position, scale, rotation) {
-    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, null, scene, position, scale, rotation, null, worldOctree);
+    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, null, scene, position, scale, rotation, null, null, null, worldOctree);
 }
 
-export function loadAnimatedModel(loadingManager, scene, folder, position, scale, rotation, animationName, callback) {
-    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, (mixer) => {
+export function loadAnimatedModel(loadingManager, scene, folder, name, dialogueFunction, position, scale, rotation, animationName, interactable, callback) {
+    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, name, scene, position, scale, rotation, interactable, "npc", dialogueFunction, null, (mixer) => {
         if (mixer) {
             mixer._actions.forEach(action => {
                 if (action._clip.name === animationName) action.play();
