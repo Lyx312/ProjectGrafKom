@@ -61,7 +61,6 @@ function loadGLTF(loadingManager, path, file, scene, position, scale, rotation, 
                     state: 0,
                     substate: 0
                 };
-                if (file == "exercise_bike") file = "bike_pedals";
                 traverseThroughChildrenAndGiveName(model, `interactable ${file}`);
             }
 

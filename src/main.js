@@ -43,18 +43,17 @@ function raycasting() {
             const object = traverseUntilLastParent(intersect.object);
             outlinePass.selectedObjects = [object];
             const name = intersect.object.name.replace("interactable ", "");
-            if (name == "bike_pedals") {
-                if (object == interactables["exercise_bike"].model) {
-                    outlinePass.selectedObjects.push(traverseUntilLastParent(interactables["bike_pedals"].model));
-                } else if (object == interactables["bike_pedals"].model) {
-                    outlinePass.selectedObjects.push(traverseUntilLastParent(interactables["exercise_bike"].model));
-                }
+            hoveredInteractable = interactables[name];
+            if (name == "exercise_bike") {
+                outlinePass.selectedObjects.push(traverseUntilLastParent(interactables["bike_pedals"].model));
+                hoveredInteractable = interactables["bike_pedals"];
+            } else if (name == "bike_pedals") {
+                outlinePass.selectedObjects.push(traverseUntilLastParent(interactables["exercise_bike"].model));
             }
             // if (!interactables[name].isAnimating) showInteractables(name);
             // if (isInteracting()) {
             //     interactables[name].isAnimating = true;
             // }
-            hoveredInteractable = interactables[name]
             break;
         }
     }
