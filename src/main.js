@@ -35,7 +35,7 @@ function raycasting() {
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
     // console.log('intersects:',intersects);
-    hoveredInteractable = "";
+    if (!player.inDialog) hoveredInteractable = "";
     outlinePass.selectedObjects = [];
     // hideInteractables();
     for (const intersect of intersects) {
@@ -60,7 +60,6 @@ function raycasting() {
     }
 }
 
-export let inDialog = false;
 document.addEventListener('click', function () {
     if (controls.isLocked) {
         if (hoveredInteractable.startsWith("object")) {
