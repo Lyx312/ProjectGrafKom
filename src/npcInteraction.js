@@ -38,7 +38,58 @@ document.addEventListener('click', function () {
 }, false);
 
 export const doctor = () => {
-    console.log("yays");
+    switch(dialogState) {
+        case 0:
+            initializeDialog();
+            showDialog("Hello, sick people and their loved ones!", "yellow");
+            break;
+        case 1:
+            showDialog("In the interest of saving time and avoiding a lot of boring chitchat later, I'm Doctor Gregory House; you can call me Greg.", "yellow");
+            break;
+        case 2:
+            showDialog("I'm one of three doctors staffing this clinic this morning.", "yellow");
+            break;
+        case 3:
+            showDialog("I am a Board certified diagnostician with a double specialty in infectious disease and nephrology.", "yellow");
+            break;
+        case 4:
+            showDialog("I am also the only doctor currently employed at this clinic who is forced to be here against his will.", "yellow");
+            break;
+        case 5:
+            showDialog("But not to worry, because for most of you, this job could be done by a monkey with a bottle of Motrin.", "yellow");
+            break;
+        case 5:
+            showDialog("But not to worry, because for most of you, this job could be done by a monkey with a bottle of Motrin.", "yellow");
+            break;
+        case 6:
+            showDialog("Speaking of which, if you're particularly annoying, you may see me reach for this: this is Vicodin.", "yellow");
+            break;
+        case 7:
+            showDialog("It's mine. You can't have any.", "red");
+            break;
+        case 8:
+            showDialog("And no, I do not have a pain management problem, I have a pain problem.", "yellow");
+            break;
+        case 9:
+            showDialog("But who knows?", "yellow");
+            break;
+        case 10:
+            showDialog("Maybe I'm wrong.", "yellow");
+            break;
+        case 11:
+            showDialog("Maybe I'm too stoned to tell.", "red");
+            break;
+        case 12:
+            showDialog("So, who wants me?", "yellow");
+            break;
+        case 13:
+            showDialog("Well, I'll be in Exam Room One if you change your mind.", "yellow");
+            break;
+        case 14:
+            finishDialog();
+            dialogState = 0;
+            break;
+    } 
 }
 
 export const girl = () => {
