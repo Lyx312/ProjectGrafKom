@@ -237,7 +237,7 @@ export function treadmillAnimation(player, interactables) {
 }
 
 export function carAnimation(interactables) {
-    const car = interactables["lowpoly_car"];
+    const car = interactables["object_lowpoly_car"];
     
     if (car && car.isAnimating) {
         car.substate++;
