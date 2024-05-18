@@ -1,4 +1,4 @@
-import { controls, onKeyDown, onKeyUp, player } from "./controls.js";
+import { controls, onKeyDown, onKeyUp, player, resetControls } from "./controls.js";
 
 const dialogBox = document.getElementById("dialog");
 const initializeDialog = () => {
@@ -8,9 +8,7 @@ const initializeDialog = () => {
     controls.disconnect();
     document.body.ownerDocument.removeEventListener('keydown', onKeyDown);
     document.body.ownerDocument.removeEventListener('keyup', onKeyUp);
-    document.body.ownerDocument.addEventListener('click', () => {
-        
-    });
+    resetControls()
 }
 
 const finishDialog = () => {

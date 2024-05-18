@@ -22,6 +22,12 @@ const keys = {
     ctrl: false,
 };
 
+export const resetControls = (params) => {
+    for (const key in keys) {
+        keys[key] = false;
+    }
+}
+
 const MAX_STAMINA = 100;
 const SPRINT_MULTIPLIER = 2;
 const CROUCH_MULTIPLIER = 0.5;
