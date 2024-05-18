@@ -6,7 +6,7 @@ import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDir
 import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel } from './objectLoader.js';
 import { scene, camera, updateBackground, renderer } from './sceneSetup.js';
 import { composer, outlinePass } from './sceneSetup.js';
-import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation } from './objectAnimation.js';
+import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation } from './objectAnimation.js';
 import { updateDebugScreen } from './uiSetup.js';
 
 const loadingManager = new THREE.LoadingManager();
@@ -165,7 +165,7 @@ createBoundingBox(scene, [-22, 7, 50.5], [34, 8, 14], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "exercise_bike", [-10, 0, -30], [3, 3, 3], [0, 90, 0], interactables);
 loadModelInterior(loadingManager, scene, "bike_pedals", [-11.8, 2.4, -30], [3, 3, 3], [0, 180, 0], interactables);
-//createBoundingBox(scene, [-10.13, 0.5, -40.15], [7, 4.6, 2.9], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-10, 4, -30], [9, 8, 2], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "locker", [26, 0.2, -63.5], [8, 8, 8], [0, 0, 0]);
 loadModelInterior(loadingManager, scene, "locker_door", [28, 0.2, -61.5], [8, 8, 8], [0, 0, 0], interactables);
@@ -195,7 +195,7 @@ function animate() {
     // console.log(getPlayerLookDirection() * 180 / Math.PI);
     // console.log(hoveredInteractable);
 
-    updateBackground(clock);
+    updateBackground(player.currentStamina); // Pass the player's current stamina
 
     if (currentTime - lastRaycastTime > raycastInterval) {
         raycasting();
@@ -245,6 +245,7 @@ function updateInteractableAnimation() {
     barbellsAnimation(interactables);
     bikeAnimation(interactables);
     lockerAnimation(interactables);
+    carAnimation(interactables);
     treadmillAnimation(player, interactables);
 }
 

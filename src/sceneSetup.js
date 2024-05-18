@@ -62,9 +62,9 @@ const noonColor = new THREE.Color('lightblue');
 const eveningColor = new THREE.Color(0xff8170);
 const nightColor = new THREE.Color('black');
 
-export function updateBackground(clock) {
-    let elapsedTime = clock.getElapsedTime();
-    let currentHour = (elapsedTime + 60) % 240;
+export function updateBackground(stamina) {
+    // Map stamina (0-100) to currentHour (240 to 60)
+    let currentHour = 240 - (stamina * 1.8);
     let currentColor = new THREE.Color();
 
     // Interpolate between the colors for different times of the day
@@ -73,7 +73,7 @@ export function updateBackground(clock) {
         currentColor = nightColor;
     } else if (currentHour < 60) {
         // Transition from night to morning - interpolate between black and red
-        let t = (currentHour - 40) / 30;
+        let t = (currentHour - 40) / 20;
         currentColor.lerpColors(nightColor, morningColor, t);
     } else if (currentHour < 80) {
         // Transition from morning to noon - interpolate between red and light blue
@@ -93,5 +93,4 @@ export function updateBackground(clock) {
     }
 
     scene.background = currentColor;
-
 }

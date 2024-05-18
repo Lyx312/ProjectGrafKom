@@ -1,4 +1,5 @@
 import { getPlayerLookDirection } from "./controls.js";
+let day = 1;
 
 export function doorAnimation(interactables) {
     const door = interactables["door"];
@@ -228,4 +229,67 @@ export function treadmillAnimation(player, interactables) {
         }
     }
     //player.position = [0,0,0];
+}
+
+export function carAnimation(interactables) {
+    const car = interactables["lowpoly_car"];
+    
+    if (car && car.isAnimating) {
+        car.substate++;
+        
+        const timeChange = 0.01;
+        
+        // Check if the overlay already exists
+        let overlay = document.getElementById('black-overlay');
+        
+        if (!overlay) {
+            day++;
+            // Create a black overlay
+            overlay = document.createElement('div');
+            overlay.id = 'black-overlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'black';
+            overlay.style.opacity = '1';
+            overlay.style.zIndex = '1000';
+            overlay.style.transition = 'opacity 0.05s linear';
+            document.body.appendChild(overlay);
+            
+            // Create text element
+            const textElement = document.createElement('div');
+            textElement.textContent = `Day ${day}`;
+            textElement.style.position = 'absolute';
+            textElement.style.top = '50%';
+            textElement.style.left = '50%';
+            textElement.style.transform = 'translate(-50%, -50%)';
+            textElement.style.color = 'white';
+            textElement.style.fontSize = '4em';
+            overlay.appendChild(textElement);
+        }
+        
+        // Calculate new opacity based on substate
+        const maxSubstate = 50; // Adjust this value to make the black screen stay longer
+        let opacity;
+        
+        if (car.substate <= maxSubstate) {
+            // Keep the screen black
+            opacity = 1;
+        } else {
+            // Start fading in
+            opacity = 1 - Math.min((car.substate - maxSubstate) * timeChange, 1);
+        }
+        
+        // Update the overlay's opacity
+        overlay.style.opacity = opacity;
+
+        // Remove the overlay once fully faded in
+        if (opacity === 0 && car.substate > maxSubstate) {
+            overlay.remove();
+            car.substate = 0;
+            car.isAnimating = false;
+        }
+    }
 }
