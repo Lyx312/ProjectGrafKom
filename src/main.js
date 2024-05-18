@@ -6,7 +6,7 @@ import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDir
 import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel } from './objectLoader.js';
 import { scene, camera, updateBackground, renderer } from './sceneSetup.js';
 import { composer, outlinePass } from './sceneSetup.js';
-import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation } from './objectAnimation.js';
+import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation } from './objectAnimation.js';
 import { updateDebugScreen } from './uiSetup.js';
 import { doctor, girl } from './npcInteraction.js';
 
@@ -155,12 +155,14 @@ createBoundingBox(scene, [9, 7, 11.5], [2.5, 8, 39.5], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 8, 12], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 8, 57], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [-14, 16.5, 11.5], [2.5, 5, 10], [0, 90, 0], worldOctree);
 
 loadImage(loadingManager, scene, "Gym_Poster", [-7, 10, 11.2], [4, 4, 4], [0, 180, 0]);
 
 loadAnimatedModel(loadingManager, scene, "mujer_bodytech", "workout_girl", girl, [10, 0, -30], [0.13, 0.13, 0.13], [0, 90, 0], "Take 001", interactables, (animationMixer) => {
     mixers["mujer_bodytech"] = animationMixer;
 });
+createBoundingCylinder(scene, [10, 5, -30], [1.5, 10, 1.5], [0, 0, 0], worldOctree)
 
 loadAnimatedModel(loadingManager, scene, "dr_ahmad_sitting_pose", "Dr.Ahmad", doctor, [10, 1, 20], [3, 3, 3], [0, 0, 0], "mixamo.com", interactables, (animationMixer) => {
     mixers["dr_ahmad_sitting_pose"] = animationMixer;
@@ -171,7 +173,7 @@ createBoundingBox(scene, [-22, 7, 50.5], [34, 8, 14], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "exercise_bike", [-10, 0, -30], [3, 3, 3], [0, 90, 0], interactables);
 loadModelInterior(loadingManager, scene, "bike_pedals", [-11.8, 2.4, -30], [3, 3, 3], [0, 180, 0], interactables);
-//createBoundingBox(scene, [-10.13, 0.5, -40.15], [7, 4.6, 2.9], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-10, 4, -30], [9, 8, 2], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "locker", [26, 0.2, -63.5], [8, 8, 8], [0, 0, 0]);
 loadModelInterior(loadingManager, scene, "locker_door", [28, 0.2, -61.5], [8, 8, 8], [0, 0, 0], interactables);
@@ -201,7 +203,7 @@ function animate() {
     // console.log(getPlayerLookDirection() * 180 / Math.PI);
     // console.log(hoveredInteractable);
 
-    updateBackground(clock);
+    updateBackground(player.currentStamina); // Pass the player's current stamina
 
     if (currentTime - lastRaycastTime > raycastInterval) {
         raycasting();
@@ -251,6 +253,7 @@ function updateInteractableAnimation() {
     barbellsAnimation(interactables);
     bikeAnimation(interactables);
     lockerAnimation(interactables);
+    carAnimation(interactables);
     treadmillAnimation(player, interactables);
 }
 

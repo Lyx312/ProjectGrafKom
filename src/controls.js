@@ -244,7 +244,8 @@ export function updateStamina() {
         } else {
             player.sprintMultiplier = 1;
         }
-    } else if (player.currentStamina < MAX_STAMINA) {
+    }
+    else if (player.currentStamina < MAX_STAMINA) {
         player.currentStamina += 0.2;
     }
 
