@@ -31,8 +31,57 @@ function addShadow(gltf) {
     });
 }
 
-export function loadObject(scene, fileName, position, scale, rotation) {
-    const mtlLoader = new MTLLoader();
+function traverseThroughChildrenAndGiveName(obj, name) {
+    obj.name = name;
+    obj.children.forEach(child => traverseThroughChildrenAndGiveName(child, name));
+}
+
+function handleError(error) {
+    console.error(error);
+}
+
+function loadGLTF(loadingManager, path, file, scene, position, scale, rotation, interactibles = null, octree=null, callback = null) {
+    const loader = new GLTFLoader(loadingManager);
+    loader.load(
+        path,
+        function (gltf) {
+            const model = gltf.scene;
+            setPositionScaleRotation(model, position, scale, rotation);
+            addShadow(gltf);
+            scene.add(model);
+
+            if (octree) {
+                octree.fromGraphNode(model);
+            }
+
+            if (interactibles) {
+                if (file != "exercise_bike") {
+                    interactibles[file] = {
+                        model: model,
+                        isAnimating: false,
+                        state: 0,
+                        substate: 0
+                    };
+                }
+                if (file == "exercise_bike") file = "bike_pedals";
+                traverseThroughChildrenAndGiveName(model, `interactible ${file}`);
+            }
+
+            if (gltf.animations && gltf.animations.length > 0) {
+                const mixer = new THREE.AnimationMixer(model);
+                gltf.animations.forEach(clip => mixer.clipAction(clip).play());
+                if (callback) callback(mixer, model);
+            } else if (callback) {
+                callback(null);
+            }
+        },
+        undefined,
+        handleError
+    );
+}
+
+export function loadObject(loadingManager, scene, fileName, position, scale, rotation) {
+    const mtlLoader = new MTLLoader(loadingManager);
     mtlLoader.load(`${MTL_PATH}${fileName}.mtl`, function (materials) {
         materials.preload();
         const objLoader = new OBJLoader();
@@ -45,63 +94,15 @@ export function loadObject(scene, fileName, position, scale, rotation) {
 }
 
 // Load the model
-export function loadModel(scene, folder, position, scale, rotation, callback) {
-    const loader = new GLTFLoader();
-    loader.load(
-        `${MODEL_PATH}${folder}/scene.gltf`,
-        function (gltf) {
-            const model = gltf.scene;
-            setPositionScaleRotation(model, position, scale, rotation);
-            addShadow(gltf);
-            scene.add(model);
-
-            if (gltf.animations && gltf.animations.length > 0) {
-                const mixer = new THREE.AnimationMixer(model);
-                gltf.animations.forEach((clip) => {
-                    mixer.clipAction(clip).play();
-                });
-
-                // Pass the mixer to the callback function
-                if (callback && typeof callback === 'function') {
-                    callback(mixer);
-                }
-            }
-        },
-        undefined,
-        function (error) {
-            console.error(error);
-        }
-    );
+export function loadModel(loadingManager, scene, folder, position, scale, rotation, callback) {
+    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, callback);
 }
 
-export function loadModelInterior(scene, file, position, scale, rotation, interactibles, worldPosition) {
-    const loader = new GLTFLoader();
-    loader.load(
-        `${MODEL_PATH}individual_equipments/${file}.glb`,
-        function (gltf) {
-            const model = gltf.scene;
-            setPositionScaleRotation(model, position, scale, rotation);
-            addShadow(gltf);
-            scene.add(model);
-
-            if (interactibles && worldPosition) {
-                interactibles[file] = {}
-                interactibles[file].position = new THREE.Vector3(...worldPosition);
-                interactibles[file].model = model;
-                interactibles[file].isAnimating = false;
-                interactibles[file].state = 0;
-                interactibles[file].substate = 0;
-                traverseThroughChildrenAndGiveName(model, "interactible " + file)
-            }
-        },
-        undefined,
-        function (error) {
-            console.error(error);
-        }
-    );
+export function loadModelInterior(loadingManager, scene, file, position, scale, rotation, interactibles) {
+    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file, scene, position, scale, rotation, interactibles);
 }
 
-export function createBoundingBox(scene, position, scale, rotation, octree, interactibles) {
+export function createBoundingBox(scene, position, scale, rotation, octree) {
     const cube = new THREE.Mesh(geometry, boundingMaterial);
     setPositionScaleRotation(cube, position, scale, rotation);
     octree.fromGraphNode(cube);
@@ -109,20 +110,11 @@ export function createBoundingBox(scene, position, scale, rotation, octree, inte
 
     const edges = new THREE.EdgesGeometry(cube.geometry);
     const line = new THREE.LineSegments(edges, lineMaterial);
-    line.position.copy(cube.position);
-    line.scale.copy(cube.scale);
-    line.rotation.copy(cube.rotation);
+    setPositionScaleRotation(line, position, scale, rotation);
     scene.add(line);
-
-    if (interactibles) {
-        interactibles.boundingBox = {
-            cube: cube,
-            line: line,
-        }
-    }
 }
 
-export function createBoundingCylinder(scene, position, scale, rotation, octree, interactibles) {
+export function createBoundingCylinder(scene, position, scale, rotation, octree) {
     const geometry = new THREE.CylinderGeometry(1, 1, 1);
     const cylinder = new THREE.Mesh(geometry, boundingMaterial);
     setPositionScaleRotation(cylinder, position, scale, rotation);
@@ -131,130 +123,41 @@ export function createBoundingCylinder(scene, position, scale, rotation, octree,
 
     const edges = new THREE.EdgesGeometry(cylinder.geometry);
     const line = new THREE.LineSegments(edges, lineMaterial);
-    line.position.copy(cylinder.position);
-    line.scale.copy(cylinder.scale);
-    line.rotation.copy(cylinder.rotation);
+    setPositionScaleRotation(line, position, scale, rotation);
     scene.add(line);
-
-    if (interactibles) {
-        interactibles.boundingCylinder = {
-            cylinder: cylinder,
-            line: line,
+}
+export function loadPlayer(loadingManager, scene, folder, position, scale, rotation, callback) {
+    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, (mixer, model) => {
+        const animations = {};
+        if (mixer) {
+            mixer._actions.forEach(action => animations[action._clip.name] = action);
         }
-    }
+        callback(model, mixer, animations);
+    });
 }
 
-function traverseThroughChildrenAndGiveName(obj, name) {
-    obj.name = name;
-    if (obj.children.length != 0) {
-      obj.children.forEach(child => {
-        traverseThroughChildrenAndGiveName(child, name)
-      });
-    }
-  }
-
-export const createInteractionBox = (scene, name, position, scale, rotation) => {
-    
-}
-
-export function loadPlayer(scene, folder, position, scale, rotation, callback) {
-    const loader = new GLTFLoader();
-    loader.load(
-        `${MODEL_PATH}${folder}/scene.gltf`,
-        function (gltf) {
-            const model = gltf.scene;
-            setPositionScaleRotation(model, position, scale, rotation);
-            scene.add(model);
-            addShadow(gltf);
-
-            let mixer;
-            let animations = {};
-
-            if (gltf.animations && gltf.animations.length > 0) {
-                mixer = new THREE.AnimationMixer(model);
-                gltf.animations.forEach((clip) => {
-                    animations[clip.name] = mixer.clipAction(clip);
-                });
-            }
-
-            // Pass the model, mixer, and animations to the callback function
-            if (callback && typeof callback === 'function') {
-                callback(model, mixer, animations);
-            }
-        },
-        undefined,
-        function (error) {
-            console.error(error);
-        }
-    );
-}
-
-export function loadImage(scene, file, position, scale, rotation) {
-    const texture = new THREE.TextureLoader().load(`${IMAGE_PATH}${file}.png`);
+export function loadImage(loadingManager, scene, file, position, scale, rotation) {
+    const texture = new THREE.TextureLoader(loadingManager).load(`${IMAGE_PATH}${file}.png`);
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const geometry = new THREE.PlaneGeometry(1, 1);
     const mesh = new THREE.Mesh(geometry, material);
 
     setPositionScaleRotation(mesh, position, scale, rotation);
 
-   scene.add(mesh);
+    scene.add(mesh);
 }
 
-export function loadGroundModel(scene, file, worldOctree, position, scale, rotation) {
-    // Set up the GLTF loader
-    const loader = new GLTFLoader();
+export function loadGroundModel(loadingManager, scene, file, worldOctree, position, scale, rotation) {
+    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, null, scene, position, scale, rotation, null, worldOctree);
+}
 
-    // Load the ground model
-    loader.load(`${MODEL_PATH}individual_equipments/${file}.glb`, function (gltf) {
-        const ground = gltf.scene;
-        addShadow(gltf);
-
-        // Set the position, scale, and rotation of the ground model
-        setPositionScaleRotation(ground, position, scale, rotation);
-
-        // Ensure the ground model receives shadows
-        ground.receiveShadow = true;
-
-        // Add the ground model to the scene
-        scene.add(ground);
-
-        // Add the ground model to the worldOctree if needed
-        if (worldOctree) {
-            worldOctree.fromGraphNode(ground);
+export function loadAnimatedModel(loadingManager, scene, folder, position, scale, rotation, animationName, callback) {
+    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, (mixer) => {
+        if (mixer) {
+            mixer._actions.forEach(action => {
+                if (action._clip.name === animationName) action.play();
+            });
         }
-
-    }, undefined, function (error) {
-        console.error('An error occurred while loading the ground model:', error);
+        callback(mixer);
     });
-}
-
-export function loadAnimatedModel(scene, folder, position, scale, rotation, animationName, callback) {
-    const loader = new GLTFLoader();
-    loader.load(
-        `${MODEL_PATH}${folder}/scene.gltf`,
-        function (gltf) {
-            const model = gltf.scene;
-            setPositionScaleRotation(model, position, scale, rotation);
-            addShadow(gltf);
-            scene.add(model);
-
-            if (gltf.animations && gltf.animations.length > 0) {
-                const mixer = new THREE.AnimationMixer(model);
-                gltf.animations.forEach((clip) => {
-                    if (clip.name === animationName) {
-                        mixer.clipAction(clip).play();
-                    }
-                });
-
-                // Pass the mixer to the callback function
-                if (callback && typeof callback === 'function') {
-                    callback(mixer);
-                }
-            }
-        },
-        undefined,
-        function (error) {
-            console.error(error);
-        }
-    );
 }

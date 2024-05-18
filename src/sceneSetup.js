@@ -23,7 +23,7 @@ outlinePass.edgeStrength = 5.0;
 outlinePass.edgeGlow = 1.0;
 outlinePass.edgeThickness = 3.0;
 outlinePass.pulsePeriod = 0;
-// outlinePass.usePatternTexture = false; // patter texture for an object mesh
+outlinePass.usePatternTexture = false; // patter texture for an object mesh
 outlinePass.visibleEdgeColor.set("#1abaff"); // set basic edge color
 outlinePass.hiddenEdgeColor.set("#1abaff"); // set edge color when it hidden by other objects
 composer.addPass( outlinePass );

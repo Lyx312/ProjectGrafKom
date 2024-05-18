@@ -17,7 +17,7 @@ staminaBar.style.position = 'absolute';
 staminaBar.style.top = '10px';
 staminaBar.style.right = '10px';
 staminaBar.style.width = '20px';
-staminaBar.style.height = '100px';
+staminaBar.style.height = '200px';
 staminaBar.style.backgroundColor = 'yellow';
 staminaBar.style.border = '1px solid black';
 document.body.appendChild(staminaBar);

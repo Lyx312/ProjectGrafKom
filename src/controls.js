@@ -57,123 +57,87 @@ export const controls = new PointerLockControls(camera, renderer.domElement);
 controls.minPolarAngle = 0.001; // radians
 controls.maxPolarAngle = Math.PI - 0.001; // radians
 
-// Add event listeners for keydown and keyup
+const keyMap = {
+    'KeyW': 'w',
+    'KeyA': 'a',
+    'KeyS': 's',
+    'KeyD': 'd',
+    'Space': 'space',
+    'ShiftLeft': 'shift',
+    'ShiftRight': 'shift',
+    'KeyC': 'c',
+    'KeyF': 'f',
+    'KeyP': 'p',
+    'KeyE': 'e',
+    'KeyO': 'o'
+};
+
 document.addEventListener('keydown', (e) => {
-    switch (e.code) {
-        case 'KeyW':
-            keys.w = true;
+    const key = keyMap[e.code];
+    if (key) {
+        handleKeyDown(key);
+    }
+});
+
+document.addEventListener('keyup', (e) => {
+    const key = keyMap[e.code];
+    if (key) {
+        handleKeyUp(key);
+    }
+});
+
+function handleKeyDown(key) {
+    switch (key) {
+        case 'w':
+        case 'a':
+        case 's':
+        case 'd':
+        case 'space':
+        case 'e':
+            keys[key] = true;
             break;
-        case 'KeyA':
-            keys.a = true;
-            break;
-        case 'KeyS':
-            keys.s = true;
-            break;
-        case 'KeyD':
-            keys.d = true;
-            break;
-        case 'Space':
-            keys.space = true;
-            break;
-        case 'ShiftLeft':
-        case 'ShiftRight':
+        case 'shift':
             if (!keys.shift) {
                 player.sprintMultiplier *= SPRINT_MULTIPLIER;
                 keys.shift = true;
             }
             break;
-        case 'KeyC':
+        case 'c':
             if (!keys.c) {
                 playerCollider.end.y -= player.height * (1 - player.crouchHeightChange);
                 player.crouchMultiplier *= CROUCH_MULTIPLIER;
                 keys.c = true;
             }
             break;
-        case 'KeyF':
+        case 'f':
             if (!keys.f) {
-                debug = !debug;
-                if (debug) {
-                    document.body.appendChild(stats.dom);
-                    document.getElementById('pos').style.display = 'block';
-                } else {
-                    document.body.removeChild(stats.dom);
-                    document.getElementById('pos').style.display = 'none';
-                }
-                boundingMaterial.opacity = debug ? 0.5 : 0;
-                lineMaterial.opacity = debug ? 1 : 0;
-                capsuleMesh.visible = !capsuleMesh.visible;
+                toggleDebugMode();
                 keys.f = true;
             }
             break;
-        case 'KeyP':
+        case 'p':
             if (!keys.p) {
                 keys.p = true;
-                player.viewMode++;
-                player.viewMode %= 2;
+                player.viewMode = (player.viewMode + 1) % 2;
             }
             break;
-        case 'KeyE':
-            keys.e = true;
-            break;
-        case 'KeyO':
+        case 'o':
             if (!keys.o) {
                 keys.o = true;
                 player.cheat = !player.cheat;
             }
             break;
     }
-});
+}
 
-document.addEventListener('keyup', (e) => {
-    switch (e.code) {
-        case 'KeyW':
-            keys.w = false;
-            break;
-        case 'KeyA':
-            keys.a = false;
-            break;
-        case 'KeyS':
-            keys.s = false;
-            break;
-        case 'KeyD':
-            keys.d = false;
-            break;
-        case 'Space':
-            keys.space = false;
-            break;
-        case 'ShiftLeft':
-        case 'ShiftRight':
-            if (keys.shift) {
-                player.sprintMultiplier = 1;
-                keys.shift = false;
-            }
-            break;
-        case 'KeyC':
-            if (keys.c) {
-                playerCollider.end.y += player.height * (1 - player.crouchHeightChange);
-                player.crouchMultiplier = 1;
-                keys.c = false;
-            }
-            break;
-        case 'KeyF':
-            keys.f = false;
-            break;
-        case 'KeyP':
-            keys.p = false;
-            break;
-        case 'KeyE':
-            keys.e = false;
-            break;
-        case 'KeyO':
-            keys.o = false;
-            break;
+function handleKeyUp(key) {
+    keys[key] = false;
+    if (key === 'shift') {
+        player.sprintMultiplier = 1;
+    } else if (key === 'c') {
+        playerCollider.end.y += player.height * (1 - player.crouchHeightChange);
+        player.crouchMultiplier = 1;
     }
-});
-
-function vectorsApproximatelyEqual(vec1, vec2, tolerance = 5) {
-    return Math.abs(vec1.x - vec2.x) < tolerance &&
-        Math.abs(vec1.y - vec2.y) < tolerance &&
-        Math.abs(vec1.z - vec2.z) < tolerance;
 }
 
 function playerCollisions() {
@@ -191,15 +155,27 @@ function playerCollisions() {
     }
 }
 
-// Create these once outside of your render loop
+function toggleDebugMode() {
+    debug = !debug;
+    if (debug) {
+        document.body.appendChild(stats.dom);
+        document.getElementById('pos').style.display = 'block';
+    } else {
+        document.body.removeChild(stats.dom);
+        document.getElementById('pos').style.display = 'none';
+    }
+    boundingMaterial.opacity = debug ? 0.5 : 0;
+    lineMaterial.opacity = debug ? 1 : 0;
+    capsuleMesh.visible = !capsuleMesh.visible;
+}
+
+
 const deltaPosition = new THREE.Vector3();
 export function updatePlayer(deltaTime) {
-    let damping = Math.exp(- 8 * deltaTime) - 1;
+    let damping = Math.exp(-8 * deltaTime) - 1;
 
     if (!player.onGround && !player.cheat) {
         player.velocity.y -= GRAVITY * deltaTime;
-
-        // small air resistance
         damping *= 0.5;
     }
 
@@ -210,32 +186,12 @@ export function updatePlayer(deltaTime) {
 
     if (!player.cheat) playerCollisions();
 
-    // let interactablePosition = false;
-    // for (const key in interactibles) {
-    //     if (interactibles.hasOwnProperty(key)) {
-    //         const interactable = interactibles[key];
-    //         if (vectorsApproximatelyEqual(playerCollider.end, interactable.position) && !interactable.isAnimating) {
-    //             showInteractables(key);
-    //             interactablePosition = true;
-
-    //             if (keys.e) {
-    //                 interactable.isAnimating = true;
-    //             }
-    //         }
-    //     }
-    // }
-    // if (!interactablePosition) {
-    //     hideInteractables();
-    // }
-
     camera.position.copy(playerCollider.end);
 
     if (!player.cheat) {
         capsuleMesh.position.copy(playerCollider.start);
         capsuleMesh.position.y += player.height / 2; // Adjust for the fact that CylinderGeometry is centered at its midpoint
     }
-
-    // console.log(playerCollider.end);
 }
 
 function getForwardVector() {
@@ -283,6 +239,7 @@ export function playerControls(deltaTime) {
 }
 
 
+let lastStaminaValue = player.currentStamina;
 export function updateStamina() {
     if (!player.cheat && keys.shift && (keys.w || keys.a || keys.s || keys.d)) {
         if (player.currentStamina > 0) {
@@ -294,8 +251,10 @@ export function updateStamina() {
         player.currentStamina += 0.2;
     }
 
-    // Update stamina bar UI
-    updateStaminaBar((player.currentStamina / MAX_STAMINA) * 100);
+    if (player.currentStamina !== lastStaminaValue) {
+        updateStaminaBar((player.currentStamina / MAX_STAMINA) * 100);
+        lastStaminaValue = player.currentStamina;
+    }
 }
 
 export function getPlayerLookDirection() {
@@ -319,8 +278,4 @@ export function getMoveDirection() {
 export function getCameraOffset() {
     if (player.viewMode == 0) return cameraOffset.firstPerson;
     return cameraOffset.thirdPerson;
-}
-
-export function isInteracting() {
-    return keys.e;
 }

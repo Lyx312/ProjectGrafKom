@@ -157,6 +157,7 @@ export function punchingBag2Animation(interactibles) {
     }
 }
 
+
 export function barbellsAnimation(interactibles) {
     const barbells = interactibles["barbells"];
     if (barbells && barbells.isAnimating) {
