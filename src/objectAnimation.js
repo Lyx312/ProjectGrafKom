@@ -1,5 +1,7 @@
 import { getPlayerLookDirection } from "./controls.js";
 let day = 1;
+let str = 0;
+let spd = 0;
 
 export function doorAnimation(interactables) {
     const door = interactables["door"];
@@ -49,7 +51,6 @@ export function lockerAnimation(interactables) {
 
 export function punchingBag1Animation(interactables) {
     const punchingBag = interactables["punching_bag_1"];
-
     if (punchingBag && punchingBag.isAnimating) {
 
         if (punchingBag.substate === 0) {
@@ -98,6 +99,7 @@ export function punchingBag1Animation(interactables) {
             punchingBag.deltaPositionX = 0;
             punchingBag.deltaPositionZ = 0;
             punchingBag.isAnimating = false;
+            str++;
         }
     }
 }
@@ -105,7 +107,6 @@ export function punchingBag1Animation(interactables) {
 
 export function punchingBag2Animation(interactables) {
     const punchingBag = interactables["punching_bag_2"];
-    
     if (punchingBag && punchingBag.isAnimating) {
 
         if (punchingBag.substate === 0) {
@@ -154,6 +155,7 @@ export function punchingBag2Animation(interactables) {
             punchingBag.deltaPositionX = 0;
             punchingBag.deltaPositionZ = 0;
             punchingBag.isAnimating = false;
+            str++;
         }
     }
 }
@@ -162,7 +164,6 @@ export function punchingBag2Animation(interactables) {
 export function barbellsAnimation(interactables) {
     const barbells = interactables["barbells"];
     if (barbells && barbells.isAnimating) {
-        
         barbells.substate++;
         const heightChange = 0.05; // Change in y-position per frame, adjust as needed
         const previousPositionY = barbells.model.position.y;
@@ -182,6 +183,7 @@ export function barbellsAnimation(interactables) {
             barbells.state = 0; // Reset state to 0 for next cycle
             barbells.substate = 0;
             barbells.isAnimating = false; // End the animation
+            str+=10;
         }
     }
 }
@@ -198,6 +200,7 @@ export function bikeAnimation(interactables) {
             // Reset the rotation to 0 and stop animating
             bike.model.rotation.z = 0;
             bike.isAnimating = false;
+            spd+=10;
         }
     }
 }
@@ -268,6 +271,30 @@ export function carAnimation(interactables) {
             textElement.style.color = 'white';
             textElement.style.fontSize = '4em';
             overlay.appendChild(textElement);
+
+            // Create strength text element
+            const strengthTextElement = document.createElement('div');
+            strengthTextElement.textContent = `Strength: ${str}`;
+            strengthTextElement.style.position = 'absolute';
+            strengthTextElement.style.top = '60%'; // Adjust vertical position as needed
+            strengthTextElement.style.left = '45%'; // Adjust horizontal position as needed
+            strengthTextElement.style.transform = 'translate(-50%, -50%)';
+            strengthTextElement.style.color = 'white';
+            strengthTextElement.style.fontSize = '1.5em';
+            strengthTextElement.style.display = 'inline-block';
+            overlay.appendChild(strengthTextElement);
+
+            // Create speed text element
+            const speedTextElement = document.createElement('div');
+            speedTextElement.textContent = `Speed: ${spd}`;
+            speedTextElement.style.position = 'absolute';
+            speedTextElement.style.top = '60%'; // Adjust vertical position as needed
+            speedTextElement.style.left = '55%'; // Adjust horizontal position as needed
+            speedTextElement.style.transform = 'translate(-50%, -50%)';
+            speedTextElement.style.color = 'white';
+            speedTextElement.style.fontSize = '1.5em';
+            speedTextElement.style.display = 'inline-block';
+            overlay.appendChild(speedTextElement);
         }
         
         // Calculate new opacity based on substate

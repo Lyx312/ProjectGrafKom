@@ -149,12 +149,14 @@ createBoundingBox(scene, [9, 7, 11.5], [2.5, 8, 39.5], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 8, 12], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 8, 57], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [-14, 16.5, 11.5], [2.5, 5, 10], [0, 90, 0], worldOctree);
 
 loadImage(loadingManager, scene, "Gym_Poster", [-7, 10, 11.2], [4, 4, 4], [0, 180, 0]);
 
 loadAnimatedModel(loadingManager, scene, "mujer_bodytech", [10, 0, -30], [0.13, 0.13, 0.13], [0, 90, 0], "Take 001", (animationMixer) => {
     mixers["mujer_bodytech"] = animationMixer;
 });
+createBoundingCylinder(scene, [10, 5, -30], [1.5, 10, 1.5], [0, 0, 0], worldOctree)
 
 loadAnimatedModel(loadingManager, scene, "dr_ahmad_sitting_pose", [10, 1, 20], [3, 3, 3], [0, 0, 0], "mixamo.com", (animationMixer) => {
     mixers["dr_ahmad_sitting_pose"] = animationMixer;
