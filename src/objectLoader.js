@@ -40,7 +40,7 @@ function handleError(error) {
     console.error(error);
 }
 
-function loadGLTF(loadingManager, path, file, scene, position, scale, rotation, interactibles = null, octree=null, callback = null) {
+function loadGLTF(loadingManager, path, file, scene, position, scale, rotation, interactables = null, octree=null, callback = null) {
     const loader = new GLTFLoader(loadingManager);
     loader.load(
         path,
@@ -54,17 +54,15 @@ function loadGLTF(loadingManager, path, file, scene, position, scale, rotation, 
                 octree.fromGraphNode(model);
             }
 
-            if (interactibles) {
-                if (file != "exercise_bike") {
-                    interactibles[file] = {
-                        model: model,
-                        isAnimating: false,
-                        state: 0,
-                        substate: 0
-                    };
-                }
+            if (interactables) {
+                interactables[file] = {
+                    model: model,
+                    isAnimating: false,
+                    state: 0,
+                    substate: 0
+                };
                 if (file == "exercise_bike") file = "bike_pedals";
-                traverseThroughChildrenAndGiveName(model, `interactible ${file}`);
+                traverseThroughChildrenAndGiveName(model, `interactable ${file}`);
             }
 
             if (gltf.animations && gltf.animations.length > 0) {
@@ -98,8 +96,8 @@ export function loadModel(loadingManager, scene, folder, position, scale, rotati
     loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, callback);
 }
 
-export function loadModelInterior(loadingManager, scene, file, position, scale, rotation, interactibles) {
-    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file, scene, position, scale, rotation, interactibles);
+export function loadModelInterior(loadingManager, scene, file, position, scale, rotation, interactables) {
+    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file, scene, position, scale, rotation, interactables);
 }
 
 export function createBoundingBox(scene, position, scale, rotation, octree) {

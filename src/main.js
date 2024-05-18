@@ -28,32 +28,41 @@ function traverseUntilLastParent(obj) {
         return traverseUntilLastParent(obj.parent);
     }
 }
-let hoveredInteractible;
+
+let hoveredInteractable;
 function raycasting() {
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
     // console.log('intersects:',intersects);
-    hoveredInteractible = null;
+    hoveredInteractable = null;
     outlinePass.selectedObjects = [];
     // hideInteractables();
     for (const intersect of intersects) {
-        if (intersect.object.name.startsWith("interactible") && intersect.distance < 20) {
+        if (intersect.object.name.startsWith("interactable") && intersect.distance < 20) {
             // console.log(intersect.object.name);
-            outlinePass.selectedObjects = [traverseUntilLastParent(intersect.object)];
-            const name = intersect.object.name.replace("interactible ", "");
-            // if (!interactibles[name].isAnimating) showInteractables(name);
+            const object = traverseUntilLastParent(intersect.object);
+            outlinePass.selectedObjects = [object];
+            const name = intersect.object.name.replace("interactable ", "");
+            if (name == "bike_pedals") {
+                if (object == interactables["exercise_bike"].model) {
+                    outlinePass.selectedObjects.push(traverseUntilLastParent(interactables["bike_pedals"].model));
+                } else if (object == interactables["bike_pedals"].model) {
+                    outlinePass.selectedObjects.push(traverseUntilLastParent(interactables["exercise_bike"].model));
+                }
+            }
+            // if (!interactables[name].isAnimating) showInteractables(name);
             // if (isInteracting()) {
-            //     interactibles[name].isAnimating = true;
+            //     interactables[name].isAnimating = true;
             // }
-            hoveredInteractible = interactibles[name]
+            hoveredInteractable = interactables[name]
             break;
         }
     }
 }
 
 document.addEventListener('click', function () {
-    if (controls.isLocked && hoveredInteractible) {
-        hoveredInteractible.isAnimating = true;
+    if (controls.isLocked && hoveredInteractable) {
+        hoveredInteractable.isAnimating = true;
     } else {
         controls.lock();
     }
@@ -64,7 +73,7 @@ const mixers = {};
 let playerAnimations;
 let fanModel = {};
 
-export const interactibles = {};
+export const interactables = {};
 
 // Set up the ground
 loadGroundModel(loadingManager, scene, "ground_road", worldOctree, [0, -0.1, 0], [10, 10, 10], [0, 0, 0]);
@@ -91,17 +100,17 @@ loadGroundModel(loadingManager, scene, "ground_road", worldOctree, [0, -0.1, 0],
 
 loadModelInterior(loadingManager, scene, "new_room_2", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
 
-loadModelInterior(loadingManager, scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [0, 90, 0], interactibles)
+loadModelInterior(loadingManager, scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [0, 90, 0], interactables)
 // createBoundingBox(scene, [-14, 7, 11.5], [2.5, 13, 6.5], [0, 90, 0], worldOctree, boundingBox)
 
 loadModelInterior(loadingManager, scene, "yoga_mat", [20, 0.1, 0], [3, 3, 3], [0, 90, 0]);
 
 loadModelInterior(loadingManager, scene, "gym_decoration_1_v2", [-24, 0.1, -29], [11, 11, 11], [0, 90, 0]);
 
-loadModelInterior(loadingManager, scene, "punching_bag_1", [-20.2, 0.1, 1.2], [11, 11, 11], [0, 0, 0], interactibles);
+loadModelInterior(loadingManager, scene, "punching_bag_1", [-20.2, 0.1, 1.2], [11, 11, 11], [0, 0, 0], interactables);
 createBoundingCylinder(scene, [-20.1, 8, 1.1], [1.5, 2, 1.5], [0, 0, 0], worldOctree)
 
-loadModelInterior(loadingManager, scene, "punching_bag_2", [-20, 0.1, -12.8], [11, 11, 11], [0, 0, 0], interactibles);
+loadModelInterior(loadingManager, scene, "punching_bag_2", [-20, 0.1, -12.8], [11, 11, 11], [0, 0, 0], interactables);
 createBoundingCylinder(scene, [-20.1, 7, -13.1], [1.5, 5, 1.5], [0, 0, 0], worldOctree)
 
 loadModelInterior(loadingManager, scene, "gym_decoration_2", [28.5, 3, -28], [9, 9, 9], [0, -90, 0]);
@@ -126,10 +135,10 @@ loadPlayer(loadingManager, scene, "casual_male", [0, 0, 0], [player.height * 0.7
 loadModelInterior(loadingManager, scene, "barbell_chair", [-10, 0, -40], [10, 10, 10], [0, 90, 0]);
 createBoundingBox(scene, [-10.13, 0.5, -40.15], [7, 4.6, 2.9], [0, 0, 0], worldOctree);
 
-loadModelInterior(loadingManager, scene, "barbells", [-10, 0, -40], [10, 10, 10], [0, 90, 0], interactibles);
+loadModelInterior(loadingManager, scene, "barbells", [-10, 0, -40], [10, 10, 10], [0, 90, 0], interactables);
 createBoundingBox(scene, [-12.9, 5.5, -40], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree);
 
-loadModelInterior(loadingManager, scene, "treadmill", [10, 0, -50], [10, 10, 10], [0, 90, 0], interactibles);
+loadModelInterior(loadingManager, scene, "treadmill", [10, 0, -50], [10, 10, 10], [0, 90, 0], interactables);
 createBoundingBox(scene, [9.4, 0, -50], [6.8, 2.45, 4], [0, 0, 0], worldOctree);
 createBoundingBox(scene, [14, 2.45, -50], [2, 8.3, 4], [0, 0, 0], worldOctree);
 createBoundingBox(scene, [12, 2.45, -51.7], [5, 6, 0.4], [0, 0, 0], worldOctree);
@@ -152,15 +161,15 @@ loadAnimatedModel(loadingManager, scene, "dr_ahmad_sitting_pose", [10, 1, 20], [
     mixers["dr_ahmad_sitting_pose"] = animationMixer;
 });
 
-loadModelInterior(loadingManager, scene, "lowpoly_car", [-50, 0, -20], [7, 7, 7], [0, 90, 0], interactibles);
+loadModelInterior(loadingManager, scene, "lowpoly_car", [-50, 0, -20], [7, 7, 7], [0, 90, 0], interactables);
 createBoundingBox(scene, [-22, 7, 50.5], [34, 8, 14], [0, 0, 0], worldOctree);
 
-loadModelInterior(loadingManager, scene, "exercise_bike", [-10, 0, -30], [3, 3, 3], [0, 90, 0], interactibles);
-loadModelInterior(loadingManager, scene, "bike_pedals", [-11.8, 2.4, -30], [3, 3, 3], [0, 180, 0], interactibles);
+loadModelInterior(loadingManager, scene, "exercise_bike", [-10, 0, -30], [3, 3, 3], [0, 90, 0], interactables);
+loadModelInterior(loadingManager, scene, "bike_pedals", [-11.8, 2.4, -30], [3, 3, 3], [0, 180, 0], interactables);
 //createBoundingBox(scene, [-10.13, 0.5, -40.15], [7, 4.6, 2.9], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "locker", [26, 0.2, -63.5], [8, 8, 8], [0, 0, 0]);
-loadModelInterior(loadingManager, scene, "locker_door", [28, 0.2, -61.5], [8, 8, 8], [0, 0, 0], interactibles);
+loadModelInterior(loadingManager, scene, "locker_door", [28, 0.2, -61.5], [8, 8, 8], [0, 0, 0], interactables);
 //createBoundingBox(scene, [26, 0.2, -63.5], [4, 30, 4], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "bench", [10, 0, 20], [8, 8, 8], [0, 0, 0]);
@@ -185,7 +194,7 @@ function animate() {
     const currentTime = clock.getElapsedTime();
 
     // console.log(getPlayerLookDirection() * 180 / Math.PI);
-    // console.log(hoveredInteractible);
+    // console.log(hoveredInteractable);
 
     updateBackground(clock);
 
@@ -203,7 +212,7 @@ function animate() {
 
     updateFanRotation(deltaTime);
     updateMixers(deltaTime);
-    updateInteractibleAnimation();
+    updateInteractableAnimation();
 
     stats.update();
     updateDebugScreen();
@@ -230,14 +239,14 @@ function updateMixers(deltaTime) {
     }
 }
 
-function updateInteractibleAnimation() {
-    doorAnimation(interactibles);
-    punchingBag1Animation(interactibles);
-    punchingBag2Animation(interactibles);
-    barbellsAnimation(interactibles);
-    bikeAnimation(interactibles);
-    lockerAnimation(interactibles);
-    treadmillAnimation(player, interactibles);
+function updateInteractableAnimation() {
+    doorAnimation(interactables);
+    punchingBag1Animation(interactables);
+    punchingBag2Animation(interactables);
+    barbellsAnimation(interactables);
+    bikeAnimation(interactables);
+    lockerAnimation(interactables);
+    treadmillAnimation(player, interactables);
 }
 
 function updatePlayerModelPositionAndAnimation() {
@@ -297,5 +306,6 @@ function playAnimation(animationName) {
 
 loadingManager.onLoad = function () {
     console.log('All assets loaded.');
+    console.log(interactables);
     animate(); // Start animation when all assets are loaded
 };

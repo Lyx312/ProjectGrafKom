@@ -1,7 +1,7 @@
 import { getPlayerLookDirection } from "./controls.js";
 
-export function doorAnimation(interactibles) {
-    const door = interactibles["door"];
+export function doorAnimation(interactables) {
+    const door = interactables["door"];
     if (door && door.isAnimating) {
         if (door.state === 0 && door.substate === 0) {
             door.initialLookDirection = getPlayerLookDirection() > 0 ? 1 : -1;
@@ -23,8 +23,8 @@ export function doorAnimation(interactibles) {
     }
 }
 
-export function lockerAnimation(interactibles) {
-    const door = interactibles["locker_door"];
+export function lockerAnimation(interactables) {
+    const door = interactables["locker_door"];
     if (door && door.isAnimating) {
         if (door.state === 0 && door.substate === 0) {
             door.initialLookDirection = 1;
@@ -46,8 +46,8 @@ export function lockerAnimation(interactibles) {
     }
 }
 
-export function punchingBag1Animation(interactibles) {
-    const punchingBag = interactibles["punching_bag_1"];
+export function punchingBag1Animation(interactables) {
+    const punchingBag = interactables["punching_bag_1"];
 
     if (punchingBag && punchingBag.isAnimating) {
 
@@ -102,8 +102,8 @@ export function punchingBag1Animation(interactibles) {
 }
 
 
-export function punchingBag2Animation(interactibles) {
-    const punchingBag = interactibles["punching_bag_2"];
+export function punchingBag2Animation(interactables) {
+    const punchingBag = interactables["punching_bag_2"];
     
     if (punchingBag && punchingBag.isAnimating) {
 
@@ -158,8 +158,8 @@ export function punchingBag2Animation(interactibles) {
 }
 
 
-export function barbellsAnimation(interactibles) {
-    const barbells = interactibles["barbells"];
+export function barbellsAnimation(interactables) {
+    const barbells = interactables["barbells"];
     if (barbells && barbells.isAnimating) {
         
         barbells.substate++;
@@ -185,8 +185,8 @@ export function barbellsAnimation(interactibles) {
     }
 }
 
-export function bikeAnimation(interactibles) {
-    const bike = interactibles["bike_pedals"];
+export function bikeAnimation(interactables) {
+    const bike = interactables["bike_pedals"];
     if (bike && bike.isAnimating) {
         // Increment the rotation angle
         const rotationIncrement = Math.PI / 30; // 6 degrees per frame
@@ -201,9 +201,9 @@ export function bikeAnimation(interactibles) {
     }
 }
 
-export function treadmillAnimation(player, interactibles) {
+export function treadmillAnimation(player, interactables) {
     //console.log(player.direction)
-    const treadmill = interactibles["treadmill"];
+    const treadmill = interactables["treadmill"];
     if (treadmill && treadmill.isAnimating) {
         
         treadmill.substate++;
