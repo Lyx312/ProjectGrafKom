@@ -1,7 +1,7 @@
-import { getPlayerLookDirection } from "./controls.js";
-let day = 1;
-let str = 0;
-let spd = 0;
+import { player, getPlayerLookDirection } from "./controls.js";
+import { changeDayOverlay } from "./uiSetup.js";
+
+export let day = 1;
 
 export function doorAnimation(interactables) {
     const door = interactables["object_door"];
@@ -100,7 +100,7 @@ export function punchingBag1Animation(interactables) {
             punchingBag.deltaPositionX = 0;
             punchingBag.deltaPositionZ = 0;
             punchingBag.isAnimating = false;
-            str++;
+            player.str++;
         }
     }
 }
@@ -157,7 +157,7 @@ export function punchingBag2Animation(interactables) {
             punchingBag.deltaPositionX = 0;
             punchingBag.deltaPositionZ = 0;
             punchingBag.isAnimating = false;
-            str++;
+            player.str++;
         }
     }
 }
@@ -185,7 +185,7 @@ export function barbellsAnimation(interactables) {
             barbells.state = 0; // Reset state to 0 for next cycle
             barbells.substate = 0;
             barbells.isAnimating = false; // End the animation
-            str+=10;
+            player.str+=10;
         }
     }
 }
@@ -202,7 +202,7 @@ export function bikeAnimation(interactables) {
             // Reset the rotation to 0 and stop animating
             bike.model.rotation.z = 0;
             bike.isAnimating = false;
-            spd+=10;
+            player.spd+=10;
         }
     }
 }
@@ -249,54 +249,7 @@ export function carAnimation(interactables) {
         
         if (!overlay) {
             day++;
-            // Create a black overlay
-            overlay = document.createElement('div');
-            overlay.id = 'black-overlay';
-            overlay.style.position = 'fixed';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100%';
-            overlay.style.height = '100%';
-            overlay.style.backgroundColor = 'black';
-            overlay.style.opacity = '1';
-            overlay.style.zIndex = '1000';
-            overlay.style.transition = 'opacity 0.05s linear';
-            document.body.appendChild(overlay);
-            
-            // Create text element
-            const textElement = document.createElement('div');
-            textElement.textContent = `Day ${day}`;
-            textElement.style.position = 'absolute';
-            textElement.style.top = '50%';
-            textElement.style.left = '50%';
-            textElement.style.transform = 'translate(-50%, -50%)';
-            textElement.style.color = 'white';
-            textElement.style.fontSize = '4em';
-            overlay.appendChild(textElement);
-
-            // Create strength text element
-            const strengthTextElement = document.createElement('div');
-            strengthTextElement.textContent = `Strength: ${str}`;
-            strengthTextElement.style.position = 'absolute';
-            strengthTextElement.style.top = '60%'; // Adjust vertical position as needed
-            strengthTextElement.style.left = '45%'; // Adjust horizontal position as needed
-            strengthTextElement.style.transform = 'translate(-50%, -50%)';
-            strengthTextElement.style.color = 'white';
-            strengthTextElement.style.fontSize = '1.5em';
-            strengthTextElement.style.display = 'inline-block';
-            overlay.appendChild(strengthTextElement);
-
-            // Create speed text element
-            const speedTextElement = document.createElement('div');
-            speedTextElement.textContent = `Speed: ${spd}`;
-            speedTextElement.style.position = 'absolute';
-            speedTextElement.style.top = '60%'; // Adjust vertical position as needed
-            speedTextElement.style.left = '55%'; // Adjust horizontal position as needed
-            speedTextElement.style.transform = 'translate(-50%, -50%)';
-            speedTextElement.style.color = 'white';
-            speedTextElement.style.fontSize = '1.5em';
-            speedTextElement.style.display = 'inline-block';
-            overlay.appendChild(speedTextElement);
+            overlay = changeDayOverlay();
         }
         
         // Calculate new opacity based on substate

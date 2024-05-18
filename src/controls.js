@@ -42,7 +42,9 @@ export const player = {
     currentStamina: MAX_STAMINA,
     viewMode: 0,
     cheat: false,
-    inDialog: false
+    inDialog: false,
+    str: 0,
+    spd: 0
 }
 
 const cameraOffset = {

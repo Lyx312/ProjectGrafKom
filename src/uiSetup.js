@@ -1,5 +1,6 @@
 // uiSetup.js
 import { player, playerCollider } from './controls.js'
+import { day } from './objectAnimation.js';
 
 // Create a UI element for the stamina bar
 const staminaBarBorder = document.createElement('div');
@@ -93,4 +94,57 @@ export function updateDebugScreen() {
     document.getElementById('velocity_x').innerText = "vx: " + player.velocity.x;
     document.getElementById('velocity_y').innerText = "vy: " + player.velocity.y;
     document.getElementById('velocity_z').innerText = "vz: " + player.velocity.z;
+}
+
+export const changeDayOverlay = (params) => {
+    // Create a black overlay
+    let overlay = document.createElement('div');
+    overlay.id = 'black-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'black';
+    overlay.style.opacity = '1';
+    overlay.style.zIndex = '1000';
+    overlay.style.transition = 'opacity 0.05s linear';
+    document.body.appendChild(overlay);
+    
+    // Create text element
+    const textElement = document.createElement('div');
+    textElement.textContent = `Day ${day}`;
+    textElement.style.position = 'absolute';
+    textElement.style.top = '50%';
+    textElement.style.left = '50%';
+    textElement.style.transform = 'translate(-50%, -50%)';
+    textElement.style.color = 'white';
+    textElement.style.fontSize = '4em';
+    overlay.appendChild(textElement);
+
+    // Create strength text element
+    const strengthTextElement = document.createElement('div');
+    strengthTextElement.textContent = `Strength: ${player.str}`;
+    strengthTextElement.style.position = 'absolute';
+    strengthTextElement.style.top = '60%'; // Adjust vertical position as needed
+    strengthTextElement.style.left = '45%'; // Adjust horizontal position as needed
+    strengthTextElement.style.transform = 'translate(-50%, -50%)';
+    strengthTextElement.style.color = 'white';
+    strengthTextElement.style.fontSize = '1.5em';
+    strengthTextElement.style.display = 'inline-block';
+    overlay.appendChild(strengthTextElement);
+
+    // Create speed text element
+    const speedTextElement = document.createElement('div');
+    speedTextElement.textContent = `Speed: ${player.spd}`;
+    speedTextElement.style.position = 'absolute';
+    speedTextElement.style.top = '60%'; // Adjust vertical position as needed
+    speedTextElement.style.left = '55%'; // Adjust horizontal position as needed
+    speedTextElement.style.transform = 'translate(-50%, -50%)';
+    speedTextElement.style.color = 'white';
+    speedTextElement.style.fontSize = '1.5em';
+    speedTextElement.style.display = 'inline-block';
+    overlay.appendChild(speedTextElement);
+
+    return overlay;
 }

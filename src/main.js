@@ -15,7 +15,6 @@ export const worldOctree = new Octree();
 const clock = new THREE.Clock();
 export const stats = new Stats();
 
-
 //init raycasting
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2(); // posisi mouse
