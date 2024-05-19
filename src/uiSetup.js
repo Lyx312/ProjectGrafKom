@@ -148,3 +148,43 @@ export const changeDayOverlay = (params) => {
 
     return overlay;
 }
+
+export function loadScreen(substate) {
+    const timeChange = 0.01;
+    const maxSubstate = 50; // Adjust this value to make the black screen stay longer
+    const overlayId = 'black-overlay';
+
+    // Check if the overlay already exists
+    let overlay = document.getElementById(overlayId);
+    
+    if (!overlay) {
+        overlay = changeDayOverlay();
+    }
+    
+    function updateOverlay() {
+        substate++;
+        console.log(substate);
+
+        let opacity;
+        
+        if (substate <= maxSubstate) {
+            // Keep the screen black
+            opacity = 1;
+        } else {
+            // Start fading in
+            opacity = 1 - Math.min((substate - maxSubstate) * timeChange, 1);
+        }
+        
+        // Update the overlay's opacity
+        overlay.style.opacity = opacity;
+
+        // Remove the overlay once fully faded in
+        if (opacity === 0 && substate > maxSubstate) {
+            overlay.remove();
+            clearInterval(loadingInterval);
+            substate = 0;
+        }
+    }
+    
+    const loadingInterval = setInterval(updateOverlay, 1000 / 60); // Update 60 times per second
+}

@@ -7,7 +7,7 @@ import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer
 import { scene, camera, updateBackground, renderer } from './sceneSetup.js';
 import { composer, outlinePass } from './sceneSetup.js';
 import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation } from './objectAnimation.js';
-import { updateDebugScreen } from './uiSetup.js';
+import { changeDayOverlay, updateDebugScreen, loadScreen } from './uiSetup.js';
 import { doctor, girl } from './npcInteraction.js';
 
 const loadingManager = new THREE.LoadingManager();
@@ -101,7 +101,7 @@ loadGroundModel(loadingManager, scene, "ground_road", worldOctree, [0, -0.1, 0],
 // loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
 // createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(loadingManager, scene, "new_room_2", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
+loadModelInterior(loadingManager, scene, "new_room_3", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
 
 loadModelInterior(loadingManager, scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [0, 90, 0], interactables)
 // createBoundingBox(scene, [-14, 7, 11.5], [2.5, 13, 6.5], [0, 90, 0], worldOctree, boundingBox)
@@ -155,7 +155,7 @@ createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 8, 57], [0, 90, 0], worldOctree)
 createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [-14, 16.5, 11.5], [2.5, 5, 10], [0, 90, 0], worldOctree);
 
-loadImage(loadingManager, scene, "Gym_Poster", [-7, 10, 11.2], [4, 4, 4], [0, 180, 0]);
+loadModelInterior(loadingManager, scene, "Gym_Poster", [-7.65, 7.9, 11.3], [4, 4, 4], [0, 180, 0]);
 
 loadAnimatedModel(loadingManager, scene, "mujer_bodytech", "workout_girl", girl, [10, 0, -30], [0.13, 0.13, 0.13], [0, 90, 0], "Take 001", interactables, (animationMixer) => {
     mixers["mujer_bodytech"] = animationMixer;
@@ -309,8 +309,22 @@ function playAnimation(animationName) {
     }
 }
 
+let loadingScreenDisplayed = false;
+let substate = 0;
 loadingManager.onLoad = function () {
     console.log('All assets loaded.');
-    // console.log(interactables);
-    animate(); // Start animation when all assets are loaded
+    //if (loadingScreenDisplayed) {
+        // Ensure the load screen has run and faded out before starting animation
+       // const checkLoadingScreen = setInterval(() => {
+            //if (substate === 0) {
+                //clearInterval(checkLoadingScreen);
+                animate(); // Start animation when all assets are loaded
+            //}
+        //}, 100);
+    //}
 };
+
+if (!loadingScreenDisplayed) {
+    loadScreen(substate);
+    loadingScreenDisplayed = true;
+}
