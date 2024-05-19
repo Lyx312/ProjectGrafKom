@@ -1,10 +1,13 @@
 import { controls, onKeyDown, onKeyUp, player, resetControls } from "./controls.js";
 
 const dialogBox = document.getElementById("dialog");
-const initializeDialog = () => {
+const playerName = document.getElementById("playerName");
+const npcName = document.getElementById("npcName");
+
+const initializeDialog = (name) => {
     player.inDialog = true;
-    dialogBox.style.opacity = 0.7;
-    dialogBox.style.display = "block";
+    dialogBox.style.display = "flex";
+    npcName.textContent = name;
     controls.disconnect();
     document.body.ownerDocument.removeEventListener('keydown', onKeyDown);
     document.body.ownerDocument.removeEventListener('keyup', onKeyUp);
@@ -13,11 +16,13 @@ const initializeDialog = () => {
 
 const finishDialog = () => {
     player.inDialog = false;
-    dialogBox.style.opacity = 0;
     dialogBox.style.display = "none";
+    playerName.style.display = 'none';
+    npcName.style.display = 'none';
     controls.connect();
     document.body.ownerDocument.addEventListener('keydown', onKeyDown);
     document.body.ownerDocument.addEventListener('keyup', onKeyUp);
+    dialogState = 0;
 }
 
 function showDialog(text, color) {
@@ -27,6 +32,23 @@ function showDialog(text, color) {
     dialogBox.offsetWidth;
     dialogBox.classList.add('fadeout');
 }
+
+const showPlayerDialog = (text, color) => {
+    dialogBox.style.borderRadius = '20px 0px 20px 20px';
+    dialogBox.style.justifyContent = 'right';
+    npcName.style.display = 'none';
+    playerName.style.display = 'flex';
+    showDialog(text, color);
+}
+
+const showNPCDialog = (text, color) => {
+    dialogBox.style.borderRadius = '0px 20px 20px 20px';
+    dialogBox.style.justifyContent = 'left';
+    playerName.style.display = 'none';
+    npcName.style.display = 'flex';
+    showDialog(text, color);
+}
+
 
 let dialogState = 0;
 document.addEventListener('click', function () {
@@ -38,54 +60,53 @@ document.addEventListener('click', function () {
 export const doctor = () => {
     switch(dialogState) {
         case 0:
-            initializeDialog();
-            showDialog("Hello, sick people and their loved ones!", "yellow");
+            initializeDialog("The Doctor");
+            showNPCDialog("Hello, sick people and their loved ones!", "yellow");
             break;
         case 1:
-            showDialog("In the interest of saving time and avoiding a lot of boring chitchat later, I'm Doctor Gregory House; you can call me Greg.", "yellow");
+            showNPCDialog("In the interest of saving time and avoiding a lot of boring chitchat later, I'm Doctor Gregory House; you can call me Greg.", "yellow");
             break;
         case 2:
-            showDialog("I'm one of three doctors staffing this clinic this morning.", "yellow");
+            showNPCDialog("I'm one of three doctors staffing this clinic this morning.", "yellow");
             break;
         case 3:
-            showDialog("I am a Board certified diagnostician with a double specialty in infectious disease and nephrology.", "yellow");
+            showNPCDialog("I am a Board certified diagnostician with a double specialty in infectious disease and nephrology.", "yellow");
             break;
         case 4:
-            showDialog("I am also the only doctor currently employed at this clinic who is forced to be here against his will.", "yellow");
+            showNPCDialog("I am also the only doctor currently employed at this clinic who is forced to be here against his will.", "yellow");
             break;
         case 5:
-            showDialog("But not to worry, because for most of you, this job could be done by a monkey with a bottle of Motrin.", "yellow");
+            showNPCDialog("But not to worry, because for most of you, this job could be done by a monkey with a bottle of Motrin.", "yellow");
             break;
         case 5:
-            showDialog("But not to worry, because for most of you, this job could be done by a monkey with a bottle of Motrin.", "yellow");
+            showNPCDialog("But not to worry, because for most of you, this job could be done by a monkey with a bottle of Motrin.", "yellow");
             break;
         case 6:
-            showDialog("Speaking of which, if you're particularly annoying, you may see me reach for this: this is Vicodin.", "yellow");
+            showNPCDialog("Speaking of which, if you're particularly annoying, you may see me reach for this: this is Vicodin.", "yellow");
             break;
         case 7:
-            showDialog("It's mine. You can't have any.", "red");
+            showPlayerDialog("It's mine. You can't have any.", "red");
             break;
         case 8:
-            showDialog("And no, I do not have a pain management problem, I have a pain problem.", "yellow");
+            showNPCDialog("And no, I do not have a pain management problem, I have a pain problem.", "yellow");
             break;
         case 9:
-            showDialog("But who knows?", "yellow");
+            showNPCDialog("But who knows?", "yellow");
             break;
         case 10:
-            showDialog("Maybe I'm wrong.", "yellow");
+            showNPCDialog("Maybe I'm wrong.", "yellow");
             break;
         case 11:
-            showDialog("Maybe I'm too stoned to tell.", "red");
+            showPlayerDialog("Maybe I'm too stoned to tell.", "red");
             break;
         case 12:
-            showDialog("So, who wants me?", "yellow");
+            showNPCDialog("So, who wants me?", "yellow");
             break;
         case 13:
-            showDialog("Well, I'll be in Exam Room One if you change your mind.", "yellow");
+            showNPCDialog("Well, I'll be in Exam Room One if you change your mind.", "yellow");
             break;
         case 14:
             finishDialog();
-            dialogState = 0;
             break;
     } 
 }
@@ -93,21 +114,20 @@ export const doctor = () => {
 export const girl = () => {
     switch(dialogState) {
         case 0:
-            initializeDialog();
-            showDialog("Hey there, I'm a tutorial. I'm here to help you.", "blue");
+            initializeDialog("Girl A");
+            showNPCDialog("Hey there, I'm a tutorial. I'm here to help you.", "blue");
             break;
         case 1:
-            showDialog("Sike, I'm here to kill you.", "yellow");
+            showNPCDialog("Sike, I'm here to kill you.", "yellow");
             break;
         case 2:
-            showDialog("AHHHHHHHH", "red");
+            showNPCDialog("AHHHHHHHH", "red");
             break;
         case 3:
-            showDialog("*Stab Noises*", "red");
+            showNPCDialog("*Stab Noises*", "red");
             break;
         case 4:
             finishDialog();
-            dialogState = 0;
             break;
     } 
 }

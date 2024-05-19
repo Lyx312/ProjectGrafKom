@@ -208,7 +208,7 @@ function animate() {
         lastRaycastTime = currentTime;
     }
 
-    if (!player.inDialog) playerControls(deltaTime);
+    playerControls(deltaTime);
     updatePlayer(deltaTime);
     updateStamina();
 

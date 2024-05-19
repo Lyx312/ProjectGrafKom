@@ -163,7 +163,7 @@ export function loadScreen(substate) {
     
     function updateOverlay() {
         substate++;
-        console.log(substate);
+        // console.log(substate);
 
         let opacity;
         

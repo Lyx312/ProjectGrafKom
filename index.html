@@ -16,11 +16,12 @@
 			z-index: 99;
 			top: 50px;
 			left: 0;
-			width: 250px;
-			height: 100px;
+			width: 15vw;
+			height: 15vh;
 			padding-left: 10px;
 			padding-bottom: 10px;
 			color: white;
+            font-size: calc(0.7vh + 0.7vw);
 			background-color: black;
 			opacity: 0.7;
 		}
@@ -34,23 +35,64 @@
 			justify-content: center;
 			font: bold;
 			color: white;
-			font-size: x-large;
+			font-size: calc(1.2vh + 1.2vw);
 		}
         #dialog{
-			display: block;
-			z-index: 98;
-			position: absolute;
-			background: black;
-			opacity: 0;
-			width: 100vw;
-			height: 200px;
-			bottom: 0px;
-			color: white;
-			padding: 20px;
-			box-sizing: border-box;
-			font-size: 2em;
-			/* font-family: sans-serif; */
-		}
+            display: none;
+            align-items: top;
+            justify-content: left;
+            z-index: 98;
+            position: absolute;
+            background: rgb(40, 40, 40);
+            opacity: 0.7;
+            width: calc(100vw - 100px);
+            height: 25vh;
+            bottom: 20px;
+            left: 50px;
+            color: white;
+            padding: 20px 40px;
+            box-sizing: border-box;
+            font-size: calc(1.2vh + 1.2vw);
+            border-radius: 0px 20px 20px 20px;
+        }
+        #npcName {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 98;
+            position: absolute;
+            background: rgb(80, 80, 80);
+            opacity: 0.7;
+            width: 15vw;
+            height: 5vh;
+            bottom: calc(25vh + 20px); /* Positioning above the dialog */
+            left: 50px;
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: calc(0.8vh + 0.8vw);
+            border-radius: 20px 20px 0px 0px;
+            border-bottom: 2px solid white;
+        }
+        #playerName {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 98;
+            position: absolute;
+            background: rgb(80, 80, 80);
+            opacity: 0.7;
+            width: 15vw;
+            height: 5vh;
+            bottom: calc(25vh + 20px); /* Positioning above the dialog */
+            right: 50px;
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: calc(0.8vh + 0.8vw);;
+            border-radius: 20px 20px 0px 0px;
+            border-bottom: 2px solid white;
+        }
         @keyframes fadeout {
 			0% {opacity: 0.7;}
 			50% {opacity: 0.7;}
@@ -79,6 +121,8 @@
     <div id="cursor">
 		+
 	</div>
+    <div id="npcName">Testificate</div>
+    <div id="playerName">You</div>
     <div id="dialog">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur ducimus ratione dicta autem a. Tempore, ipsa. Commodi nemo corrupti error!</div>
     <script type="module" src="./src/main.js"></script>
 </body>

@@ -22,11 +22,13 @@ const keys = {
     ctrl: false,
 };
 
-export const resetControls = (params) => {
-    for (const key in keys) {
-        keys[key] = false;
-    }
+export const resetControls = () => {
+    Object.keys(keyMap).forEach(code => {
+        const event = new KeyboardEvent('keyup', { code });
+        onKeyUp(event);
+    });
 }
+
 
 const MAX_STAMINA = 100;
 const SPRINT_MULTIPLIER = 2;
@@ -135,7 +137,9 @@ export const onKeyUp = (e) => {
         if (key === 'shift') {
             player.sprintMultiplier = 1;
         } else if (key === 'c') {
-            playerCollider.end.y += player.height * (1 - player.crouchHeightChange);
+            if (Math.round(playerCollider.end.y - playerCollider.start.y) != Math.round(player.height)) {
+                playerCollider.end.y += player.height * (1 - player.crouchHeightChange);
+            }
             player.crouchMultiplier = 1;
         }
     }
