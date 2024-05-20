@@ -4,10 +4,9 @@ import { Octree } from 'three/addons/math/Octree.js';
 import Stats from 'three/addons/libs/stats.module.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player } from './controls.js';
 import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel } from './objectLoader.js';
-import { scene, camera, updateBackground, renderer } from './sceneSetup.js';
-import { composer, outlinePass } from './sceneSetup.js';
+import { scene, camera, updateBackground, renderer, composer, outlinePass } from './sceneSetup.js';
 import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation } from './objectAnimation.js';
-import { changeDayOverlay, updateDebugScreen, loadScreen } from './uiSetup.js';
+import { changeDayOverlay, updateDebugScreen } from './uiSetup.js';
 import { doctor, girl } from './npcInteraction.js';
 
 const loadingManager = new THREE.LoadingManager();
@@ -309,22 +308,9 @@ function playAnimation(animationName) {
     }
 }
 
-let loadingScreenDisplayed = false;
-let substate = 0;
 loadingManager.onLoad = function () {
     console.log('All assets loaded.');
-    //if (loadingScreenDisplayed) {
-        // Ensure the load screen has run and faded out before starting animation
-       // const checkLoadingScreen = setInterval(() => {
-            //if (substate === 0) {
-                //clearInterval(checkLoadingScreen);
-                animate(); // Start animation when all assets are loaded
-            //}
-        //}, 100);
-    //}
+    animate();
 };
 
-if (!loadingScreenDisplayed) {
-    loadScreen(substate);
-    loadingScreenDisplayed = true;
-}
+changeDayOverlay(1, player.str, player.spd);

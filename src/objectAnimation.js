@@ -240,38 +240,7 @@ export function carAnimation(interactables) {
     const car = interactables["object_lowpoly_car"];
     
     if (car && car.isAnimating) {
-        car.substate++;
-        
-        const timeChange = 0.01;
-        
-        // Check if the overlay already exists
-        let overlay = document.getElementById('black-overlay');
-        
-        if (!overlay) {
-            day++;
-            overlay = changeDayOverlay();
-        }
-        
-        // Calculate new opacity based on substate
-        const maxSubstate = 50; // Adjust this value to make the black screen stay longer
-        let opacity;
-        
-        if (car.substate <= maxSubstate) {
-            // Keep the screen black
-            opacity = 1;
-        } else {
-            // Start fading in
-            opacity = 1 - Math.min((car.substate - maxSubstate) * timeChange, 1);
-        }
-        
-        // Update the overlay's opacity
-        overlay.style.opacity = opacity;
-
-        // Remove the overlay once fully faded in
-        if (opacity === 0 && car.substate > maxSubstate) {
-            overlay.remove();
-            car.substate = 0;
-            car.isAnimating = false;
-        }
+        changeDayOverlay(++day, player.str, player.spd);
+        car.isAnimating = false;
     }
 }

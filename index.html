@@ -93,11 +93,46 @@
             border-radius: 20px 20px 0px 0px;
             border-bottom: 2px solid white;
         }
-        @keyframes fadeout {
-			0% {opacity: 0.7;}
-			50% {opacity: 0.7;}
-			100% {opacity: 0;}
-		}
+
+        #change-day-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+            opacity: 1;
+            z-index: 1000;
+            color: white;
+        }
+
+        #day {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform : translate(-50%, -50%);
+            font-size: calc(3vh + 3vw);
+        }
+        #str {
+            position: absolute;
+            top: 60%;
+            left: 45%;
+            transform : translate(-50%, -50%);
+            font-size: calc(1.2vh + 1.2vw);
+            display: inline-block;
+        }
+        #spd {
+            position: absolute;
+            top: 60%;
+            left: 55%;
+            transform : translate(-50%, -50%);
+            font-size: calc(1.2vh + 1.2vw);
+            display: inline-block;
+        }
+
+        .fade {
+            transition: opacity 3s ease-in;
+        }
     </style>
     <script type="importmap">
         {
@@ -124,6 +159,11 @@
     <div id="npcName">Testificate</div>
     <div id="playerName">You</div>
     <div id="dialog">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur ducimus ratione dicta autem a. Tempore, ipsa. Commodi nemo corrupti error!</div>
+    <div id="change-day-overlay">
+        <h1 id="day">Day 1</h1>
+        <p id="str">Strength: 0</p>
+        <p id="spd">Speed: 0</p>
+    </div>
     <script type="module" src="./src/main.js"></script>
 </body>
 

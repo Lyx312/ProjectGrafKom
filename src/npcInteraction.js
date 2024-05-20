@@ -28,9 +28,6 @@ const finishDialog = () => {
 function showDialog(text, color) {
     dialogBox.textContent = text
     dialogBox.style.color = color;
-    dialogBox.classList.remove('fadeout');
-    dialogBox.offsetWidth;
-    dialogBox.classList.add('fadeout');
 }
 
 const showPlayerDialog = (text, color) => {
