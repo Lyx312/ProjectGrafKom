@@ -217,12 +217,13 @@ export function treadmillAnimation(player, interactables) {
     treadmill.isAnimating = false;
 }
 
-export function carAnimation() {
-    if (!player.pause) {
-        player.pause = true;
+export function carAnimation(interactables) {
+    const car = interactables["object_lowpoly_car"];
+    if (car && !car.isAnimating) {
+        car.isAnimating = true;
         changeDayOverlay(++day, player.str, player.spd);
         setTimeout(() => {
-            player.pause = false;
+            car.isAnimating = false;
         }, 5000);
     }
 }

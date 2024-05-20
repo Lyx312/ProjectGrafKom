@@ -3,15 +3,21 @@ import { controls, onKeyDown, onKeyUp, player, resetControls } from "./controls.
 const dialogBox = document.getElementById("dialog");
 const playerName = document.getElementById("playerName");
 const npcName = document.getElementById("npcName");
-
-let dialogAnswer = [];
-let awaitAnswer = false;
 const dialogOptions = [document.getElementById("option0"), document.getElementById("option1"), document.getElementById("option2")]
+
+let dialogAnswers = [];
+let awaitAnswer = false;
+let dialogStates = [0];
+let currentNPC = null;
+
 for(let i = 0; i < dialogOptions.length; i++) {
     dialogOptions[i].onclick = (function(index) {
         return function() {
-            dialogAnswer.push(index);
+            dialogAnswers.push(index);
+            dialogStates[dialogStates.length - 1]++;
+            dialogStates.push(-1);
             awaitAnswer = false;
+            console.log(dialogStates);
             hideDialogs();
         }
     })(i);
@@ -19,7 +25,7 @@ for(let i = 0; i < dialogOptions.length; i++) {
 
 const initializeDialog = (name, npc) => {
     currentNPC = npc;
-    dialogAnswer = [];
+    dialogAnswers = [];
     player.inDialog = true;
     dialogBox.style.display = "flex";
     npcName.textContent = name;
@@ -30,7 +36,7 @@ const initializeDialog = (name, npc) => {
 }
 
 const finishDialog = () => {
-    dialogState = 0;
+    dialogStates = [0];
     player.inDialog = false;
     dialogBox.style.display = "none";
     playerName.style.display = 'none';
@@ -42,7 +48,7 @@ const finishDialog = () => {
 
 function showDialog(text, color) {
     dialogBox.textContent = text
-    dialogBox.style.color = color;
+    dialogBox.style.color = color || "white";
 }
 
 const showPlayerDialog = (text, color) => {
@@ -68,25 +74,33 @@ const hideDialogs = () => {
 }
 
 const showDialogOption = (optionText, optionColor) => {
+    optionColor = optionColor || new Array(optionText.length).fill("white");
     for (let i = 0; i < optionText.length; i++) {
+        const index = optionText.length - 1 - i; // Calculate the reverse index
         dialogOptions[i].style.display = 'flex';
-        dialogOptions[i].textContent = optionText[i];
-        dialogOptions[i].style.color = optionColor[i] || "white";
+        dialogOptions[i].textContent = optionText[index];
+        dialogOptions[i].style.color = optionColor[index] || "white";
     }
     awaitAnswer = true;
 }
 
-let dialogState = 0;
-let currentNPC = null;
+const concludeSubdialog = () => {
+    dialogAnswers.pop();
+    dialogStates.pop();
+    dialogStates[dialogStates.length-1]++;
+    currentNPC.startDialog();
+}
+
+
 document.addEventListener('click', function () {
     if (player.inDialog && !awaitAnswer) {
-        dialogState++;
-        currentNPC.startDialogue();
+        dialogStates[dialogStates.length-1]++;
+        currentNPC.startDialog();
     }
 }, false);
 
 export const doctor = (npc) => {
-    switch(dialogState) {
+    switch(dialogStates[0]) {
         case 0:
             initializeDialog("The Doctor", npc);
             showNPCDialog("Hello, sick people and their loved ones!", "yellow");
@@ -137,36 +151,200 @@ export const doctor = (npc) => {
 }
 
 export const girl = (npc) => {
-    switch(dialogState) {
+    switch(dialogStates[0]) {
         case 0:
             initializeDialog("Girl A", npc);
             showNPCDialog("Hey there, I'm a tutorial. I'm here to help you.", "blue");
             break;
         case 1:
-            showDialogOption(["Refuse", "Accept"], ["white", "red"]);
+            showDialogOption(["Accept", "Refuse"], ["red"]);
             break;
         case 2:
-            if (dialogAnswer[0] == 0) {
-                showPlayerDialog("No thanks, I know what I'm doing.", "white");
-            } else if (dialogAnswer[0] == 1) {
-                showPlayerDialog("Can you kill me please?", "white");
+            if (dialogAnswers[0] == 0) {
+                switch (dialogStates[1]) {
+                    case 0:
+                        showPlayerDialog("No thanks, I know what I'm doing.", "white");
+                        break;
+                    case 1:
+                        showNPCDialog("Oh okay", "yellow");
+                        break;
+                    case 2:
+                        showNPCDialog("Have a nice day!", "yellow");
+                        break;
+                    case 3:
+                        concludeSubdialog();
+                        break;
+                }
+            } else if (dialogAnswers[0] == 1) {
+                switch (dialogStates[1]) {
+                    case 0:
+                        showPlayerDialog("Can you kill me please?", "white");
+                        break;
+                    case 1:
+                        showNPCDialog("*Stab Noises*", "red");
+                        break;
+                    case 2:
+                        showPlayerDialog("*AHHHHHHHHH*", "red");
+                        break;
+                    case 3:
+                        concludeSubdialog();
+                        break;
+                }
             }
             break;
+
         case 3:
-            if (dialogAnswer[0] == 0) {
-                showNPCDialog("Oh okay", "yellow");
-            } else if (dialogAnswer[0] == 1) {
-                showNPCDialog("*Stab Noises*", "red");
-            }
+            showDialogOption(["2 subdialog", "3 subdialog"])
             break;
         case 4:
-            if (dialogAnswer[0] == 0) {
-                showNPCDialog("Have a nice day!", "yellow");
-            } else if (dialogAnswer[0] == 1) {
-                showPlayerDialog("*AHHHHHHHHH*", "red");
+            if (dialogAnswers[0] == 0) {
+                switch (dialogStates[1]) {
+                    case 0:
+                        showPlayerDialog("test00", "white");
+                        break;
+                    case 1:
+                        showNPCDialog("test01", "yellow");
+                        break;
+                    case 2:
+                        concludeSubdialog();
+                        break;
+                }
+    
+            } else {
+                switch (dialogStates[1]) {
+                    case 0:
+                        showPlayerDialog("test10", "white");
+                        break;
+                    case 1:
+                        showNPCDialog("test11", "yellow");
+                        break;
+                    case 2:
+                        showNPCDialog("test12", "yellow");
+                        break;
+                    case 3:
+                        concludeSubdialog();
+                        break;
+                }
             }
             break;
         case 5:
+            showDialogOption(["branch again to 3 option", "branch again and again"]);
+            break;
+        case 6:
+            if (dialogAnswers[0] == 0) {
+                switch(dialogStates[1]) {
+                    case 0:
+                        showNPCDialog("aaaa", "white");
+                        break;
+                    case 1:
+                        showDialogOption(["a", "b", "c"], []);
+                        break;
+                    case 2:
+                        if (dialogAnswers[1] == 0) {
+                            switch(dialogStates[2]) {
+                                case 0:
+                                    showPlayerDialog("test001", "white");
+                                    break;
+                                case 1:
+                                    concludeSubdialog();
+                                    break;
+                            }
+                        } else if (dialogAnswers[1]==1) {
+                            switch(dialogStates[2]) {
+                                case 0:
+                                    showPlayerDialog("test010", "white");
+                                    break;
+                                case 1:
+                                    showPlayerDialog("test011", "white");
+                                    break;
+                                case 2:
+                                    concludeSubdialog();
+                                    break;
+                            }
+                        } else {
+                            switch(dialogStates[2]) {
+                                case 0:
+                                    showPlayerDialog("test010", "white");
+                                    break;
+                                case 1:
+                                    showPlayerDialog("test011", "white");
+                                    break;
+                                case 2:
+                                    showPlayerDialog("test012", "white");
+                                    break;
+                                case 3:
+                                    concludeSubdialog();
+                                    break;
+                            }
+                        }
+                        break;
+                    case 3:
+                        concludeSubdialog();
+                        break;
+                }
+            } else {
+                switch(dialogStates[1]) {
+                    case 0:
+                        showNPCDialog("bbbb", "white");
+                        break;
+                    case 1:
+                        showDialogOption(["a", "b"], []);
+                        break;
+                    case 2:
+                        if (dialogAnswers[1] == 0) {
+                            switch(dialogStates[2]) {
+                                case 0:
+                                    showPlayerDialog("aaaasdasd", "white");
+                                    break;
+                                case 1:
+                                    showDialogOption(["a", "b"]);
+                                    break;
+                                case 2:
+                                    if (dialogAnswers[2] == 0) {
+                                        switch(dialogStates[3]) {
+                                            case 0:
+                                                showPlayerDialog("test1000", "white");
+                                                break;
+                                            case 1:
+                                                concludeSubdialog();
+                                                break;
+                                        }
+                                    } else {
+                                        switch(dialogStates[3]) {
+                                            case 0:
+                                                showPlayerDialog("test1010", "white");
+                                                break;
+                                            case 1:
+                                                concludeSubdialog();
+                                                break;
+                                        }
+                                    }
+                                    break;
+                                case 3:
+                                    concludeSubdialog();
+                                    break;
+                            }
+                        } else {
+                            switch(dialogStates[2]) {
+                                case 0:
+                                    showPlayerDialog("test1100", "white");
+                                    break;
+                                case 1:
+                                    showPlayerDialog("test1101", "white");
+                                    break;
+                                case 2:
+                                    concludeSubdialog();
+                                    break;
+                            }
+                        }
+                        break;
+                    case 3:
+                        concludeSubdialog();
+                        break;
+                }
+            }
+            break;
+        case 7:
             finishDialog();
             break;
     } 

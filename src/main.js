@@ -65,7 +65,7 @@ document.addEventListener('click', function () {
         if (hoveredInteractable.startsWith("object")) {
             interactables[hoveredInteractable].startAnimation(interactables);
         } else if (hoveredInteractable.startsWith("npc")) {
-            interactables[hoveredInteractable].startDialogue(interactables[hoveredInteractable]);
+            interactables[hoveredInteractable].startDialog(interactables[hoveredInteractable]);
         }
     } else if (!player.inDialog) {
         controls.lock();

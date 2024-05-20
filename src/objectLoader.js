@@ -59,11 +59,12 @@ function loadGLTF(loadingManager, path, name, scene, position, scale, rotation, 
                     interactables["object_"+name] = {
                         model: model,
                         state: 0,
+                        isAnimating: false,
                         startAnimation: callFunction
                     };
                 } else if (type == "npc") {
                     interactables["npc_"+name] = {
-                        startDialogue: callFunction
+                        startDialog: callFunction
                     };
                 }
                 traverseThroughChildrenAndGiveName(model, `${type}_${name}`);
