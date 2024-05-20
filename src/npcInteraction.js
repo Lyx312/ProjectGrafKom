@@ -5,7 +5,7 @@ const playerName = document.getElementById("playerName");
 const npcName = document.getElementById("npcName");
 
 const initializeDialog = (name) => {
-    player.inDialog = true;
+    player.pause = true;
     dialogBox.style.display = "flex";
     npcName.textContent = name;
     controls.disconnect();
@@ -15,7 +15,7 @@ const initializeDialog = (name) => {
 }
 
 const finishDialog = () => {
-    player.inDialog = false;
+    player.pause = false;
     dialogBox.style.display = "none";
     playerName.style.display = 'none';
     npcName.style.display = 'none';
@@ -49,7 +49,7 @@ const showNPCDialog = (text, color) => {
 
 let dialogState = 0;
 document.addEventListener('click', function () {
-    if (player.inDialog) {
+    if (player.pause) {
         dialogState++;
     }
 }, false);

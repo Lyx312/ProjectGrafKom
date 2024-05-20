@@ -58,9 +58,8 @@ function loadGLTF(loadingManager, path, name, scene, position, scale, rotation, 
                 if (type == "object") {
                     interactables["object_"+name] = {
                         model: model,
-                        isAnimating: false,
                         state: 0,
-                        substate: 0
+                        startAnimation: callFunction
                     };
                 } else if (type == "npc") {
                     interactables["npc_"+name] = {
@@ -101,8 +100,8 @@ export function loadModel(loadingManager, scene, folder, position, scale, rotati
     loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, null, null, callback);
 }
 
-export function loadModelInterior(loadingManager, scene, file, position, scale, rotation, interactables) {
-    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file, scene, position, scale, rotation, interactables, "object");
+export function loadModelInterior(loadingManager, scene, file, position, scale, rotation, interactables, interactFunction) {
+    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file, scene, position, scale, rotation, interactables, "object", interactFunction);
 }
 
 export function createBoundingBox(scene, position, scale, rotation, octree) {
@@ -154,7 +153,7 @@ export function loadGroundModel(loadingManager, scene, file, worldOctree, positi
     loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, null, scene, position, scale, rotation, null, null, null, worldOctree);
 }
 
-export function loadAnimatedModel(loadingManager, scene, folder, name, dialogueFunction, position, scale, rotation, animationName, interactable, callback) {
+export function loadAnimatedModel(loadingManager, scene, folder, name, position, scale, rotation, animationName, interactable, dialogueFunction, callback) {
     loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, name, scene, position, scale, rotation, interactable, "npc", dialogueFunction, null, (mixer) => {
         if (mixer) {
             mixer._actions.forEach(action => {
