@@ -10,34 +10,37 @@
             margin: 0;
             padding: 0;
         }
-        #pos{
-			display: none;
-			position: absolute;
-			z-index: 99;
-			top: 50px;
-			left: 0;
-			width: 15vw;
-			height: 15vh;
-			padding-left: 10px;
-			padding-bottom: 10px;
-			color: white;
+
+        #pos {
+            display: none;
+            position: absolute;
+            z-index: 99;
+            top: 50px;
+            left: 0;
+            width: 15vw;
+            height: 15vh;
+            padding-left: 10px;
+            padding-bottom: 10px;
+            color: white;
             font-size: calc(0.7vh + 0.7vw);
-			background-color: black;
-			opacity: 0.7;
-		}
+            background-color: black;
+            opacity: 0.7;
+        }
+
         #cursor {
-			width: 100vw;
-			height: 100vh;
-			z-index: 99;
-			position: absolute;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font: bold;
-			color: white;
-			font-size: calc(1.2vh + 1.2vw);
-		}
-        #dialog{
+            width: 100vw;
+            height: 100vh;
+            z-index: 99;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font: bold;
+            color: white;
+            font-size: calc(1.2vh + 1.2vw);
+        }
+
+        #dialog {
             display: none;
             align-items: top;
             justify-content: left;
@@ -55,6 +58,7 @@
             font-size: calc(1.2vh + 1.2vw);
             border-radius: 0px 20px 20px 20px;
         }
+
         #npcName {
             display: none;
             align-items: center;
@@ -65,7 +69,8 @@
             opacity: 0.7;
             width: 15vw;
             height: 5vh;
-            bottom: calc(25vh + 20px); /* Positioning above the dialog */
+            bottom: calc(25vh + 20px);
+            /* Positioning above the dialog */
             left: 50px;
             color: white;
             padding: 10px;
@@ -74,6 +79,7 @@
             border-radius: 20px 20px 0px 0px;
             border-bottom: 2px solid white;
         }
+
         #playerName {
             display: none;
             align-items: center;
@@ -84,12 +90,13 @@
             opacity: 0.7;
             width: 15vw;
             height: 5vh;
-            bottom: calc(25vh + 20px); /* Positioning above the dialog */
+            bottom: calc(25vh + 20px);
+            /* Positioning above the dialog */
             right: 50px;
             color: white;
             padding: 10px;
             box-sizing: border-box;
-            font-size: calc(0.8vh + 0.8vw);;
+            font-size: calc(0.8vh + 0.8vw);
             border-radius: 20px 20px 0px 0px;
             border-bottom: 2px solid white;
         }
@@ -102,7 +109,7 @@
             height: 100vh;
             background-color: black;
             opacity: 1;
-            z-index: 1000;
+            z-index: 100;
             color: white;
         }
 
@@ -110,22 +117,24 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform : translate(-50%, -50%);
+            transform: translate(-50%, -50%);
             font-size: calc(3vh + 3vw);
         }
+
         #str {
             position: absolute;
             top: 60%;
             left: 45%;
-            transform : translate(-50%, -50%);
+            transform: translate(-50%, -50%);
             font-size: calc(1.2vh + 1.2vw);
             display: inline-block;
         }
+
         #spd {
             position: absolute;
             top: 60%;
             left: 55%;
-            transform : translate(-50%, -50%);
+            transform: translate(-50%, -50%);
             font-size: calc(1.2vh + 1.2vw);
             display: inline-block;
         }
@@ -133,6 +142,36 @@
         .fade {
             transition: opacity 3s ease-in;
         }
+
+        .dialogOption {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 101;
+            position: absolute;
+            background: rgb(80, 80, 80);
+            opacity: 0.8;
+            width: 15vw;
+            height: 5vh;
+            right: 50px;
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: calc(0.8vh + 0.8vw);
+            border-radius: 10px;
+            border: 2px solid rgb(150, 150, 150);
+        }
+
+        #option0 {
+            bottom: calc(30vh + 30px);
+        }
+        #option1 {
+            bottom: calc(35vh + 40px);
+        }
+        #option2 {
+            bottom: calc(40vh + 50px);
+        }
+
     </style>
     <script type="importmap">
         {
@@ -141,29 +180,37 @@
             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
           }
         }
-      </script>
+    </script>
 </head>
 
 <body>
     <div id="pos">
-		<p id="pos_x">x=</p>
-		<p id="pos_y">y=</p>
-		<p id="pos_z">z=</p>
+        <p id="pos_x">x=</p>
+        <p id="pos_y">y=</p>
+        <p id="pos_z">z=</p>
         <p id="velocity_x">vx=</p>
         <p id="velocity_y">vy=</p>
         <p id="velocity_z">vz=</p>
-	</div>
+    </div>
     <div id="cursor">
-		+
-	</div>
+        +
+    </div>
     <div id="npcName">Testificate</div>
     <div id="playerName">You</div>
-    <div id="dialog">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur ducimus ratione dicta autem a. Tempore, ipsa. Commodi nemo corrupti error!</div>
+    <div id="dialog">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur ducimus ratione dicta autem a.
+        Tempore, ipsa. Commodi nemo corrupti error!</div>
     <div id="change-day-overlay">
         <h1 id="day">Day 1</h1>
         <p id="str">Strength: 0</p>
         <p id="spd">Speed: 0</p>
     </div>
+
+    <div id="dialogOptionBox">
+        <button class="dialogOption" id="option2">Option 2</button>
+        <button class="dialogOption" id="option1">Option 1</button>
+        <button class="dialogOption" id="option0">Option 0</button>
+    </div>
+
     <script type="module" src="./src/main.js"></script>
 </body>
 

@@ -65,7 +65,6 @@ document.addEventListener('click', function () {
         if (hoveredInteractable.startsWith("object")) {
             interactables[hoveredInteractable].startAnimation(interactables);
         } else if (hoveredInteractable.startsWith("npc")) {
-            console.log("a");
             interactables[hoveredInteractable].startDialogue(interactables[hoveredInteractable]);
         }
     } else if (!player.inDialog) {
@@ -304,4 +303,3 @@ loadingManager.onLoad = function () {
     changeDayOverlay(1, player.str, player.spd);
     animate();
 };
-
