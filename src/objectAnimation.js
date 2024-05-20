@@ -11,7 +11,8 @@ function waitForNextFrame() {
 
 export const doorAnimation = async (interactables) => {
     const door = interactables["object_door"];
-    if (door) {
+    if (door && !door.isAnimating) {
+        door.isAnimating = true;
         if (door.state === 0) {
             door.initialLookDirection = getPlayerLookDirection() > 0 ? 1 : -1;
         }
@@ -27,12 +28,14 @@ export const doorAnimation = async (interactables) => {
         } else {
             door.state = door.initialLookDirection;
         }
+        door.isAnimating = false;
     }
 }
 
 export const lockerAnimation = async (interactables) => {
     const door = interactables["object_locker_door"];
-    if (door) {
+    if (door && !door.isAnimating) {
+        door.isAnimating = true;
         for (let substate = 0; substate < 15; substate++) {
             const rotationChange = 6 * (Math.PI/180);
             door.model.rotation.y += door.state === 0 ? rotationChange : -rotationChange;
@@ -40,14 +43,15 @@ export const lockerAnimation = async (interactables) => {
         }
 
         door.state ^= 1;
+        door.isAnimating = false;
     }
 }
 
 export const punchingBag1Animation = async (interactables) => {
     const punchingBag = interactables["object_punching_bag_1"];
 
-    if (punchingBag) {
-
+    if (punchingBag && !punchingBag.isAnimating) {
+        punchingBag.isAnimating = true;
         let deltaRotationX = 0;
         let deltaRotationZ = 0;
         let deltaPositionX = 0;
@@ -89,6 +93,7 @@ export const punchingBag1Animation = async (interactables) => {
         }
         punchingBag.state = 0;
         player.str++;
+        punchingBag.isAnimating = false;
     }
 }
 
@@ -96,8 +101,8 @@ export const punchingBag1Animation = async (interactables) => {
 export const punchingBag2Animation = async (interactables) => {
     const punchingBag = interactables["object_punching_bag_2"];
     
-    if (punchingBag) {
-
+    if (punchingBag && !punchingBag.isAnimating) {
+        punchingBag.isAnimating = true;
         let deltaRotationX = 0;
         let deltaRotationZ = 0;
         let deltaPositionX = 0;
@@ -139,6 +144,7 @@ export const punchingBag2Animation = async (interactables) => {
         }
         punchingBag.state = 0;
         player.str++;
+        punchingBag.isAnimating = false;
     }
 }
 
@@ -146,7 +152,8 @@ export const punchingBag2Animation = async (interactables) => {
 export const barbellsAnimation = async (interactables) => {
     const barbells = interactables["object_barbells"];
 
-    if (barbells) {
+    if (barbells && !barbells.isAnimating) {
+        barbells.isAnimating = true;
         const heightChange = 0.05; // Change in y-position per frame, adjust as needed
 
         for (let substate = 0; substate < 45; substate++) {
@@ -159,13 +166,15 @@ export const barbellsAnimation = async (interactables) => {
         }
 
         player.str++;
+        barbells.isAnimating = false;
     }
 }
 
 export const bikeAnimation = async (interactables) => {
     const bike = interactables["object_bike_pedals"];
 
-    if (bike) {
+    if (bike && !bike.isAnimating) {
+        bike.isAnimating = true;
         const rotationIncrement = 6 * (Math.PI/180); // 6 degrees per frame
 
         for (let substate = 0; substate < 60; substate++) {
@@ -174,14 +183,15 @@ export const bikeAnimation = async (interactables) => {
         }
 
         player.spd+=10;
+        bike.isAnimating = false;
     }
 }
 
 export function treadmillAnimation(player, interactables) {
     //console.log(player.direction)
     const treadmill = interactables["object_treadmill"];
-    if (treadmill && treadmill.isAnimating) {
-        
+    if (treadmill && !treadmill.isAnimating) {
+        treadmill.isAnimating = true;
         treadmill.substate++;
         const heightChange = 0.05; // Change in y-position per frame, adjust as needed
         const previousPositionY = player.position;
@@ -204,6 +214,7 @@ export function treadmillAnimation(player, interactables) {
         }
     }
     //player.position = [0,0,0];
+    treadmill.isAnimating = false;
 }
 
 export function carAnimation() {
