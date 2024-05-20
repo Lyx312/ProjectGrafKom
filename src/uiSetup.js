@@ -108,5 +108,5 @@ export const changeDayOverlay = (day, strength, speed) => {
         void overlay.offsetWidth;
         overlay.classList.add('fade');
         overlay.style.opacity = 0
-    }, 3000);
+    }, 1000);
 }

@@ -212,6 +212,6 @@ export function carAnimation() {
         changeDayOverlay(++day, player.str, player.spd);
         setTimeout(() => {
             player.pause = false;
-        }, 7000);
+        }, 5000);
     }
 }

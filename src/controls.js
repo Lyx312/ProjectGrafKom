@@ -50,6 +50,7 @@ export const player = {
     currentStamina: MAX_STAMINA,
     viewMode: 0,
     cheat: false,
+    inDialog: false,
     pause: false,
     str: 0,
     spd: 0
@@ -62,7 +63,7 @@ const cameraOffset = {
 
 let debug = false;
 
-export const playerCollider = new Capsule(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, player.height, 0), player.width / 2);
+export const playerCollider = new Capsule(new THREE.Vector3(-20, 0, 40), new THREE.Vector3(-20, player.height, 40), player.width / 2);
 
 export const controls = new PointerLockControls(camera, renderer.domElement);
 controls.minPolarAngle = 0.001; // radians

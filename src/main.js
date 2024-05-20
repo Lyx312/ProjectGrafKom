@@ -33,10 +33,10 @@ function raycasting() {
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
     // console.log('intersects:',intersects);
-    if (!player.pause) hoveredInteractable = "";
+    if (!player.inDialog) hoveredInteractable = "";
     outlinePass.selectedObjects = [];
     // hideInteractables();
-    
+
     for (const intersect of intersects) {
         if (intersect.object.interact && intersect.distance < 20) {
             // console.log(intersect.object.name);
@@ -65,9 +65,10 @@ document.addEventListener('click', function () {
         if (hoveredInteractable.startsWith("object")) {
             interactables[hoveredInteractable].startAnimation(interactables);
         } else if (hoveredInteractable.startsWith("npc")) {
-            interactables[hoveredInteractable].startDialogue();
+            console.log("a");
+            interactables[hoveredInteractable].startDialogue(interactables[hoveredInteractable]);
         }
-    } else if (!player.pause) {
+    } else if (!player.inDialog) {
         controls.lock();
     }
 }, false);
@@ -77,7 +78,7 @@ const mixers = {};
 let playerAnimations;
 let fanModel = {};
 
-export const interactables = {};
+const interactables = {};
 
 // Set up the ground
 loadGroundModel(loadingManager, scene, "ground_road", worldOctree, [0, -0.1, 0], [10, 10, 10], [0, 0, 0]);
@@ -300,7 +301,7 @@ function playAnimation(animationName) {
 
 loadingManager.onLoad = function () {
     console.log('All assets loaded.');
+    changeDayOverlay(1, player.str, player.spd);
     animate();
 };
 
-changeDayOverlay(1, player.str, player.spd);

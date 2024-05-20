@@ -4,25 +4,26 @@ const dialogBox = document.getElementById("dialog");
 const playerName = document.getElementById("playerName");
 const npcName = document.getElementById("npcName");
 
-const initializeDialog = (name) => {
-    player.pause = true;
+const initializeDialog = (name, npc) => {
+    currentNPC = npc;
+    player.inDialog = true;
     dialogBox.style.display = "flex";
     npcName.textContent = name;
-    controls.disconnect();
+    controls.unlock();
     document.body.ownerDocument.removeEventListener('keydown', onKeyDown);
     document.body.ownerDocument.removeEventListener('keyup', onKeyUp);
     resetControls()
 }
 
 const finishDialog = () => {
-    player.pause = false;
+    dialogState = 0;
+    player.inDialog = false;
     dialogBox.style.display = "none";
     playerName.style.display = 'none';
     npcName.style.display = 'none';
-    controls.connect();
+    controls.lock();
     document.body.ownerDocument.addEventListener('keydown', onKeyDown);
     document.body.ownerDocument.addEventListener('keyup', onKeyUp);
-    dialogState = 0;
 }
 
 function showDialog(text, color) {
@@ -48,16 +49,18 @@ const showNPCDialog = (text, color) => {
 
 
 let dialogState = 0;
+let currentNPC = null;
 document.addEventListener('click', function () {
-    if (player.pause) {
+    if (player.inDialog) {
         dialogState++;
+        currentNPC.startDialogue();
     }
 }, false);
 
-export const doctor = () => {
+export const doctor = (npc) => {
     switch(dialogState) {
         case 0:
-            initializeDialog("The Doctor");
+            initializeDialog("The Doctor", npc);
             showNPCDialog("Hello, sick people and their loved ones!", "yellow");
             break;
         case 1:
@@ -108,10 +111,10 @@ export const doctor = () => {
     } 
 }
 
-export const girl = () => {
+export const girl = (npc) => {
     switch(dialogState) {
         case 0:
-            initializeDialog("Girl A");
+            initializeDialog("Girl A", npc);
             showNPCDialog("Hey there, I'm a tutorial. I'm here to help you.", "blue");
             break;
         case 1:
