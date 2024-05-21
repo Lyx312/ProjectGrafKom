@@ -144,16 +144,16 @@ loadPlayer(loadingManager, scene, "casual_male", [0, 0, 0], [player.height * 0.7
 });
 
 loadModelInterior(loadingManager, scene, "barbell_chair", [-10, 0, -40], [10, 10, 10], [0, 90, 0]);
-createBoundingBox(scene, [-10.13, 0.5, -40.15], [7, 4.6, 2.9], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-10.13, 2, -40.15], [7, 2, 2.9], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "barbells", [-10, 0, -40], [10, 10, 10], [0, 90, 0], interactables, barbellsAnimation);
 createBoundingBox(scene, [-12.9, 5.5, -40], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "treadmill", [10, 0, -50], [10, 10, 10], [0, 90, 0], interactables, treadmillAnimation);
-createBoundingBox(scene, [9.4, 0, -50], [6.8, 2.45, 4], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [14, 2.45, -50], [2, 8.3, 4], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [12, 2.45, -51.7], [5, 6, 0.4], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [12, 2.45, -48.3], [5, 6, 0.4], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [9.4, 1, -50], [6.8, 1, 4], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [14, 3.5, -50], [2, 6, 4], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [12, 5.5, -51.8], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [12, 5.5, -48.2], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
 
 createBoundingBox(scene, [30, 7, -27.5], [3, 8, 80], [0, 0, 0], worldOctree);
 createBoundingBox(scene, [-28, 7, -28], [3, 8, 80], [0, 0, 0], worldOctree);
@@ -173,6 +173,7 @@ createBoundingCylinder(scene, [10, 5, -30], [1.5, 10, 1.5], [0, 0, 0], worldOctr
 loadAnimatedModel(loadingManager, scene, "dr_ahmad_sitting_pose", "Dr.Ahmad", [10, 1, 20], [3, 3, 3], [0, 0, 0], "mixamo.com", interactables, doctor, (animationMixer) => {
     mixers["dr_ahmad_sitting_pose"] = animationMixer;
 });
+createBoundingCylinder(scene, [10, 5, 21], [2, 10, 2], [0, 0, 0], worldOctree)
 
 loadModelInterior(loadingManager, scene, "lowpoly_car", [-50, 0, -20], [7, 7, 7], [0, 90, 0], interactables, carAnimation);
 createBoundingBox(scene, [-22, 7, 50.5], [34, 8, 14], [0, 0, 0], worldOctree);
@@ -184,11 +185,14 @@ createBoundingBox(scene, [-10, 4, -30], [9, 8, 2], [0, 0, 0], worldOctree);
 for (let i = 0; i < 10; i++) {
     loadModelInterior(loadingManager, scene, "locker", [26-(i*4), 0.2, -63.5], [8, 8, 8], [0, 0, 0]);
     loadModelInterior(loadingManager, scene, "locker_door", [28-(i*4), 0.2, -61.5], [8, 8, 8], [0, 0, 0], interactables, lockerAnimation);
-    //createBoundingBox(scene, [26, 0.2, -63.5], [4, 30, 4], [0, 0, 0], worldOctree);
+    createBoundingBox(scene, [24-(i*4), 7.5, -63.5], [0.5, 14, 4], [0, 0, 0], worldOctree);
+    createBoundingBox(scene, [26-(i*4), 14.5, -63.5], [4, 0, 4], [0, 0, 0], worldOctree);
 }
+createBoundingBox(scene, [28, 7.5, -63.5], [0.5, 14, 4], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "bench", [10, 0, 20], [8, 8, 8], [0, 0, 0]);
-createBoundingBox(scene, [10, 5, 18], [7, 7, 18], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [10, 4, 18], [18, 1, 7], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [10, 7, 15], [18, 2, 5], [65, 0, 0], worldOctree);
 
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
