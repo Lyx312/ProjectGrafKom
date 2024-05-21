@@ -78,7 +78,7 @@ function loadGLTF(loadingManager, path, name, scene, position, scale, rotation, 
                     };
                 }
                 traverseThroughChildrenAndGiveName(model, newKey);
-                console.log(newKey);
+                // console.log(newKey);
             }
 
             scene.add(model);

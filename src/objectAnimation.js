@@ -74,20 +74,25 @@ export const punchingBag1Animation = async (punchingBag) => {
         const rotationChangeXZ = 1 * (Math.PI/180);
         const positionChangeXZ = 0.22;
         
-        for (let substate = 0; substate < 90; substate++) {
-            const positionChangeY = 0.0008 * Math.pow(punchingBag.state == 0? substate%45 : 44-substate%45, 1.5);
-            punchingBag.model.rotation.x += deltaRotationX * (punchingBag.state === 0 ? rotationChangeXZ : -rotationChangeXZ);
-            punchingBag.model.rotation.z += deltaRotationZ * (punchingBag.state === 0 ? rotationChangeXZ : -rotationChangeXZ);
-            punchingBag.model.position.x += deltaPositionX * (punchingBag.state === 0 ? positionChangeXZ : -positionChangeXZ);
-            punchingBag.model.position.z += deltaPositionZ * (punchingBag.state === 0 ? positionChangeXZ : -positionChangeXZ);
-            punchingBag.model.position.y += punchingBag.state === 0 ? positionChangeY : -positionChangeY;
-            
-            if (substate === 45) {
-                punchingBag.state = 1;
-            }
+        for (let substate = 0; substate < 45; substate++) {
+            const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
+            punchingBag.model.rotation.x += deltaRotationX * rotationChangeXZ;
+            punchingBag.model.rotation.z += deltaRotationZ * rotationChangeXZ;
+            punchingBag.model.position.x += deltaPositionX * positionChangeXZ;
+            punchingBag.model.position.z += deltaPositionZ * positionChangeXZ;
+            punchingBag.model.position.y += positionChangeY;
             await waitForNextFrame();
         }
-        punchingBag.state = 0;
+        for (let substate = 44; substate >= 0; substate--) {
+            const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
+            punchingBag.model.rotation.x += deltaRotationX * -rotationChangeXZ;
+            punchingBag.model.rotation.z += deltaRotationZ * -rotationChangeXZ;
+            punchingBag.model.position.x += deltaPositionX * -positionChangeXZ;
+            punchingBag.model.position.z += deltaPositionZ * -positionChangeXZ;
+            punchingBag.model.position.y += -positionChangeY;
+            await waitForNextFrame();
+        }
+
         player.str++;
         punchingBag.isAnimating = false;
     }
@@ -123,20 +128,25 @@ export const punchingBag2Animation = async (punchingBag) => {
         const rotationChangeXZ = 1 * (Math.PI/180);
         const positionChangeXZ = 0.22;
         
-        for (let substate = 0; substate < 90; substate++) {
-            const positionChangeY = 0.0008 * Math.pow(punchingBag.state == 0? substate%45 : 44-substate%45, 1.5);
-            punchingBag.model.rotation.x += deltaRotationX * (punchingBag.state === 0 ? rotationChangeXZ : -rotationChangeXZ);
-            punchingBag.model.rotation.z += deltaRotationZ * (punchingBag.state === 0 ? rotationChangeXZ : -rotationChangeXZ);
-            punchingBag.model.position.x += deltaPositionX * (punchingBag.state === 0 ? positionChangeXZ : -positionChangeXZ);
-            punchingBag.model.position.z += deltaPositionZ * (punchingBag.state === 0 ? positionChangeXZ : -positionChangeXZ);
-            punchingBag.model.position.y += punchingBag.state === 0 ? positionChangeY : -positionChangeY;
-            
-            if (substate === 45) {
-                punchingBag.state = 1;
-            }
+        for (let substate = 0; substate < 45; substate++) {
+            const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
+            punchingBag.model.rotation.x += deltaRotationX * rotationChangeXZ;
+            punchingBag.model.rotation.z += deltaRotationZ * rotationChangeXZ;
+            punchingBag.model.position.x += deltaPositionX * positionChangeXZ;
+            punchingBag.model.position.z += deltaPositionZ * positionChangeXZ;
+            punchingBag.model.position.y += positionChangeY;
             await waitForNextFrame();
         }
-        punchingBag.state = 0;
+        for (let substate = 44; substate >= 0; substate--) {
+            const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
+            punchingBag.model.rotation.x += deltaRotationX * -rotationChangeXZ;
+            punchingBag.model.rotation.z += deltaRotationZ * -rotationChangeXZ;
+            punchingBag.model.position.x += deltaPositionX * -positionChangeXZ;
+            punchingBag.model.position.z += deltaPositionZ * -positionChangeXZ;
+            punchingBag.model.position.y += -positionChangeY;
+            await waitForNextFrame();
+        }
+
         player.str++;
         punchingBag.isAnimating = false;
     }
