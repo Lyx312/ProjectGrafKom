@@ -196,7 +196,7 @@ createBoundingBox(scene, [10, 7, 15], [18, 2, 5], [65, 0, 0], worldOctree);
 
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
-const geometry = new THREE.CylinderGeometry(player.width / 2, player.width / 2, player.height + player.width, 32);
+const geometry = new THREE.CapsuleGeometry(player.width/2, player.height);
 const material = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }); // Yellow, wireframe material
 export const capsuleMesh = new THREE.Mesh(geometry, material);
 capsuleMesh.visible = false;
