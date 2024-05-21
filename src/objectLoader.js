@@ -48,7 +48,6 @@ function loadGLTF(loadingManager, path, name, scene, position, scale, rotation, 
             const model = gltf.scene;
             setPositionScaleRotation(model, position, scale, rotation);
             addShadow(gltf);
-            scene.add(model);
 
             if (octree) {
                 octree.fromGraphNode(model);
@@ -69,6 +68,8 @@ function loadGLTF(loadingManager, path, name, scene, position, scale, rotation, 
                 }
                 traverseThroughChildrenAndGiveName(model, `${type}_${name}`);
             }
+
+            scene.add(model);
 
             if (gltf.animations && gltf.animations.length > 0) {
                 const mixer = new THREE.AnimationMixer(model);

@@ -9,19 +9,7 @@ let dialogAnswers = [];
 let awaitAnswer = false;
 let dialogStates = [0];
 let currentNPC = null;
-
-for(let i = 0; i < dialogOptions.length; i++) {
-    dialogOptions[i].onclick = (function(index) {
-        return function() {
-            dialogAnswers.push(index);
-            dialogStates[dialogStates.length - 1]++;
-            dialogStates.push(-1);
-            awaitAnswer = false;
-            console.log(dialogStates);
-            hideDialogs();
-        }
-    })(i);
-}
+let index = 0;
 
 const initializeDialog = (name, npc) => {
     currentNPC = npc;
@@ -73,6 +61,16 @@ const hideDialogs = () => {
     }
 }
 
+// Function to handle dialog option click
+function buttonClick(index) {
+    dialogAnswers.push(index);
+    dialogStates[dialogStates.length - 1]++;
+    dialogStates.push(-1);
+    awaitAnswer = false;
+    console.log(dialogStates);
+    hideDialogs();
+}
+
 const showDialogOption = (optionText, optionColor) => {
     optionColor = optionColor || new Array(optionText.length).fill("white");
     for (let i = 0; i < optionText.length; i++) {
@@ -80,6 +78,7 @@ const showDialogOption = (optionText, optionColor) => {
         dialogOptions[i].style.display = 'flex';
         dialogOptions[i].textContent = optionText[index];
         dialogOptions[i].style.color = optionColor[index] || "white";
+        dialogOptions[i].onclick = buttonClick.bind(null, index);
     }
     awaitAnswer = true;
 }
@@ -89,6 +88,7 @@ const concludeSubdialog = () => {
     dialogStates.pop();
     dialogStates[dialogStates.length-1]++;
     currentNPC.startDialog();
+    index--;
 }
 
 
@@ -151,7 +151,8 @@ export const doctor = (npc) => {
 }
 
 export const girl = (npc) => {
-    switch(dialogStates[0]) {
+    index = 0;
+    switch(dialogStates[index]) {
         case 0:
             initializeDialog("Girl A", npc);
             showNPCDialog("Hey there, I'm a tutorial. I'm here to help you.", "blue");
@@ -160,23 +161,9 @@ export const girl = (npc) => {
             showDialogOption(["Accept", "Refuse"], ["red"]);
             break;
         case 2:
-            if (dialogAnswers[0] == 0) {
-                switch (dialogStates[1]) {
-                    case 0:
-                        showPlayerDialog("No thanks, I know what I'm doing.", "white");
-                        break;
-                    case 1:
-                        showNPCDialog("Oh okay", "yellow");
-                        break;
-                    case 2:
-                        showNPCDialog("Have a nice day!", "yellow");
-                        break;
-                    case 3:
-                        concludeSubdialog();
-                        break;
-                }
-            } else if (dialogAnswers[0] == 1) {
-                switch (dialogStates[1]) {
+            index++;
+            if (dialogAnswers[index-1] == 0) {
+                switch (dialogStates[index]) {
                     case 0:
                         showPlayerDialog("Can you kill me please?", "white");
                         break;
@@ -190,6 +177,21 @@ export const girl = (npc) => {
                         concludeSubdialog();
                         break;
                 }
+            } else if (dialogAnswers[index-1] == 1) {
+                switch (dialogStates[index]) {
+                    case 0:
+                        showPlayerDialog("No thanks, I know what I'm doing.", "white");
+                        break;
+                    case 1:
+                        showNPCDialog("Oh okay", "yellow");
+                        break;
+                    case 2:
+                        showNPCDialog("Have a nice day!", "yellow");
+                        break;
+                    case 3:
+                        concludeSubdialog();
+                        break;
+                }
             }
             break;
 
@@ -197,8 +199,9 @@ export const girl = (npc) => {
             showDialogOption(["2 subdialog", "3 subdialog"])
             break;
         case 4:
-            if (dialogAnswers[0] == 0) {
-                switch (dialogStates[1]) {
+            index++;
+            if (dialogAnswers[index-1] == 0) {
+                switch (dialogStates[index]) {
                     case 0:
                         showPlayerDialog("test00", "white");
                         break;
@@ -211,7 +214,7 @@ export const girl = (npc) => {
                 }
     
             } else {
-                switch (dialogStates[1]) {
+                switch (dialogStates[index]) {
                     case 0:
                         showPlayerDialog("test10", "white");
                         break;
@@ -231,8 +234,9 @@ export const girl = (npc) => {
             showDialogOption(["branch again to 3 option", "branch again and again"]);
             break;
         case 6:
-            if (dialogAnswers[0] == 0) {
-                switch(dialogStates[1]) {
+            index++;
+            if (dialogAnswers[index-1] == 0) {
+                switch(dialogStates[index]) {
                     case 0:
                         showNPCDialog("aaaa", "white");
                         break;
@@ -240,8 +244,9 @@ export const girl = (npc) => {
                         showDialogOption(["a", "b", "c"], []);
                         break;
                     case 2:
-                        if (dialogAnswers[1] == 0) {
-                            switch(dialogStates[2]) {
+                        index++;
+                        if (dialogAnswers[index-1] == 0) {
+                            switch(dialogStates[index]) {
                                 case 0:
                                     showPlayerDialog("test001", "white");
                                     break;
@@ -249,8 +254,8 @@ export const girl = (npc) => {
                                     concludeSubdialog();
                                     break;
                             }
-                        } else if (dialogAnswers[1]==1) {
-                            switch(dialogStates[2]) {
+                        } else if (dialogAnswers[index-1]==1) {
+                            switch(dialogStates[index]) {
                                 case 0:
                                     showPlayerDialog("test010", "white");
                                     break;
@@ -262,7 +267,7 @@ export const girl = (npc) => {
                                     break;
                             }
                         } else {
-                            switch(dialogStates[2]) {
+                            switch(dialogStates[index]) {
                                 case 0:
                                     showPlayerDialog("test010", "white");
                                     break;
@@ -283,7 +288,7 @@ export const girl = (npc) => {
                         break;
                 }
             } else {
-                switch(dialogStates[1]) {
+                switch(dialogStates[index]) {
                     case 0:
                         showNPCDialog("bbbb", "white");
                         break;
@@ -291,8 +296,8 @@ export const girl = (npc) => {
                         showDialogOption(["a", "b"], []);
                         break;
                     case 2:
-                        if (dialogAnswers[1] == 0) {
-                            switch(dialogStates[2]) {
+                        if (dialogAnswers[index-1] == 0) {
+                            switch(dialogStates[index]) {
                                 case 0:
                                     showPlayerDialog("aaaasdasd", "white");
                                     break;
@@ -300,8 +305,9 @@ export const girl = (npc) => {
                                     showDialogOption(["a", "b"]);
                                     break;
                                 case 2:
-                                    if (dialogAnswers[2] == 0) {
-                                        switch(dialogStates[3]) {
+                                    index++;
+                                    if (dialogAnswers[index-1] == 0) {
+                                        switch(dialogStates[index]) {
                                             case 0:
                                                 showPlayerDialog("test1000", "white");
                                                 break;
@@ -310,7 +316,7 @@ export const girl = (npc) => {
                                                 break;
                                         }
                                     } else {
-                                        switch(dialogStates[3]) {
+                                        switch(dialogStates[index]) {
                                             case 0:
                                                 showPlayerDialog("test1010", "white");
                                                 break;
@@ -325,7 +331,7 @@ export const girl = (npc) => {
                                     break;
                             }
                         } else {
-                            switch(dialogStates[2]) {
+                            switch(dialogStates[index]) {
                                 case 0:
                                     showPlayerDialog("test1100", "white");
                                     break;

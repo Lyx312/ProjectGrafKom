@@ -287,6 +287,6 @@ export function getMoveDirection() {
 }
 
 export function getCameraOffset() {
-    if (player.viewMode == 0) return cameraOffset.firstPerson;
+    if (player.viewMode == 0 || player.cheat) return cameraOffset.firstPerson;
     return cameraOffset.thirdPerson;
 }
