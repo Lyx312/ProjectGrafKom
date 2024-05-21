@@ -54,19 +54,31 @@ function loadGLTF(loadingManager, path, name, scene, position, scale, rotation, 
             }
 
             if (interactables) {
+                // Initialize a counter to track the number of times the base name has been used
+                let count = 0;
+                // Loop through the interactables object to count existing keys with the same base name
+                for (let key in interactables) {
+                    if (key.startsWith(`${type}_${name}`)) {
+                        count += 1;
+                    }
+                }
+                // Create the new key by appending the count to the base name
+                const newKey = `${type}_${name}_${count}`;
+
                 if (type == "object") {
-                    interactables["object_"+name] = {
+                    interactables[newKey] = {
                         model: model,
                         state: 0,
                         isAnimating: false,
                         startAnimation: callFunction
                     };
                 } else if (type == "npc") {
-                    interactables["npc_"+name] = {
+                    interactables[newKey] = {
                         startDialog: callFunction
                     };
                 }
-                traverseThroughChildrenAndGiveName(model, `${type}_${name}`);
+                traverseThroughChildrenAndGiveName(model, newKey);
+                console.log(newKey);
             }
 
             scene.add(model);

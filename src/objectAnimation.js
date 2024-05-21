@@ -9,8 +9,7 @@ function waitForNextFrame() {
     });
 }
 
-export const doorAnimation = async (interactables) => {
-    const door = interactables["object_door"];
+export const doorAnimation = async (door) => {
     if (door && !door.isAnimating) {
         door.isAnimating = true;
         if (door.state === 0) {
@@ -32,24 +31,21 @@ export const doorAnimation = async (interactables) => {
     }
 }
 
-export const lockerAnimation = async (interactables) => {
-    const door = interactables["object_locker_door"];
-    if (door && !door.isAnimating) {
-        door.isAnimating = true;
+export const lockerAnimation = async (locker) => {
+    if (locker && !locker.isAnimating) {
+        locker.isAnimating = true;
         for (let substate = 0; substate < 15; substate++) {
             const rotationChange = 6 * (Math.PI/180);
-            door.model.rotation.y += door.state === 0 ? rotationChange : -rotationChange;
+            locker.model.rotation.y += locker.state === 0 ? rotationChange : -rotationChange;
             await waitForNextFrame();
         }
 
-        door.state ^= 1;
-        door.isAnimating = false;
+        locker.state ^= 1;
+        locker.isAnimating = false;
     }
 }
 
-export const punchingBag1Animation = async (interactables) => {
-    const punchingBag = interactables["object_punching_bag_1"];
-
+export const punchingBag1Animation = async (punchingBag) => {
     if (punchingBag && !punchingBag.isAnimating) {
         punchingBag.isAnimating = true;
         let deltaRotationX = 0;
@@ -98,9 +94,7 @@ export const punchingBag1Animation = async (interactables) => {
 }
 
 
-export const punchingBag2Animation = async (interactables) => {
-    const punchingBag = interactables["object_punching_bag_2"];
-    
+export const punchingBag2Animation = async (punchingBag) => {
     if (punchingBag && !punchingBag.isAnimating) {
         punchingBag.isAnimating = true;
         let deltaRotationX = 0;
@@ -149,9 +143,7 @@ export const punchingBag2Animation = async (interactables) => {
 }
 
 
-export const barbellsAnimation = async (interactables) => {
-    const barbells = interactables["object_barbells"];
-
+export const barbellsAnimation = async (barbells) => {
     if (barbells && !barbells.isAnimating) {
         barbells.isAnimating = true;
         const heightChange = 0.05; // Change in y-position per frame, adjust as needed
@@ -170,9 +162,7 @@ export const barbellsAnimation = async (interactables) => {
     }
 }
 
-export const bikeAnimation = async (interactables) => {
-    const bike = interactables["object_bike_pedals"];
-
+export const bikeAnimation = async (bike) => {
     if (bike && !bike.isAnimating) {
         bike.isAnimating = true;
         const rotationIncrement = 6 * (Math.PI/180); // 6 degrees per frame
@@ -217,8 +207,7 @@ export function treadmillAnimation(player, interactables) {
     treadmill.isAnimating = false;
 }
 
-export function carAnimation(interactables) {
-    const car = interactables["object_lowpoly_car"];
+export function carAnimation(car) {
     if (car && !car.isAnimating) {
         car.isAnimating = true;
         changeDayOverlay(++day, player.str, player.spd);

@@ -68,7 +68,7 @@ function raycasting() {
 document.addEventListener('click', function () {
     if (controls.isLocked) {
         if (hoveredInteractable.startsWith("object")) {
-            interactables[hoveredInteractable].startAnimation(interactables);
+            interactables[hoveredInteractable].startAnimation(interactables[hoveredInteractable]);
         } else if (hoveredInteractable.startsWith("npc")) {
             interactables[hoveredInteractable].startDialog(interactables[hoveredInteractable]);
         }
@@ -179,9 +179,11 @@ loadModelInterior(loadingManager, scene, "exercise_bike", [-10, 0, -30], [3, 3, 
 loadModelInterior(loadingManager, scene, "bike_pedals", [-11.8, 2.4, -30], [3, 3, 3], [0, 180, 0], interactables, bikeAnimation);
 createBoundingBox(scene, [-10, 4, -30], [9, 8, 2], [0, 0, 0], worldOctree);
 
-loadModelInterior(loadingManager, scene, "locker", [26, 0.2, -63.5], [8, 8, 8], [0, 0, 0]);
-loadModelInterior(loadingManager, scene, "locker_door", [28, 0.2, -61.5], [8, 8, 8], [0, 0, 0], interactables, lockerAnimation);
-//createBoundingBox(scene, [26, 0.2, -63.5], [4, 30, 4], [0, 0, 0], worldOctree);
+for (let i = 0; i < 10; i++) {
+    loadModelInterior(loadingManager, scene, "locker", [26-(i*4), 0.2, -63.5], [8, 8, 8], [0, 0, 0]);
+    loadModelInterior(loadingManager, scene, "locker_door", [28-(i*4), 0.2, -61.5], [8, 8, 8], [0, 0, 0], interactables, lockerAnimation);
+    //createBoundingBox(scene, [26, 0.2, -63.5], [4, 30, 4], [0, 0, 0], worldOctree);
+}
 
 loadModelInterior(loadingManager, scene, "bench", [10, 0, 20], [8, 8, 8], [0, 0, 0]);
 createBoundingBox(scene, [10, 5, 18], [7, 7, 18], [0, 90, 0], worldOctree);
