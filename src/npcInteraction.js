@@ -296,6 +296,7 @@ export const girl = (npc) => {
                         showDialogOption(["a", "b"], []);
                         break;
                     case 2:
+                        index++;
                         if (dialogAnswers[index-1] == 0) {
                             switch(dialogStates[index]) {
                                 case 0:

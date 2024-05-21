@@ -16,7 +16,7 @@ export const stats = new Stats();
 
 //init raycasting
 const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2(); // posisi mouse
+const pointer = new THREE.Vector2(); // crosshair position
 // set pointer location to center of the window
 pointer.x = 0;
 pointer.y = 0;
@@ -32,13 +32,18 @@ let hoveredInteractable;
 function raycasting() {
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
+
+    const cameraOffset = getCameraOffset();
+    const maxDistance = 20 - cameraOffset;
+    const minDistance = -cameraOffset;
+
     // console.log('intersects:',intersects);
     if (!player.inDialog) hoveredInteractable = "";
     outlinePass.selectedObjects = [];
     // hideInteractables();
 
     for (const intersect of intersects) {
-        if (intersect.object.interact && intersect.distance < 20) {
+        if (intersect.object.interact && intersect.distance > minDistance && intersect.distance<maxDistance) {
             // console.log(intersect.object.name);
             const object = traverseUntilLastParent(intersect.object);
             outlinePass.selectedObjects = [object];
