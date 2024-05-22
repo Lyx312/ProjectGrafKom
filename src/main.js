@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
 import Stats from 'three/addons/libs/stats.module.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player } from './controls.js';
-import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel } from './objectLoader.js';
+import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel, boundingMaterial, lineMaterial } from './objectLoader.js';
 import { scene, camera, updateBackground, renderer, composer, outlinePass } from './sceneSetup.js';
 import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation } from './objectAnimation.js';
 import { changeDayOverlay, updateDebugScreen } from './uiSetup.js';
@@ -11,6 +11,7 @@ import { doctor, girl } from './npcInteraction.js';
 
 const loadingManager = new THREE.LoadingManager();
 export const worldOctree = new Octree();
+export let updateableCollision = [];
 const clock = new THREE.Clock();
 export const stats = new Stats();
 
@@ -112,7 +113,6 @@ loadGroundModel(loadingManager, scene, "ground_road", worldOctree, [0, -0.1, 0],
 loadModelInterior(loadingManager, scene, "new_room_3", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
 
 loadModelInterior(loadingManager, scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [0, 90, 0], interactables, doorAnimation)
-// createBoundingBox(scene, [-14, 7, 11.5], [2.5, 13, 6.5], [0, 90, 0], worldOctree, boundingBox)
 
 loadModelInterior(loadingManager, scene, "yoga_mat", [20, 0.1, 0], [3, 3, 3], [0, 90, 0]);
 
@@ -196,9 +196,9 @@ createBoundingBox(scene, [10, 7, 15], [18, 2, 5], [65, 0, 0], worldOctree);
 
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
-const geometry = new THREE.CapsuleGeometry(player.width/2, player.height);
-const material = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }); // Yellow, wireframe material
-export const capsuleMesh = new THREE.Mesh(geometry, material);
+const capsuleGeometry = new THREE.CapsuleGeometry(player.width/2, player.height);
+const capsuleMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }); // Yellow, wireframe material
+export const capsuleMesh = new THREE.Mesh(capsuleGeometry, capsuleMaterial);
 capsuleMesh.visible = false;
 scene.add(capsuleMesh);
 
@@ -207,6 +207,17 @@ let cameraLookDirectionBack = new THREE.Vector3();
 
 let lastRaycastTime = 0;
 const raycastInterval = 0.1; // run raycasting every 0.1 seconds
+
+loadingManager.onLoad = function () {
+    console.log('All assets loaded.');
+    changeDayOverlay(1, player.str, player.spd);
+    animate();
+
+    createBoundingBox(scene, [-14, 7, 11.5], [6.5, 13, 1.7], [0, 0, 0], null, (collision) => {
+        updateableCollision.push(collision);
+        interactables["object_door_0"].collision = collision;
+    })
+};
 
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
@@ -310,9 +321,3 @@ function playAnimation(animationName) {
         }
     }
 }
-
-loadingManager.onLoad = function () {
-    console.log('All assets loaded.');
-    changeDayOverlay(1, player.str, player.spd);
-    animate();
-};

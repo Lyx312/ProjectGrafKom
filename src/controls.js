@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { camera } from "./sceneSetup.js";
 import { updateStaminaBar } from './uiSetup.js';
-import { worldOctree, capsuleMesh, stats } from './main.js';
+import { worldOctree, capsuleMesh, stats, updateableCollision } from './main.js';
 import { Capsule } from 'three/addons/math/Capsule.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { renderer } from './sceneSetup.js';
@@ -149,22 +149,6 @@ export const onKeyUp = (e) => {
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 
-
-function playerCollisions() {
-    const result = worldOctree.capsuleIntersect(playerCollider);
-    player.onGround = false;
-
-    if (result) {
-        player.onGround = result.normal.y > 0;
-
-        if (!player.onGround) {
-            player.velocity.addScaledVector(result.normal, - result.normal.dot(player.velocity));
-        }
-
-        playerCollider.translate(result.normal.multiplyScalar(result.depth));
-    }
-}
-
 function toggleDebugMode() {
     debug = !debug;
     if (debug) {
@@ -180,7 +164,69 @@ function toggleDebugMode() {
 }
 
 
+const vector1 = new THREE.Vector3();
+const vector2 = new THREE.Vector3();
+const vector3 = new THREE.Vector3();
 const deltaPosition = new THREE.Vector3();
+
+function closestPointOnBox3(point, box) {
+    return new THREE.Vector3(
+        Math.max(box.min.x, Math.min(point.x, box.max.x)),
+        Math.max(box.min.y, Math.min(point.y, box.max.y)),
+        Math.max(box.min.z, Math.min(point.z, box.max.z))
+    );
+}
+
+function handleCollision(point, collider, velocity, radius) {
+    const closestPoint = closestPointOnBox3(point, collider);
+    const d2 = point.distanceToSquared(closestPoint);
+    const r2 = radius * radius;
+
+    if (d2 < r2) {
+        const normal = vector1.subVectors(point, closestPoint).normalize();
+        const v1 = vector2.copy(normal).multiplyScalar(normal.dot(velocity));
+        velocity.sub(v1);
+
+        const d = (radius - Math.sqrt(d2)) / 2;
+        const correction = vector3.copy(normal).multiplyScalar(d);
+
+        return { correction, normal };
+    }
+    return null;
+}
+
+function resolveCollision(collider, velocity, radius) {
+    const center = vector1.addVectors(playerCollider.start, playerCollider.end).multiplyScalar(0.5);
+
+    for (const point of [playerCollider.start, playerCollider.end, center]) {
+        const result = handleCollision(point, collider, velocity, radius);
+        if (result) {
+            playerCollider.start.add(result.correction);
+            playerCollider.end.add(result.correction);
+            if (result.normal.y > 0.5) {
+                player.onGround = true;
+            }
+        }
+    }
+}
+
+function playerCollisions() {
+    const result = worldOctree.capsuleIntersect(playerCollider);
+    if (result) {
+        player.onGround = result.normal.y > 0;
+        if (!player.onGround) {
+            player.velocity.addScaledVector(result.normal, -result.normal.dot(player.velocity));
+        }
+        playerCollider.translate(result.normal.multiplyScalar(result.depth));
+    }
+}
+
+function playerBoxCollision(boxes) {
+    boxes.forEach(box => {
+        resolveCollision(box.collider, player.velocity, playerCollider.radius);
+    });
+}
+
 export function updatePlayer(deltaTime) {
     let damping = Math.exp(-8 * deltaTime) - 1;
 
@@ -190,11 +236,14 @@ export function updatePlayer(deltaTime) {
     }
 
     player.velocity.addScaledVector(player.velocity, damping);
-
     deltaPosition.copy(player.velocity).multiplyScalar(deltaTime);
     playerCollider.translate(deltaPosition);
 
-    if (!player.cheat) playerCollisions();
+    player.onGround = false;
+    if (!player.cheat) {
+        playerCollisions();
+        playerBoxCollision(updateableCollision);
+    }
 
     camera.position.copy(playerCollider.end);
 
@@ -203,6 +252,7 @@ export function updatePlayer(deltaTime) {
         capsuleMesh.position.y += player.height / 2; // Adjust for the fact that CylinderGeometry is centered at its midpoint
     }
 }
+
 
 function getForwardVector() {
     camera.getWorldDirection(player.direction);

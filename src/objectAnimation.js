@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { player, getPlayerLookDirection } from "./controls.js";
 import { changeDayOverlay } from "./uiSetup.js";
 
@@ -9,6 +10,47 @@ function waitForNextFrame() {
     });
 }
 
+function updateBoundingBox(collision, position, rotation) {
+    // Apply the new position and rotation to the box
+    collision.box.position.set(position[0], position[1], position[2]);
+    collision.box.rotation.set(rotation[0], rotation[1], rotation[2]);
+
+    // Ensure the world matrix is updated with the new position and rotation
+    collision.box.updateMatrixWorld(true); 
+
+    // Recalculate Box3 from the transformed object
+    const box3 = new THREE.Box3().setFromObject(collision.box);
+    collision.collider.copy(box3);
+
+    // Apply the new position and rotation to the line
+    collision.line.position.set(position[0], position[1], position[2]);
+    collision.line.rotation.set(rotation[0], rotation[1], rotation[2]);
+    collision.line.updateMatrixWorld(true);
+}
+
+function incrementBoundingBox(collision, positionIncrement, rotationIncrement) {
+    // Get the current position and rotation
+    const currentPosition = collision.box.position.clone();
+    const currentRotation = collision.box.rotation.clone();
+
+    // Calculate new position
+    const newPosition = [
+        currentPosition.x + positionIncrement[0],
+        currentPosition.y + positionIncrement[1],
+        currentPosition.z + positionIncrement[2]
+    ];
+
+    // Calculate new rotation
+    const newRotation = [
+        currentRotation.x + rotationIncrement[0],
+        currentRotation.y + rotationIncrement[1],
+        currentRotation.z + rotationIncrement[2]
+    ];
+
+    // Apply new position and rotation
+    updateBoundingBox(collision, newPosition, newRotation);
+}
+
 export const doorAnimation = async (door) => {
     if (door && !door.isAnimating) {
         door.isAnimating = true;
@@ -16,9 +58,20 @@ export const doorAnimation = async (door) => {
             door.initialLookDirection = getPlayerLookDirection() > 0 ? 1 : -1;
         }
 
+        const pivotOffset = 3.3;
         for (let substate = 0; substate < 90; substate++) {
             const rotationChange = door.initialLookDirection * (Math.PI/180);
-            door.model.rotation.y += door.state === 0 ? rotationChange : -rotationChange;
+            const currentRotation = (substate + 1) * rotationChange;
+
+            const positionChangeX = - pivotOffset * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
+            const positionChangeZ = pivotOffset * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
+
+            const rotationIncrement = door.state === 0 ? rotationChange : -rotationChange;
+            const positionIncrementX = door.state === 0 ? positionChangeX : -positionChangeX;
+            const positionIncrementZ = door.state === 0 ? positionChangeZ : -positionChangeZ;
+
+            door.model.rotation.y += rotationIncrement;
+            incrementBoundingBox(door.collision, [positionIncrementX, 0, positionIncrementZ], [0, rotationIncrement, 0]);
             await waitForNextFrame();
         }
 

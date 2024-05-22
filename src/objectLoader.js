@@ -118,16 +118,25 @@ export function loadModelInterior(loadingManager, scene, file, position, scale, 
     loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file, scene, position, scale, rotation, interactables, "object", interactFunction);
 }
 
-export function createBoundingBox(scene, position, scale, rotation, octree) {
+export function createBoundingBox(scene, position, scale, rotation, octree, callback) {
     const cube = new THREE.Mesh(geometry, boundingMaterial);
     setPositionScaleRotation(cube, position, scale, rotation);
-    octree.fromGraphNode(cube);
     scene.add(cube);
 
     const edges = new THREE.EdgesGeometry(cube.geometry);
     const line = new THREE.LineSegments(edges, lineMaterial);
     setPositionScaleRotation(line, position, scale, rotation);
     scene.add(line);
+
+    if (octree) {
+        octree.fromGraphNode(cube);
+    } else if (callback) {
+        callback({
+            collider: new THREE.Box3(new THREE.Vector3(position[0]-scale[0]/2, position[1]-scale[1]/2, position[2]-scale[2]/2), new THREE.Vector3(position[0]+scale[0]/2, position[1]+scale[1]/2, position[2]+scale[2]/2)),
+            box: cube,
+            line: line,
+        })
+    }
 }
 
 export function createBoundingCylinder(scene, position, scale, rotation, octree) {
