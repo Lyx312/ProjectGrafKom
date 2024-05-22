@@ -1,5 +1,6 @@
 // uiSetup.js
 import { player, playerCollider } from './controls.js'
+import * as THREE from 'three';
 
 // Create a UI element for the stamina bar
 const staminaBarBorder = document.createElement('div');
@@ -95,18 +96,43 @@ export function updateDebugScreen() {
     document.getElementById('velocity_z').innerText = "vz: " + player.velocity.z;
 }
 
+const listener = new THREE.AudioListener();
+const sound = new THREE.Audio(listener);
+
+const initializeAudio = () => {
+    sound.setLoop(false);
+    sound.setVolume(0.5);
+};
+
+const playSound = () => {
+    if (sound.buffer && sound.context.state === 'suspended') {
+        sound.context.resume().then(() => {
+            sound.play();
+        });
+    } else {
+        sound.play();
+    }
+};
+
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load('../assets/audio/car_to_rooster_v2.mp3', function (buffer) {
+    sound.setBuffer(buffer);
+    initializeAudio();
+});
+
 const overlay = document.getElementById('change-day-overlay');
 export const changeDayOverlay = (day, strength, speed) => {
     overlay.querySelector('#day').textContent = `Day ${day}`;
     overlay.querySelector('#str').textContent = `Strength: ${strength}`;
     overlay.querySelector('#spd').textContent = `Speed: ${speed}`;
 
+    playSound();
     overlay.classList.remove('fade');
-    overlay.style.opacity = 1
+    overlay.style.opacity = 1;
 
     setTimeout(() => {
         void overlay.offsetWidth;
         overlay.classList.add('fade');
-        overlay.style.opacity = 0
-    }, 1000);
-}
+        overlay.style.opacity = 0;
+    }, 1500);
+};
