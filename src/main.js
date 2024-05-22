@@ -110,7 +110,7 @@ loadGroundModel(loadingManager, scene, "ground_road", worldOctree, [0, -0.1, 0],
 // loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
 // createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(loadingManager, scene, "new_room_3", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
+loadModelInterior(loadingManager, scene, "new_room_4", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
 
 loadModelInterior(loadingManager, scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [0, 90, 0], interactables, doorAnimation)
 
@@ -124,8 +124,13 @@ createBoundingCylinder(scene, [-20.1, 8, 1.1], [1.5, 2, 1.5], [0, 0, 0], worldOc
 loadModelInterior(loadingManager, scene, "punching_bag_2", [-20, 0.1, -12.8], [11, 11, 11], [0, 0, 0], interactables, punchingBag2Animation);
 createBoundingCylinder(scene, [-20.1, 7, -13.1], [1.5, 5, 1.5], [0, 0, 0], worldOctree)
 
-loadModelInterior(loadingManager, scene, "gym_decoration_2", [28.5, 3, -28], [9, 9, 9], [0, -90, 0]);
+loadModelInterior(loadingManager, scene, "gym_decoration_2_v2", [28.7, 3, -28], [9, 9, 9], [0, -90, 0]);
 createBoundingBox(scene, [26, 14, -23.3], [3, 1, 7.5], [0, 0, 0], worldOctree)
+
+loadModelInterior(loadingManager, scene, "band_1", [28.8, 10.05, -35.05], [9, 9, 9], [0, -90, 0]);
+loadModelInterior(loadingManager, scene, "band_2", [28.8, 10.05, -34.64], [9, 9, 9], [0, -90, 0]);
+loadModelInterior(loadingManager, scene, "band_3", [28.8, 10.05, -33.85], [9, 9, 9], [0, -90, 0]);
+loadModelInterior(loadingManager, scene, "band_4", [28.8, 10.05, -33.42], [9, 9, 9], [0, -90, 0]);
 
 loadModelInterior(loadingManager, scene, "gym_decoration_3", [-10, 0.1, -50], [10, 10, 10], [0, 90, 0]);
 
