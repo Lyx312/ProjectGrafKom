@@ -28,6 +28,37 @@ function traverseUntilLastParent(obj) {
         return traverseUntilLastParent(obj.parent);
     }
 }
+function createTextElement(text, top, left) {
+    const textElement = document.createElement('div');
+    textElement.innerText = text;
+    textElement.style.position = 'absolute';
+    textElement.style.top = top;
+    textElement.style.left = left;
+    textElement.style.fontSize = '1.5em';
+    textElement.style.fontFamily = 'Arial, sans-serif';
+    textElement.style.color = 'white';
+    textElement.style.padding = '5px 10px';
+    textElement.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    textElement.style.borderRadius = '5px';
+    return textElement;
+}
+
+// Create text elements
+const staminaText = createTextElement('', '10px', '10px');
+const speedText = createTextElement('', '50px', '10px');
+const strengthText = createTextElement('', '90px', '10px');
+
+// Append text elements to the body
+document.body.appendChild(staminaText);
+document.body.appendChild(speedText);
+document.body.appendChild(strengthText);
+
+const equipmentStats = {
+    barbells: { stamina: '-20 stamina', speed: '+0 speed', strength: '+10 strength' },
+    punching: { stamina: '-1 stamina', speed: '+0 speed', strength: '+1 strength' },
+    exercise: { stamina: '-10 stamina', speed: '+10 speed', strength: '+0 strength' },
+    treadmill: { stamina: '-10 stamina', speed: '+10 speed', strength: '+0 strength' },
+};
 
 let hoveredInteractable;
 function raycasting() {
@@ -50,6 +81,21 @@ function raycasting() {
             outlinePass.selectedObjects = [object];
             const name = intersect.object.interact;
             hoveredInteractable = name;
+            if (!name.startsWith("npc_") && !name.startsWith("object_door_") && !name.startsWith("object_locker_door_") && !name.startsWith("object_lowpoly_car_")) {
+                const equipmentTypes = name.split('_');
+                const equipmentType = equipmentTypes[1];
+                const stats = equipmentStats[equipmentType];
+                if (stats) {
+                    staminaText.innerText = stats.stamina;
+                    speedText.innerText = stats.speed;
+                    strengthText.innerText = stats.strength;
+
+                    staminaText.style.visibility = 'visible';
+                    speedText.style.visibility = 'visible';
+                    strengthText.style.visibility = 'visible';
+                }
+            }
+            //console.log(name)
 
             if (name.startsWith("object_exercise_bike_")) {
                 let number = parseInt(name.replace("object_exercise_bike_", ""));
@@ -64,6 +110,11 @@ function raycasting() {
             //     interactables[name].isAnimating = true;
             // }
             break;
+        }
+        else{
+            staminaText.style.visibility = 'hidden';
+            speedText.style.visibility = 'hidden';
+            strengthText.style.visibility = 'hidden';
         }
     }
 }

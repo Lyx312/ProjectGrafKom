@@ -220,7 +220,7 @@ export const barbellsAnimation = async (barbells) => {
             await waitForNextFrame();
         }
 
-        player.str++;
+        player.str+=10;
         barbells.isAnimating = false;
     }
 }
