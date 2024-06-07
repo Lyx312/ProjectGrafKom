@@ -104,7 +104,7 @@ export const lockerAnimation = async (locker) => {
             locker.rotationChanges.reverse();
         }
 
-        const pivotOffset = 3;
+        const pivotOffset = 1.3;
         const direction = isOpening ? 1 : -1;
         
         for (let substate = 0; substate < 15; substate++) {
@@ -113,7 +113,7 @@ export const lockerAnimation = async (locker) => {
 
             const currentRotation = (substate + 1) * (Math.PI / 180);
             if (isOpening) {
-                const positionChangeX = -pivotOffset * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
+                const positionChangeX = -pivotOffset * 11 * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
                 const positionChangeZ = pivotOffset * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
 
                 const positionChange = [direction * positionChangeX, 0, direction * positionChangeZ];

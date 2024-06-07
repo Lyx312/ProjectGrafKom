@@ -276,7 +276,7 @@ loadingManager.onLoad = function () {
     })
 
     for (let i = 0; i < 10; i++) {
-        createBoundingBox(scene, [26-(i*4), 7.5, -61.5], [4, 14, 0], [0, 0, 0], null, (collision) => {
+        createBoundingBox(scene, [26-(i*4), 7.5, -61.5], [4, 14, 0.5], [0, 0, 0], null, (collision) => {
             updateableCollision.push(collision);
             interactables[`object_locker_door_${i}`].collision = collision;
         })
