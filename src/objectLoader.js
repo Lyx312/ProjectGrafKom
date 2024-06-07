@@ -177,3 +177,29 @@ export function loadAnimatedModel(loadingManager, scene, folder, name, position,
         callback(mixer);
     });
 }
+
+export function loadAudio(loadingManager, scene, audioFile, position, volume = 1.0, loop = false) {
+    const listener = new THREE.AudioListener();
+    const audioLoader = new THREE.AudioLoader(loadingManager);
+    const audio = new THREE.PositionalAudio(listener);
+
+    // Load audio file
+    audioLoader.load(audioFile, function(buffer) {
+        audio.setBuffer(buffer);
+        audio.setVolume(volume); // Set initial volume here
+        audio.setLoop(loop);
+        audio.setRefDistance(10); // Adjust the reference distance as needed
+        audio.setRolloffFactor(2); // Adjust the rolloff factor for attenuation
+
+        // Set position
+        audio.position.copy(position);
+
+        // Add audio to the scene
+        scene.add(audio);
+
+        // Optionally, play the audio
+        audio.play();
+    });
+
+    return audio; // Return the positional audio object
+}

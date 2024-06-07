@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
 import Stats from 'three/addons/libs/stats.module.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player } from './controls.js';
-import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel, boundingMaterial, lineMaterial } from './objectLoader.js';
+import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel, boundingMaterial, lineMaterial, loadAudio } from './objectLoader.js';
 import { scene, camera, updateBackground, renderer, composer, outlinePass } from './sceneSetup.js';
 import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation } from './objectAnimation.js';
 import { changeDayOverlay, updateDebugScreen } from './uiSetup.js';
@@ -253,6 +253,17 @@ createBoundingBox(scene, [10, 7, 15], [18, 2, 5], [65, 0, 0], worldOctree);
 
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
+
+const audioPosition = new THREE.Vector3(0,17,-65); // Example position
+const audioVolume = 1.5; // Example volume (0.0 to 1.0)
+const audioFile = '../assets/audio/chill_workout.mp3';
+const loopAudio = true; // Example: Loop the audio
+
+// Call the function to load the audio
+const audio = loadAudio(loadingManager, scene, audioFile, audioPosition, audioVolume, loopAudio);
+
+loadModelInterior(loadingManager, scene, "speaker", [0,16,-65.2], [2, 2, 2], [0, -90, 0]);
+
 const capsuleGeometry = new THREE.CapsuleGeometry(player.width/2, player.height);
 const capsuleMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }); // Yellow, wireframe material
 export const capsuleMesh = new THREE.Mesh(capsuleGeometry, capsuleMaterial);
@@ -286,7 +297,7 @@ loadingManager.onLoad = function () {
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
     const currentTime = clock.getElapsedTime();
-
+    audioManager();
     // console.log(getPlayerLookDirection() * 180 / Math.PI);
     // console.log(hoveredInteractable);
 
@@ -394,4 +405,43 @@ function playAnimation(animationName) {
     }
 }
 
+// Function to calculate volume based on distance
+function calculateVolume(distance) {
+    const maxVolumeDistance = 75; // Adjust maximum distance where audio is audible
+    const minVolumeDistance = 85; // Adjust minimum distance where audio becomes inaudible
+    const rolloffFactor = 0.5; // Adjust the rolloff factor for attenuation
+    
+    // Ensure distance is a finite number
+    if (!isFinite(distance)) {
+        return 0; // Return 0 volume if distance is non-finite
+    }
+    
+    // Calculate volume based on distance (inverse square law attenuation)
+    let volume = audioVolume / Math.pow(distance / maxVolumeDistance, rolloffFactor);
+    
+    // Ensure volume is a finite number and within valid range
+    if (!isFinite(volume) || isNaN(volume)) {
+        return 0; // Return 0 volume if calculated volume is non-finite or NaN
+    }
+    
+    // Gradually fade out volume beyond maxVolumeDistance
+    if (distance > maxVolumeDistance && distance <= minVolumeDistance) {
+        volume *= 1 - (distance - maxVolumeDistance) / (minVolumeDistance - maxVolumeDistance);
+    } else if (distance > minVolumeDistance) {
+        volume = 0; // Volume is 0 beyond minVolumeDistance
+    }
+    
+    return Math.max(volume, 0); // Ensure volume doesn't go negative
+}
 
+function audioManager() {
+    const distance = camera.position.distanceTo(audio.position);
+    
+    // Calculate volume based on distance
+    const volume = calculateVolume(distance) * 0.5;
+    
+    // Update audio volume
+    audio.setVolume(volume);
+    
+    renderer.render(scene, camera);
+}
