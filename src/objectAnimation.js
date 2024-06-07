@@ -136,144 +136,177 @@ export const lockerAnimation = async (locker) => {
 }
 
 export const punchingBag1Animation = async (punchingBag) => {
-    if (punchingBag && !punchingBag.isAnimating) {
-        punchingBag.isAnimating = true;
-        let deltaRotationX = 0;
-        let deltaRotationZ = 0;
-        let deltaPositionX = 0;
-        let deltaPositionZ = 0;
-        const playerLookDirection = getPlayerLookDirection() * 180/Math.PI;
-        // -45 <-> -135 -> rotate x positive, move z negative
-        // -135 <-> 135 -> rotate z negative, move x negative
-        // 135 <-> 45 -> rotate x negative, move z positive
-        // 45 <-> -45 -> rotate z positive, move x positive
-        if (playerLookDirection<=-45 && playerLookDirection>-135) {
-            deltaRotationX = 1;
-            deltaPositionZ = -1;
-        } else if (playerLookDirection<=-135 || playerLookDirection>135) {
-            deltaRotationZ = -1;
-            deltaPositionX = -1;
-        } else if (playerLookDirection<=135 && playerLookDirection>45) { 
-            deltaRotationX = -1;
-            deltaPositionZ = 1;
-        } else if (playerLookDirection<=45 && playerLookDirection>-45) {
-            deltaRotationZ = 1;
-            deltaPositionX = 1;
-        }
+    console.log(player.currentStamina)
+    if (player.currentStamina>=1) {
+        if (punchingBag && !punchingBag.isAnimating) {
+            punchingBag.isAnimating = true;
+            let deltaRotationX = 0;
+            let deltaRotationZ = 0;
+            let deltaPositionX = 0;
+            let deltaPositionZ = 0;
+            const playerLookDirection = getPlayerLookDirection() * 180/Math.PI;
+            // -45 <-> -135 -> rotate x positive, move z negative
+            // -135 <-> 135 -> rotate z negative, move x negative
+            // 135 <-> 45 -> rotate x negative, move z positive
+            // 45 <-> -45 -> rotate z positive, move x positive
+            if (playerLookDirection<=-45 && playerLookDirection>-135) {
+                deltaRotationX = 1;
+                deltaPositionZ = -1;
+            } else if (playerLookDirection<=-135 || playerLookDirection>135) {
+                deltaRotationZ = -1;
+                deltaPositionX = -1;
+            } else if (playerLookDirection<=135 && playerLookDirection>45) { 
+                deltaRotationX = -1;
+                deltaPositionZ = 1;
+            } else if (playerLookDirection<=45 && playerLookDirection>-45) {
+                deltaRotationZ = 1;
+                deltaPositionX = 1;
+            }
 
-        const rotationChangeXZ = 1 * (Math.PI/180);
-        const positionChangeXZ = 0.22;
-        
-        for (let substate = 0; substate < 45; substate++) {
-            const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
-            punchingBag.model.rotation.x += deltaRotationX * rotationChangeXZ;
-            punchingBag.model.rotation.z += deltaRotationZ * rotationChangeXZ;
-            punchingBag.model.position.x += deltaPositionX * positionChangeXZ;
-            punchingBag.model.position.z += deltaPositionZ * positionChangeXZ;
-            punchingBag.model.position.y += positionChangeY;
-            await waitForNextFrame();
-        }
-        for (let substate = 44; substate >= 0; substate--) {
-            const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
-            punchingBag.model.rotation.x += deltaRotationX * -rotationChangeXZ;
-            punchingBag.model.rotation.z += deltaRotationZ * -rotationChangeXZ;
-            punchingBag.model.position.x += deltaPositionX * -positionChangeXZ;
-            punchingBag.model.position.z += deltaPositionZ * -positionChangeXZ;
-            punchingBag.model.position.y += -positionChangeY;
-            await waitForNextFrame();
-        }
+            const rotationChangeXZ = 1 * (Math.PI/180);
+            const positionChangeXZ = 0.22;
+            const staminaToDecrease = 1;
+            const staminaDecrementPerFrame = staminaToDecrease / 45;
+            
+            for (let substate = 0; substate < 45; substate++) {
+                const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
+                punchingBag.model.rotation.x += deltaRotationX * rotationChangeXZ;
+                punchingBag.model.rotation.z += deltaRotationZ * rotationChangeXZ;
+                punchingBag.model.position.x += deltaPositionX * positionChangeXZ;
+                punchingBag.model.position.z += deltaPositionZ * positionChangeXZ;
+                punchingBag.model.position.y += positionChangeY;
+                player.currentStamina -= staminaDecrementPerFrame;
+                await waitForNextFrame();
+            }
+            for (let substate = 44; substate >= 0; substate--) {
+                const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
+                punchingBag.model.rotation.x += deltaRotationX * -rotationChangeXZ;
+                punchingBag.model.rotation.z += deltaRotationZ * -rotationChangeXZ;
+                punchingBag.model.position.x += deltaPositionX * -positionChangeXZ;
+                punchingBag.model.position.z += deltaPositionZ * -positionChangeXZ;
+                punchingBag.model.position.y += -positionChangeY;
+                await waitForNextFrame();
+            }
 
-        player.str++;
-        punchingBag.isAnimating = false;
+            player.currentStamina = Math.round(player.currentStamina);
+            player.str++;
+            punchingBag.isAnimating = false;
+        }
     }
 }
 
 
 export const punchingBag2Animation = async (punchingBag) => {
-    if (punchingBag && !punchingBag.isAnimating) {
-        punchingBag.isAnimating = true;
-        let deltaRotationX = 0;
-        let deltaRotationZ = 0;
-        let deltaPositionX = 0;
-        let deltaPositionZ = 0;
-        const playerLookDirection = getPlayerLookDirection() * 180/Math.PI;
-        // -45 <-> -135 -> rotate x positive, move z negative
-        // -135 <-> 135 -> rotate z negative, move x negative
-        // 135 <-> 45 -> rotate x negative, move z positive
-        // 45 <-> -45 -> rotate z positive, move x positive
-        if (playerLookDirection<=-45 && playerLookDirection>-135) {
-            deltaRotationX = 1;
-            deltaPositionZ = -1;
-        } else if (playerLookDirection<=-135 || playerLookDirection>135) {
-            deltaRotationZ = -1;
-            deltaPositionX = -1;
-        } else if (playerLookDirection<=135 && playerLookDirection>45) { 
-            deltaRotationX = -1;
-            deltaPositionZ = 1;
-        } else if (playerLookDirection<=45 && playerLookDirection>-45) {
-            deltaRotationZ = 1;
-            deltaPositionX = 1;
-        }
+    console.log(player.currentStamina)
+    if (player.currentStamina>=1) {
+        if (punchingBag && !punchingBag.isAnimating) {
+            punchingBag.isAnimating = true;
+            let deltaRotationX = 0;
+            let deltaRotationZ = 0;
+            let deltaPositionX = 0;
+            let deltaPositionZ = 0;
+            const playerLookDirection = getPlayerLookDirection() * 180/Math.PI;
+            // -45 <-> -135 -> rotate x positive, move z negative
+            // -135 <-> 135 -> rotate z negative, move x negative
+            // 135 <-> 45 -> rotate x negative, move z positive
+            // 45 <-> -45 -> rotate z positive, move x positive
+            if (playerLookDirection<=-45 && playerLookDirection>-135) {
+                deltaRotationX = 1;
+                deltaPositionZ = -1;
+            } else if (playerLookDirection<=-135 || playerLookDirection>135) {
+                deltaRotationZ = -1;
+                deltaPositionX = -1;
+            } else if (playerLookDirection<=135 && playerLookDirection>45) { 
+                deltaRotationX = -1;
+                deltaPositionZ = 1;
+            } else if (playerLookDirection<=45 && playerLookDirection>-45) {
+                deltaRotationZ = 1;
+                deltaPositionX = 1;
+            }
 
-        const rotationChangeXZ = 1 * (Math.PI/180);
-        const positionChangeXZ = 0.22;
-        
-        for (let substate = 0; substate < 45; substate++) {
-            const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
-            punchingBag.model.rotation.x += deltaRotationX * rotationChangeXZ;
-            punchingBag.model.rotation.z += deltaRotationZ * rotationChangeXZ;
-            punchingBag.model.position.x += deltaPositionX * positionChangeXZ;
-            punchingBag.model.position.z += deltaPositionZ * positionChangeXZ;
-            punchingBag.model.position.y += positionChangeY;
-            await waitForNextFrame();
+            const rotationChangeXZ = 1 * (Math.PI/180);
+            const positionChangeXZ = 0.22;
+            const staminaToDecrease = 1;
+            const staminaDecrementPerFrame = staminaToDecrease / 45;
+            for (let substate = 0; substate < 45; substate++) {
+                const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
+                punchingBag.model.rotation.x += deltaRotationX * rotationChangeXZ;
+                punchingBag.model.rotation.z += deltaRotationZ * rotationChangeXZ;
+                punchingBag.model.position.x += deltaPositionX * positionChangeXZ;
+                punchingBag.model.position.z += deltaPositionZ * positionChangeXZ;
+                punchingBag.model.position.y += positionChangeY;
+                player.currentStamina -= staminaDecrementPerFrame;
+                await waitForNextFrame();
+            }
+            for (let substate = 44; substate >= 0; substate--) {
+                const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
+                punchingBag.model.rotation.x += deltaRotationX * -rotationChangeXZ;
+                punchingBag.model.rotation.z += deltaRotationZ * -rotationChangeXZ;
+                punchingBag.model.position.x += deltaPositionX * -positionChangeXZ;
+                punchingBag.model.position.z += deltaPositionZ * -positionChangeXZ;
+                punchingBag.model.position.y += -positionChangeY;
+                await waitForNextFrame();
+            }
+            player.currentStamina = Math.round(player.currentStamina);
+            player.str++;
+            punchingBag.isAnimating = false;
         }
-        for (let substate = 44; substate >= 0; substate--) {
-            const positionChangeY = 0.0008 * Math.pow(substate, 1.5);
-            punchingBag.model.rotation.x += deltaRotationX * -rotationChangeXZ;
-            punchingBag.model.rotation.z += deltaRotationZ * -rotationChangeXZ;
-            punchingBag.model.position.x += deltaPositionX * -positionChangeXZ;
-            punchingBag.model.position.z += deltaPositionZ * -positionChangeXZ;
-            punchingBag.model.position.y += -positionChangeY;
-            await waitForNextFrame();
-        }
-
-        player.str++;
-        punchingBag.isAnimating = false;
     }
 }
 
 
 export const barbellsAnimation = async (barbells) => {
-    if (barbells && !barbells.isAnimating) {
-        barbells.isAnimating = true;
-        const heightChange = 0.05; // Change in y-position per frame, adjust as needed
+    console.log(player.currentStamina)
+    if (player.currentStamina>=20) {
+        if (barbells && !barbells.isAnimating) {
+            barbells.isAnimating = true;
+            const heightChange = 0.05; // Change in y-position per frame, adjust as needed
+            const totalFrames = 45;
+            const staminaToDecrease = 10;
+            const staminaDecrementPerFrame = staminaToDecrease / totalFrames;
 
-        for (let substate = 0; substate < 45; substate++) {
-            barbells.model.position.y += heightChange;
-            await waitForNextFrame();
-        }
-        for (let substate = 0; substate < 45; substate++) {
-            barbells.model.position.y -= heightChange;
-            await waitForNextFrame();
-        }
+            // Animation upwards
+            for (let substate = 0; substate < totalFrames; substate++) {
+                barbells.model.position.y += heightChange;
+                player.currentStamina -= staminaDecrementPerFrame; // Decrease stamina gradually
+                await waitForNextFrame();
+            }
 
-        player.str+=10;
-        barbells.isAnimating = false;
+            // Animation downwards
+            for (let substate = 0; substate < totalFrames; substate++) {
+                barbells.model.position.y -= heightChange;
+                player.currentStamina -= staminaDecrementPerFrame; 
+                await waitForNextFrame();
+            }
+
+            // Adjust any other properties after animation completes
+            player.currentStamina = Math.round(player.currentStamina);
+            player.str += 10;
+
+            barbells.isAnimating = false;
+        }
     }
 }
 
 export const bikeAnimation = async (bike) => {
-    if (bike && !bike.isAnimating) {
-        bike.isAnimating = true;
-        const rotationIncrement = 6 * (Math.PI/180); // 6 degrees per frame
+    console.log(player.currentStamina)
+    if (player.currentStamina>=10) {
+        if (bike && !bike.isAnimating) {
+            bike.isAnimating = true;
+            const rotationIncrement = 6 * (Math.PI / 180); // 6 degrees per frame
+            const totalFrames = 60;
+            const staminaToDecrease = 10;
+            const staminaDecrementPerFrame = staminaToDecrease / totalFrames;
 
-        for (let substate = 0; substate < 60; substate++) {
-            bike.model.rotation.z += rotationIncrement;
-            await waitForNextFrame();
-        }
-
-        player.spd+=10;
-        bike.isAnimating = false;
+            for (let substate = 0; substate < totalFrames; substate++) {
+                bike.model.rotation.z += rotationIncrement;
+                player.currentStamina -= staminaDecrementPerFrame; // Decrease stamina gradually
+                await waitForNextFrame();
+            }
+            player.currentStamina = Math.round(player.currentStamina);
+            player.spd+=10;
+            bike.isAnimating = false;
+        }        
     }
 }
 
@@ -310,6 +343,7 @@ export function treadmillAnimation(player, interactables) {
 export function carAnimation(car) {
     if (car && !car.isAnimating) {
         car.isAnimating = true;
+        player.currentStamina = 100;
         changeDayOverlay(++day, player.str, player.spd);
         setTimeout(() => {
             car.isAnimating = false;

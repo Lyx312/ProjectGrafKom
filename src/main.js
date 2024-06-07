@@ -180,9 +180,9 @@ loadModelInterior(loadingManager, scene, "gym_decoration_2_v2", [28.7, 3, -28], 
 createBoundingBox(scene, [26, 14, -23.3], [3, 1, 7.5], [0, 0, 0], worldOctree)
 
 loadModelInterior(loadingManager, scene, "band_1", [28.8, 10.05, -35.05], [9, 9, 9], [0, -90, 0]);
-loadModelInterior(loadingManager, scene, "band_2", [28.8, 10.05, -34.64], [9, 9, 9], [0, -90, 0]);
-loadModelInterior(loadingManager, scene, "band_3", [28.8, 10.05, -33.85], [9, 9, 9], [0, -90, 0]);
-loadModelInterior(loadingManager, scene, "band_4", [28.8, 10.05, -33.42], [9, 9, 9], [0, -90, 0]);
+// loadModelInterior(loadingManager, scene, "band_2", [28.8, 10.05, -34.64], [9, 9, 9], [0, -90, 0]);
+// loadModelInterior(loadingManager, scene, "band_3", [28.8, 10.05, -33.85], [9, 9, 9], [0, -90, 0]);
+// loadModelInterior(loadingManager, scene, "band_4", [28.8, 10.05, -33.42], [9, 9, 9], [0, -90, 0]);
 
 loadModelInterior(loadingManager, scene, "gym_decoration_3", [-10, 0.1, -50], [10, 10, 10], [0, 90, 0]);
 
@@ -303,6 +303,7 @@ function animate() {
 
     updatePlayerModelPositionAndAnimation(deltaTime);
 
+    updateBandRotation(deltaTime);
     updateFanRotation(deltaTime);
     updateMixers(deltaTime);
 
@@ -322,6 +323,13 @@ function updateFanRotation(deltaTime) {
         }
     }
 }
+
+function updateBandRotation(deltaTime) {
+    const band1Model = scene.getObjectByName('Object_band_1_0');
+        if (band1Model) {
+            band1Model.rotation.x += deltaTime * 10;
+        }
+    }
 
 function updateMixers(deltaTime) {
     for (const mixerName in mixers) {
@@ -385,3 +393,5 @@ function playAnimation(animationName) {
         }
     }
 }
+
+
