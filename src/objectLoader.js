@@ -54,16 +54,7 @@ function loadGLTF(loadingManager, path, name, scene, position, scale, rotation, 
             }
 
             if (interactables) {
-                // Initialize a counter to track the number of times the base name has been used
-                let count = 0;
-                // Loop through the interactables object to count existing keys with the same base name
-                for (let key in interactables) {
-                    if (key.startsWith(`${type}_${name}`)) {
-                        count += 1;
-                    }
-                }
-                // Create the new key by appending the count to the base name
-                const newKey = `${type}_${name}_${count}`;
+                const newKey = `${type}_${name}`;
 
                 if (type == "object") {
                     interactables[newKey] = {
@@ -114,8 +105,8 @@ export function loadModel(loadingManager, scene, folder, position, scale, rotati
     loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, null, null, callback);
 }
 
-export function loadModelInterior(loadingManager, scene, file, position, scale, rotation, interactables, interactFunction) {
-    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file, scene, position, scale, rotation, interactables, "object", interactFunction);
+export function loadModelInterior(loadingManager, scene, file, position, scale, rotation, interactables, interactFunction, number=0) {
+    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file+"_"+number, scene, position, scale, rotation, interactables, "object", interactFunction);
 }
 
 export function createBoundingBox(scene, position, scale, rotation, octree, callback) {

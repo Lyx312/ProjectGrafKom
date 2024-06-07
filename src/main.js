@@ -109,6 +109,7 @@ function raycasting() {
             // if (isInteracting()) {
             //     interactables[name].isAnimating = true;
             // }
+            console.log(hoveredInteractable);
             break;
         }
         else{
@@ -240,7 +241,7 @@ createBoundingBox(scene, [-10, 4, -30], [9, 8, 2], [0, 0, 0], worldOctree);
 
 for (let i = 0; i < 10; i++) {
     loadModelInterior(loadingManager, scene, "locker", [26-(i*4), 0.2, -63.5], [8, 8, 8], [0, 0, 0]);
-    loadModelInterior(loadingManager, scene, "locker_door", [28-(i*4), 0.2, -61.5], [8, 8, 8], [0, 0, 0], interactables, lockerAnimation);
+    loadModelInterior(loadingManager, scene, "locker_door", [28-(i*4), 0.2, -61.5], [8, 8, 8], [0, 0, 0], interactables, lockerAnimation, i);
     createBoundingBox(scene, [24-(i*4), 7.5, -63.5], [0.5, 14, 4], [0, 0, 0], worldOctree);
     createBoundingBox(scene, [26-(i*4), 14.5, -63.5], [4, 0, 4], [0, 0, 0], worldOctree);
 }
@@ -273,6 +274,13 @@ loadingManager.onLoad = function () {
         updateableCollision.push(collision);
         interactables["object_door_0"].collision = collision;
     })
+
+    for (let i = 0; i < 10; i++) {
+        createBoundingBox(scene, [26-(i*4), 7.5, -61.5], [4, 14, 0], [0, 0, 0], null, (collision) => {
+            updateableCollision.push(collision);
+            interactables[`object_locker_door_${i}`].collision = collision;
+        })
+    }
 };
 
 function animate() {

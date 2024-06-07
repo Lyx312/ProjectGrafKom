@@ -29,67 +29,104 @@ function updateBoundingBox(collision, position, rotation) {
 }
 
 function incrementBoundingBox(collision, positionIncrement, rotationIncrement) {
-    // Get the current position and rotation
-    const currentPosition = collision.box.position.clone();
-    const currentRotation = collision.box.rotation.clone();
-
-    // Calculate new position
     const newPosition = [
-        currentPosition.x + positionIncrement[0],
-        currentPosition.y + positionIncrement[1],
-        currentPosition.z + positionIncrement[2]
+        collision.box.position.x + positionIncrement[0],
+        collision.box.position.y + positionIncrement[1],
+        collision.box.position.z + positionIncrement[2]
     ];
 
-    // Calculate new rotation
     const newRotation = [
-        currentRotation.x + rotationIncrement[0],
-        currentRotation.y + rotationIncrement[1],
-        currentRotation.z + rotationIncrement[2]
+        collision.box.rotation.x + rotationIncrement[0],
+        collision.box.rotation.y + rotationIncrement[1],
+        collision.box.rotation.z + rotationIncrement[2]
     ];
 
-    // Apply new position and rotation
     updateBoundingBox(collision, newPosition, newRotation);
 }
 
 export const doorAnimation = async (door) => {
     if (door && !door.isAnimating) {
         door.isAnimating = true;
-        if (door.state === 0) {
+        const isOpening = door.state === 0;
+
+        if (isOpening) {
             door.initialLookDirection = getPlayerLookDirection() > 0 ? 1 : -1;
+            door.positionChanges = [];
+            door.rotationChanges = [];
+        } else {
+            door.positionChanges.reverse();
+            door.rotationChanges.reverse();
         }
 
         const pivotOffset = 3.3;
+        const direction = isOpening ? 1 : -1;
+
         for (let substate = 0; substate < 90; substate++) {
-            const rotationChange = door.initialLookDirection * (Math.PI/180);
-            const currentRotation = (substate + 1) * rotationChange;
+            const rotationChange = door.initialLookDirection * (Math.PI / 180);
+            const currentRotation = (substate + 1) * door.initialLookDirection * (Math.PI / 180);
+            door.model.rotation.y += direction * rotationChange;
 
-            const positionChangeX = - pivotOffset * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
-            const positionChangeZ = pivotOffset * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
+            if (isOpening) {
+                const positionChangeX = -pivotOffset * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
+                const positionChangeZ = pivotOffset * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
 
-            const rotationIncrement = door.state === 0 ? rotationChange : -rotationChange;
-            const positionIncrementX = door.state === 0 ? positionChangeX : -positionChangeX;
-            const positionIncrementZ = door.state === 0 ? positionChangeZ : -positionChangeZ;
+                const positionChange = [direction * positionChangeX, 0, direction * positionChangeZ];
+                const rotationChangeArr = [0, direction * rotationChange, 0];
 
-            door.model.rotation.y += rotationIncrement;
-            incrementBoundingBox(door.collision, [positionIncrementX, 0, positionIncrementZ], [0, rotationIncrement, 0]);
+                door.positionChanges.push(positionChange);
+                door.rotationChanges.push(rotationChangeArr);
+
+                incrementBoundingBox(door.collision, positionChange, rotationChangeArr);
+            } else {
+                incrementBoundingBox(door.collision, door.positionChanges[substate].map(val => -val), door.rotationChanges[substate].map(val => -val));
+            }
+
             await waitForNextFrame();
         }
 
-        if (door.state == 1 || door.state == -1) {
-            door.state = 0;
-        } else {
-            door.state = door.initialLookDirection;
-        }
+        door.state = isOpening ? door.initialLookDirection : 0;
         door.isAnimating = false;
     }
-}
+};
+
+
 
 export const lockerAnimation = async (locker) => {
     if (locker && !locker.isAnimating) {
         locker.isAnimating = true;
+        const isOpening = locker.state === 0;
+
+        if (isOpening) {
+            locker.positionChanges = [];
+            locker.rotationChanges = [];
+        } else {
+            locker.positionChanges.reverse();
+            locker.rotationChanges.reverse();
+        }
+
+        const pivotOffset = 3;
+        const direction = isOpening ? 1 : -1;
+        
         for (let substate = 0; substate < 15; substate++) {
             const rotationChange = 6 * (Math.PI/180);
             locker.model.rotation.y += locker.state === 0 ? rotationChange : -rotationChange;
+
+            const currentRotation = (substate + 1) * (Math.PI / 180);
+            if (isOpening) {
+                const positionChangeX = -pivotOffset * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
+                const positionChangeZ = pivotOffset * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
+
+                const positionChange = [direction * positionChangeX, 0, direction * positionChangeZ];
+                const rotationChangeArr = [0, direction * rotationChange, 0];
+
+                locker.positionChanges.push(positionChange);
+                locker.rotationChanges.push(rotationChangeArr);
+
+                incrementBoundingBox(locker.collision, positionChange, rotationChangeArr);
+            } else {
+                incrementBoundingBox(locker.collision, locker.positionChanges[substate].map(val => -val), locker.rotationChanges[substate].map(val => -val));
+            }
+
             await waitForNextFrame();
         }
 
