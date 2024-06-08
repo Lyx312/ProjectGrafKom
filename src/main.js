@@ -276,23 +276,73 @@ let cameraLookDirectionBack = new THREE.Vector3();
 let lastRaycastTime = 0;
 const raycastInterval = 0.1; // run raycasting every 0.1 seconds
 
-loadingManager.onLoad = function () {
-    console.log('All assets loaded.');
-    changeDayOverlay(1, player.str, player.spd);
-    animate();
+document.addEventListener("DOMContentLoaded", function () {
+    // Create start screen elements
+    const startScreen = document.createElement("div");
+    const startButton = document.createElement("button");
 
-    createBoundingBox(scene, [-14, 7, 11.5], [6.5, 13, 1.7], [0, 0, 0], null, (collision) => {
-        updateableCollision.push(collision);
-        interactables["object_door_0"].collision = collision;
-    })
+    startScreen.style.position = "fixed";
+    startScreen.style.top = "0";
+    startScreen.style.left = "0";
+    startScreen.style.width = "100%";
+    startScreen.style.height = "100%";
+    startScreen.style.backgroundColor = "black";
+    startScreen.style.display = "flex";
+    startScreen.style.justifyContent = "center";
+    startScreen.style.alignItems = "center";
+    startScreen.style.zIndex = "1000"; // Ensure it's on top
 
-    for (let i = 0; i < 10; i++) {
-        createBoundingBox(scene, [26-(i*4), 7.5, -61.5], [4, 14, 0.5], [0, 0, 0], null, (collision) => {
-            updateableCollision.push(collision);
-            interactables[`object_locker_door_${i}`].collision = collision;
-        })
+    startButton.textContent = "Start";
+    startButton.style.padding = "20px";
+    startButton.style.fontSize = "20px";
+    startButton.style.cursor = "not-allowed";
+    startButton.style.backgroundColor = "gray";
+    startButton.disabled = true;
+
+    startScreen.appendChild(startButton);
+    document.body.appendChild(startScreen);
+
+    // Function to enable start button when assets are loaded
+    function enableStartButton() {
+        startButton.style.backgroundColor = "red";
+        startButton.style.cursor = "pointer";
+        startButton.disabled = false;
     }
-};
+
+    // Add click event to the button
+    startButton.addEventListener("click", function () {
+        if (!startButton.disabled) {
+            audio.play();
+            changeDayOverlay(1, player.str, player.spd);
+            document.body.removeChild(startScreen); // Remove start screen
+        }
+    });
+
+    // Simulate loading of assets
+    const loadingManager = {
+        onLoad: function () {
+            console.log('All assets loaded.');
+            enableStartButton(); // Enable the start button
+            // Rest of your onLoad functionality
+            animate();
+
+            createBoundingBox(scene, [-14, 7, 11.5], [6.5, 13, 1.7], [0, 0, 0], null, (collision) => {
+                updateableCollision.push(collision);
+                interactables["object_door_0"].collision = collision;
+            });
+
+            for (let i = 0; i < 10; i++) {
+                createBoundingBox(scene, [26 - (i * 4), 7.5, -61.5], [4, 14, 0.5], [0, 0, 0], null, (collision) => {
+                    updateableCollision.push(collision);
+                    interactables[`object_locker_door_${i}`].collision = collision;
+                });
+            }
+        }
+    };
+
+    // Simulate asset loading (for demonstration purposes)
+    setTimeout(loadingManager.onLoad, 3000); // Simulate a 3-second load time
+});
 
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());

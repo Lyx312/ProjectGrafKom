@@ -198,7 +198,7 @@ export function loadAudio(loadingManager, scene, audioFile, position, volume = 1
         scene.add(audio);
 
         // Optionally, play the audio
-        audio.play();
+        //audio.play();
     });
 
     return audio; // Return the positional audio object
