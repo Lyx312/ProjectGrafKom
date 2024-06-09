@@ -136,3 +136,52 @@ export const changeDayOverlay = (day, strength, speed) => {
         overlay.style.opacity = 0;
     }, 1500);
 };
+
+    // Create start screen elements
+    export const startScreen = document.createElement("div");
+    export const title = document.createElement("h1");
+    export const startButton = document.createElement("button");
+    export const loadingBarContainer = document.createElement("div");
+    export const loadingBar = document.createElement("div");
+
+    startScreen.style.position = "fixed";
+    startScreen.style.top = "0";
+    startScreen.style.left = "0";
+    startScreen.style.width = "100%";
+    startScreen.style.height = "100%";
+    startScreen.style.backgroundColor = "black";
+    startScreen.style.display = "flex";
+    startScreen.style.flexDirection = "column";
+    startScreen.style.justifyContent = "center";
+    startScreen.style.alignItems = "center";
+    startScreen.style.zIndex = "1000"; // Ensure it's on top
+
+    title.textContent = "Workout Simulator";
+    title.style.color = "white";
+    title.style.fontSize = "48px";
+    title.style.marginBottom = "20px";
+
+    startButton.textContent = "Start";
+    startButton.style.padding = "20px 40px";
+    startButton.style.fontSize = "24px";
+    startButton.style.color = "white";
+    startButton.style.backgroundColor = "gray";
+    startButton.style.border = "none";
+    startButton.style.borderRadius = "10px";
+    startButton.style.cursor = "not-allowed";
+    startButton.style.transition = "background-color 0.3s, transform 0.3s";
+    startButton.disabled = true;
+
+    loadingBarContainer.style.position = "absolute";
+    loadingBarContainer.style.bottom = "50px"; // Adjust this to leave some space
+    loadingBarContainer.style.left = "10%"; // Adjust this for desired left margin
+    loadingBarContainer.style.width = "80%"; // Adjust this for desired width
+    loadingBarContainer.style.height = "30px";
+    loadingBarContainer.style.backgroundColor = "#333";
+    loadingBarContainer.style.borderRadius = "15px";
+    loadingBarContainer.style.overflow = "hidden";
+
+    loadingBar.style.height = "100%";
+    loadingBar.style.width = "0%";
+    loadingBar.style.backgroundColor = "green";
+    loadingBar.style.transition = "width 0.5s";

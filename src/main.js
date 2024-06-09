@@ -6,7 +6,7 @@ import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDir
 import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel, boundingMaterial, lineMaterial, loadAudio } from './objectLoader.js';
 import { scene, camera, updateBackground, renderer, composer, outlinePass } from './sceneSetup.js';
 import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation } from './objectAnimation.js';
-import { changeDayOverlay, updateDebugScreen } from './uiSetup.js';
+import { changeDayOverlay, updateDebugScreen, startScreen, startButton, loadingBar, loadingBarContainer, title } from './uiSetup.js';
 import { doctor, girl } from './npcInteraction.js';
 
 const loadingManager = new THREE.LoadingManager();
@@ -169,6 +169,7 @@ loadModelInterior(loadingManager, scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [
 loadModelInterior(loadingManager, scene, "yoga_mat", [20, 0.1, 0], [3, 3, 3], [0, 90, 0]);
 
 loadModelInterior(loadingManager, scene, "gym_decoration_1_v2", [-24, 0.1, -29], [11, 11, 11], [0, 90, 0]);
+createBoundingBox(scene, [-25, 6, -27.8], [1, 6, 12.2], [0, 0, 0], worldOctree)
 
 loadModelInterior(loadingManager, scene, "punching_bag_1", [-20.2, 0.1, 1.2], [11, 11, 11], [0, 0, 0], interactables, punchingBag1Animation);
 createBoundingCylinder(scene, [-20.1, 8, 1.1], [1.5, 2, 1.5], [0, 0, 0], worldOctree)
@@ -206,11 +207,11 @@ createBoundingBox(scene, [-10.13, 2, -40.15], [7, 2, 2.9], [0, 0, 0], worldOctre
 loadModelInterior(loadingManager, scene, "barbells", [-10, 0, -40], [10, 10, 10], [0, 90, 0], interactables, barbellsAnimation);
 createBoundingBox(scene, [-12.9, 5.5, -40], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree);
 
-loadModelInterior(loadingManager, scene, "treadmill", [10, 0, -50], [10, 10, 10], [0, 90, 0], interactables, treadmillAnimation);
-createBoundingBox(scene, [9.4, 1, -50], [6.8, 1, 4], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [14, 3.5, -50], [2, 6, 4], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [12, 5.5, -51.8], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [12, 5.5, -48.2], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
+loadModelInterior(loadingManager, scene, "treadmill", [15, 0, -50], [10, 10, 10], [0, 90, 0], interactables, treadmillAnimation);
+createBoundingBox(scene, [14.4, 1, -50], [6.8, 1, 4], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [19, 3.5, -50], [2, 6, 4], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [17, 5.5, -51.8], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [17, 5.5, -48.2], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
 
 createBoundingBox(scene, [30, 7, -27.5], [3, 8, 80], [0, 0, 0], worldOctree);
 createBoundingBox(scene, [-28, 7, -28], [3, 8, 80], [0, 0, 0], worldOctree);
@@ -222,10 +223,10 @@ createBoundingBox(scene, [-14, 16.5, 11.5], [2.5, 5, 10], [0, 90, 0], worldOctre
 
 loadModelInterior(loadingManager, scene, "Gym_Poster", [-7.65, 7.9, 11.3], [4, 4, 4], [0, 180, 0]);
 
-loadAnimatedModel(loadingManager, scene, "mujer_bodytech", "workout_girl", [10, 0, -30], [0.13, 0.13, 0.13], [0, 90, 0], "Take 001", interactables, girl, (animationMixer) => {
+loadAnimatedModel(loadingManager, scene, "mujer_bodytech", "workout_girl", [15, 0, -20], [0.13, 0.13, 0.13], [0, -90, 0], "Take 001", interactables, girl, (animationMixer) => {
     mixers["mujer_bodytech"] = animationMixer;
 });
-createBoundingCylinder(scene, [10, 5, -30], [1.5, 10, 1.5], [0, 0, 0], worldOctree)
+createBoundingCylinder(scene, [15, 5, -20], [1.5, 10, 1.5], [0, 0, 0], worldOctree)
 
 loadAnimatedModel(loadingManager, scene, "dr_ahmad_sitting_pose", "Dr.Ahmad", [10, 1, 20], [3, 3, 3], [0, 0, 0], "mixamo.com", interactables, doctor, (animationMixer) => {
     mixers["dr_ahmad_sitting_pose"] = animationMixer;
@@ -235,9 +236,9 @@ createBoundingCylinder(scene, [10, 5, 21], [2, 10, 2], [0, 0, 0], worldOctree)
 loadModelInterior(loadingManager, scene, "lowpoly_car", [-50, 0, -20], [7, 7, 7], [0, 90, 0], interactables, carAnimation);
 createBoundingBox(scene, [-22, 7, 50.5], [34, 8, 14], [0, 0, 0], worldOctree);
 
-loadModelInterior(loadingManager, scene, "exercise_bike", [-10, 0, -30], [3, 3, 3], [0, 90, 0], interactables);
-loadModelInterior(loadingManager, scene, "bike_pedals", [-11.8, 2.4, -30], [3, 3, 3], [0, 180, 0], interactables, bikeAnimation);
-createBoundingBox(scene, [-10, 4, -30], [9, 8, 2], [0, 0, 0], worldOctree);
+loadModelInterior(loadingManager, scene, "exercise_bike", [15, 0, -35], [3, 3, 3], [0, 90, 0], interactables);
+loadModelInterior(loadingManager, scene, "bike_pedals", [13.2, 2.4, -35], [3, 3, 3], [0, 180, 0], interactables, bikeAnimation);
+createBoundingBox(scene, [15, 4, -35], [9, 8, 2], [0, 0, 0], worldOctree);
 
 for (let i = 0; i < 10; i++) {
     loadModelInterior(loadingManager, scene, "locker", [26-(i*4), 0.2, -63.5], [8, 8, 8], [0, 0, 0]);
@@ -255,7 +256,7 @@ createBoundingBox(scene, [10, 7, 15], [18, 2, 5], [65, 0, 0], worldOctree);
 
 
 const audioPosition = new THREE.Vector3(0,17,-65); // Example position
-const audioVolume = 1.5; // Example volume (0.0 to 1.0)
+const audioVolume = 2; // Example volume (0.0 to 1.0)
 const audioFile = '../assets/audio/chill_workout.mp3';
 const loopAudio = true; // Example: Loop the audio
 
@@ -277,36 +278,18 @@ let lastRaycastTime = 0;
 const raycastInterval = 0.1; // run raycasting every 0.1 seconds
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Create start screen elements
-    const startScreen = document.createElement("div");
-    const startButton = document.createElement("button");
-
-    startScreen.style.position = "fixed";
-    startScreen.style.top = "0";
-    startScreen.style.left = "0";
-    startScreen.style.width = "100%";
-    startScreen.style.height = "100%";
-    startScreen.style.backgroundColor = "black";
-    startScreen.style.display = "flex";
-    startScreen.style.justifyContent = "center";
-    startScreen.style.alignItems = "center";
-    startScreen.style.zIndex = "1000"; // Ensure it's on top
-
-    startButton.textContent = "Start";
-    startButton.style.padding = "20px";
-    startButton.style.fontSize = "20px";
-    startButton.style.cursor = "not-allowed";
-    startButton.style.backgroundColor = "gray";
-    startButton.disabled = true;
-
+    loadingBarContainer.appendChild(loadingBar);
+    startScreen.appendChild(title);
     startScreen.appendChild(startButton);
+    startScreen.appendChild(loadingBarContainer);
     document.body.appendChild(startScreen);
 
     // Function to enable start button when assets are loaded
     function enableStartButton() {
-        startButton.style.backgroundColor = "red";
+        startButton.style.backgroundColor = "green";
         startButton.style.cursor = "pointer";
         startButton.disabled = false;
+        startButton.style.transform = "scale(1.05)";
     }
 
     // Add click event to the button
@@ -320,29 +303,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Simulate loading of assets
     const loadingManager = {
+        totalAssets: 10, // Assume 10 assets for this example
+        loadedAssets: 0,
         onLoad: function () {
-            console.log('All assets loaded.');
-            enableStartButton(); // Enable the start button
-            // Rest of your onLoad functionality
-            animate();
+            this.loadedAssets++;
+            const progress = (this.loadedAssets / this.totalAssets) * 100;
+            loadingBar.style.width = `${progress}%`;
 
-            createBoundingBox(scene, [-14, 7, 11.5], [6.5, 13, 1.7], [0, 0, 0], null, (collision) => {
-                updateableCollision.push(collision);
-                interactables["object_door_0"].collision = collision;
-            });
+            if (this.loadedAssets === this.totalAssets) {
+                console.log('All assets loaded.');
+                enableStartButton(); // Enable the start button
+                // Rest of your onLoad functionality
+                animate();
 
-            for (let i = 0; i < 10; i++) {
-                createBoundingBox(scene, [26 - (i * 4), 7.5, -61.5], [4, 14, 0.5], [0, 0, 0], null, (collision) => {
+                createBoundingBox(scene, [-14, 7, 11.5], [6.5, 13, 1.7], [0, 0, 0], null, (collision) => {
                     updateableCollision.push(collision);
-                    interactables[`object_locker_door_${i}`].collision = collision;
+                    interactables["object_door_0"].collision = collision;
                 });
+
+                for (let i = 0; i < 10; i++) {
+                    createBoundingBox(scene, [26 - (i * 4), 7.5, -61.5], [4, 14, 0.5], [0, 0, 0], null, (collision) => {
+                        updateableCollision.push(collision);
+                        interactables[`object_locker_door_${i}`].collision = collision;
+                    });
+                }
             }
         }
     };
 
     // Simulate asset loading (for demonstration purposes)
-    setTimeout(loadingManager.onLoad, 3000); // Simulate a 3-second load time
+    for (let i = 0; i < loadingManager.totalAssets; i++) {
+        setTimeout(() => loadingManager.onLoad(), 300 * (i + 1)); // Simulate a staggered load time
+    }
 });
+
 
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
