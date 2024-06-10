@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { player, getPlayerLookDirection, controls, playerCollider, movePlayerCollider, onKeyDown, onKeyUp, resetControls, loadLocationLook, saveLocationLook } from "./controls.js";
+import { player, getPlayerLookDirection, controls, movePlayerCollider, loadLocationLook, saveLocationLook } from "./controls.js";
 import { changeDayOverlay } from "./uiSetup.js";
+import { playPlayerAnimation } from './main.js';
 
 export let day = 1;
 
@@ -260,28 +261,36 @@ export const barbellsAnimation = async (barbells) => {
     if (player.currentStamina>=20) {
         if (barbells && !barbells.isAnimating) {
             barbells.isAnimating = true;
-
+            
+            const teleportPosition = {
+                x: barbells.model.position.x - 4.5,
+                y: barbells.model.position.y - 5,
+                z: barbells.model.position.z - 0.2
+            }
             saveLocationLook();
             controls.getObject().rotation.set(Math.PI/2, -0.0009, Math.PI/2);
-            movePlayerCollider(-14.5, -5, -40.2);
+            movePlayerCollider(teleportPosition.x, teleportPosition.y, teleportPosition.z);
 
             const heightChange = 0.05; // Change in y-position per frame, adjust as needed
+            const totalLift = 5;
             const totalFrames = 45;
-            const staminaToDecrease = 10;
-            const staminaDecrementPerFrame = staminaToDecrease / totalFrames;
+            const staminaToDecrease = 20;
+            const staminaDecrementPerFrame = staminaToDecrease / (totalFrames * totalLift * 2);
 
-            // Animation upwards
-            for (let substate = 0; substate < totalFrames; substate++) {
-                barbells.model.position.y += heightChange;
-                player.currentStamina -= staminaDecrementPerFrame; // Decrease stamina gradually
-                await waitForNextFrame();
-            }
-
-            // Animation downwards
-            for (let substate = 0; substate < totalFrames; substate++) {
-                barbells.model.position.y -= heightChange;
-                player.currentStamina -= staminaDecrementPerFrame; 
-                await waitForNextFrame();
+            for (let i = 0; i < totalLift; i++) {
+                // Animation upwards
+                for (let substate = 0; substate < totalFrames; substate++) {
+                    barbells.model.position.y += heightChange;
+                    player.currentStamina -= staminaDecrementPerFrame; // Decrease stamina gradually
+                    await waitForNextFrame();
+                }
+    
+                // Animation downwards
+                for (let substate = 0; substate < totalFrames; substate++) {
+                    barbells.model.position.y -= heightChange;
+                    player.currentStamina -= staminaDecrementPerFrame; 
+                    await waitForNextFrame();
+                }
             }
 
             loadLocationLook();
@@ -300,12 +309,17 @@ export const bikeAnimation = async (bike) => {
         if (bike && !bike.isAnimating) {
             bike.isAnimating = true;
 
+            const teleportPosition = {
+                x: bike.model.position.x - 2,
+                y: bike.model.position.y - 1.2,
+                z: bike.model.position.z
+            }
             saveLocationLook();
             controls.getObject().rotation.set(0, -Math.PI/2, 0);
-            movePlayerCollider(12, 1, -35);
+            movePlayerCollider(teleportPosition.x, teleportPosition.y, teleportPosition.z);
 
             const rotationIncrement = 6 * (Math.PI / 180); // 6 degrees per frame
-            const totalFrames = 60;
+            const totalFrames = 300;
             const staminaToDecrease = 10;
             const staminaDecrementPerFrame = staminaToDecrease / totalFrames;
 
@@ -324,34 +338,37 @@ export const bikeAnimation = async (bike) => {
     }
 }
 
-export function treadmillAnimation(player, interactables) {
-    //console.log(player.direction)
-    const treadmill = interactables["object_treadmill"];
-    if (treadmill && !treadmill.isAnimating) {
+export const treadmillAnimation = async (treadmill) => {
+    if (treadmill && !treadmill.isAnimating && player.currentStamina>=10) {
         treadmill.isAnimating = true;
-        treadmill.substate++;
-        const heightChange = 0.05; // Change in y-position per frame, adjust as needed
-        const previousPositionY = player.position;
-        
-        if (treadmill.state === 0) {
-            // Move up
-            player.direction.set(0,0,0);
-        } else if (treadmill.state === 1) {
-            // Move down
-            player.direction.set(-1,0,1);
+        const teleportPosition = {
+            x: treadmill.model.position.x,
+            y: treadmill.model.position.y + 2.8,
+            z: treadmill.model.position.z
+        }
+        saveLocationLook();
+        controls.getObject().rotation.set(0, -Math.PI/2, 0);
+        movePlayerCollider(teleportPosition.x, teleportPosition.y, teleportPosition.z);
+        player.sprintMultiplier = 2;
+        playPlayerAnimation("Rig|new_man_run_in_place");
+
+        const totalFrames = 150;
+        const staminaToDecrease = 10;
+        const staminaDecrementPerFrame = staminaToDecrease / totalFrames;
+
+        for (let substate = 0; substate < totalFrames; substate++) {
+            player.currentStamina -= staminaDecrementPerFrame; // Decrease stamina gradually
+            await waitForNextFrame();
         }
 
-        if (treadmill.state === 0 && treadmill.substate === 45) {
-            treadmill.state = 1; // Switch to downward movement
-            treadmill.substate = 0;
-        } else if (treadmill.state === 1 && treadmill.substate === 45) {
-            treadmill.state = 0; // Reset state to 0 for next cycle
-            treadmill.substate = 0;
-            treadmill.isAnimating = false; // End the animation
-        }
+        loadLocationLook();
+        player.sprintMultiplier = 1;
+
+        player.currentStamina = Math.round(player.currentStamina);
+        player.spd+=10;
+
+        treadmill.isAnimating = false;
     }
-    //player.position = [0,0,0];
-    treadmill.isAnimating = false;
 }
 
 export function carAnimation(car) {

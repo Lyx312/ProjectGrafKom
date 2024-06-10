@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
 import Stats from 'three/addons/libs/stats.module.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player } from './controls.js';
-import { loadObject, loadModel, loadModelInterior, createBoundingBox, loadPlayer, loadImage, createBoundingCylinder, loadGroundModel, loadAnimatedModel, boundingMaterial, lineMaterial, loadAudio } from './objectLoader.js';
+import { loadModel, loadModelInterior, createBoundingBox, loadPlayer, createBoundingCylinder, loadGroundModel, loadAnimatedModel, loadAudio } from './objectLoader.js';
 import { scene, camera, updateBackground, renderer, composer, outlinePass } from './sceneSetup.js';
 import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation } from './objectAnimation.js';
 import { changeDayOverlay, updateDebugScreen, startScreen, startButton, loadingBar, loadingBarContainer, title } from './uiSetup.js';
@@ -400,7 +400,7 @@ function updatePlayerModelPositionAndAnimation() {
         const moveDirection = getMoveDirection();
 
         modelOffset.set(Math.cos(lookDirection), 0, Math.sin(lookDirection));
-        modelOffset.multiplyScalar(getCameraOffset() + ((player.sprintMultiplier != 1 && moveDirection == "forward") ? player.height * 0.1 : 0));
+        modelOffset.multiplyScalar(getCameraOffset() + ((player.sprintMultiplier != 1 && (moveDirection == "forward" || player.pause)) ? player.height * 0.1 : 0));
 
         casualMaleModel.position.copy(camera.position);
         casualMaleModel.position.y -= player.height + player.width / 2;
@@ -417,27 +417,27 @@ function updatePlayerModelPositionAndAnimation() {
         }
         camera.position.y += player.height / 17;
 
-        handlePlayerAnimations(moveDirection);
+        if (!player.pause) handlePlayerAnimations(moveDirection);
     } else {
-        playAnimation("Rig|new_man_idle");
+        playPlayerAnimation("Rig|new_man_idle");
     }
 }
 
 function handlePlayerAnimations(moveDirection) {
     if (moveDirection === "forward" && player.sprintMultiplier !== 1) {
-        playAnimation("Rig|new_man_run_in_place");
+        playPlayerAnimation("Rig|new_man_run_in_place");
     } else if (moveDirection === "forward") {
-        playAnimation("Rig|new_man_walk_in_place");
+        playPlayerAnimation("Rig|new_man_walk_in_place");
     } else if (moveDirection === "left") {
-        playAnimation("Rig|new_man_walk_left_in_place");
+        playPlayerAnimation("Rig|new_man_walk_left_in_place");
     } else if (moveDirection === "right") {
-        playAnimation("Rig|new_man_walk_right_in_place");
+        playPlayerAnimation("Rig|new_man_walk_right_in_place");
     } else {
-        playAnimation("Rig|new_man_idle");
+        playPlayerAnimation("Rig|new_man_idle");
     }
 }
 
-function playAnimation(animationName) {
+export function playPlayerAnimation(animationName) {
     for (let anim in playerAnimations) {
         if (playerAnimations.hasOwnProperty(anim)) {
             if (anim === animationName) {
