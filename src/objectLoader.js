@@ -72,6 +72,10 @@ function loadGLTF(loadingManager, path, name, scene, position, scale, rotation, 
                 // console.log(newKey);
             }
 
+            if (type == "static") {
+                callFunction(model);
+            }
+
             scene.add(model);
 
             if (gltf.animations && gltf.animations.length > 0) {
@@ -107,6 +111,10 @@ export function loadModel(loadingManager, scene, folder, position, scale, rotati
 
 export function loadModelInterior(loadingManager, scene, file, position, scale, rotation, interactables, interactFunction, number=0) {
     loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file+"_"+number, scene, position, scale, rotation, interactables, "object", interactFunction);
+}
+
+export function loadAnimatedModelInterior(loadingManager, scene, file, position, scale, rotation, interactFunction, number=0) {
+    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, file+"_"+number, scene, position, scale, rotation, null, "static", interactFunction);
 }
 
 export function createBoundingBox(scene, position, scale, rotation, octree, callback) {

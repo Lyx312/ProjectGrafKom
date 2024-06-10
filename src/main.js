@@ -3,9 +3,9 @@ import * as THREE from 'three';
 import { Octree } from 'three/addons/math/Octree.js';
 import Stats from 'three/addons/libs/stats.module.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player } from './controls.js';
-import { loadModel, loadModelInterior, createBoundingBox, loadPlayer, createBoundingCylinder, loadGroundModel, loadAnimatedModel, loadAudio } from './objectLoader.js';
+import { loadModel, loadModelInterior, createBoundingBox, loadPlayer, createBoundingCylinder, loadGroundModel, loadAnimatedModel, loadAudio, loadAnimatedModelInterior } from './objectLoader.js';
 import { scene, camera, updateBackground, renderer, composer, outlinePass } from './sceneSetup.js';
-import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation } from './objectAnimation.js';
+import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation, bandAnimation } from './objectAnimation.js';
 import { changeDayOverlay, updateDebugScreen, startScreen, startButton, loadingBar, loadingBarContainer, title } from './uiSetup.js';
 import { doctor, girl } from './npcInteraction.js';
 
@@ -180,7 +180,7 @@ createBoundingCylinder(scene, [-20.1, 7, -13.1], [1.5, 5, 1.5], [0, 0, 0], world
 loadModelInterior(loadingManager, scene, "gym_decoration_2_v2", [28.7, 3, -28], [9, 9, 9], [0, -90, 0]);
 createBoundingBox(scene, [26, 14, -23.3], [3, 1, 7.5], [0, 0, 0], worldOctree)
 
-loadModelInterior(loadingManager, scene, "band_1", [28.8, 10.05, -35.05], [9, 9, 9], [0, -90, 0]);
+loadAnimatedModelInterior(loadingManager, scene, "band_1", [28.8, 10.05, -35.05], [9, 9, 9], [0, -90, 0], bandAnimation);
 // loadModelInterior(loadingManager, scene, "band_2", [28.8, 10.05, -34.64], [9, 9, 9], [0, -90, 0]);
 // loadModelInterior(loadingManager, scene, "band_3", [28.8, 10.05, -33.85], [9, 9, 9], [0, -90, 0]);
 // loadModelInterior(loadingManager, scene, "band_4", [28.8, 10.05, -33.42], [9, 9, 9], [0, -90, 0]);

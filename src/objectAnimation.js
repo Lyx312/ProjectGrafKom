@@ -381,3 +381,12 @@ export function carAnimation(car) {
         }, 5000);
     }
 }
+
+
+export const bandAnimation = async (band) => {
+    if (band) {
+        // console.log(band);
+        // waitForNextFrame();
+        // bandAnimation(band);
+    }
+}
