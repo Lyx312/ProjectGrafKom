@@ -149,6 +149,39 @@ export const onKeyUp = (e) => {
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 
+export const movePlayerCollider = (x, y, z) => {
+    // New position for the capsule's start and end
+    const startVector = new THREE.Vector3(x, y, z);
+    const endVector = new THREE.Vector3(x, y + player.height, z);
+
+    // Set the new positions
+    playerCollider.start.copy(startVector);
+    playerCollider.end.copy(endVector);
+}
+
+let prevPosition = new THREE.Vector3();
+let prevLook;
+export const saveLocationLook = () => {
+    player.pause = true;
+    document.body.ownerDocument.removeEventListener('keydown', onKeyDown);
+    document.body.ownerDocument.removeEventListener('keyup', onKeyUp);
+    resetControls();
+    player.velocity.set(0, 0, 0);
+    prevPosition.set(...playerCollider.start);
+    prevLook = {
+        x: controls.getObject().rotation.x,
+        y: controls.getObject().rotation.y,
+        z: controls.getObject().rotation.z
+    };
+}
+export const loadLocationLook = () => {
+    player.pause = false;
+    document.body.ownerDocument.addEventListener('keydown', onKeyDown);
+    document.body.ownerDocument.addEventListener('keyup', onKeyUp);
+    controls.getObject().rotation.set(prevLook.x, prevLook.y, prevLook.z);
+    movePlayerCollider(...prevPosition);
+}
+
 function toggleDebugMode() {
     debug = !debug;
     if (debug) {
@@ -230,7 +263,7 @@ function playerBoxCollision(boxes) {
 export function updatePlayer(deltaTime) {
     let damping = Math.exp(-8 * deltaTime) - 1;
 
-    if (!player.onGround && !player.cheat) {
+    if (!player.onGround && !player.cheat && !player.pause) {
         player.velocity.y -= GRAVITY * deltaTime;
         damping *= 0.5;
     }
@@ -240,14 +273,14 @@ export function updatePlayer(deltaTime) {
     playerCollider.translate(deltaPosition);
 
     player.onGround = false;
-    if (!player.cheat) {
+    if (!player.cheat && !player.pause) {
         playerCollisions();
         playerBoxCollision(updateableCollision);
     }
 
     camera.position.copy(playerCollider.end);
 
-    if (!player.cheat) {
+    if (!player.cheat && !player.pause) {
         capsuleMesh.position.copy(playerCollider.start);
         capsuleMesh.position.y += player.height / 2; // Adjust for the fact that CylinderGeometry is centered at its midpoint
     }

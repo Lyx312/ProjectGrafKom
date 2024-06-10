@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { player, getPlayerLookDirection } from "./controls.js";
+import { player, getPlayerLookDirection, controls, playerCollider, movePlayerCollider, onKeyDown, onKeyUp, resetControls, loadLocationLook, saveLocationLook } from "./controls.js";
 import { changeDayOverlay } from "./uiSetup.js";
 
 export let day = 1;
@@ -260,6 +260,11 @@ export const barbellsAnimation = async (barbells) => {
     if (player.currentStamina>=20) {
         if (barbells && !barbells.isAnimating) {
             barbells.isAnimating = true;
+
+            saveLocationLook();
+            controls.getObject().rotation.set(Math.PI/2, -0.0009, Math.PI/2);
+            movePlayerCollider(-14.5, -5, -40.2);
+
             const heightChange = 0.05; // Change in y-position per frame, adjust as needed
             const totalFrames = 45;
             const staminaToDecrease = 10;
@@ -279,6 +284,8 @@ export const barbellsAnimation = async (barbells) => {
                 await waitForNextFrame();
             }
 
+            loadLocationLook();
+
             // Adjust any other properties after animation completes
             player.currentStamina = Math.round(player.currentStamina);
             player.str += 10;
@@ -289,10 +296,14 @@ export const barbellsAnimation = async (barbells) => {
 }
 
 export const bikeAnimation = async (bike) => {
-    console.log(player.currentStamina)
     if (player.currentStamina>=10) {
         if (bike && !bike.isAnimating) {
             bike.isAnimating = true;
+
+            saveLocationLook();
+            controls.getObject().rotation.set(0, -Math.PI/2, 0);
+            movePlayerCollider(12, 1, -35);
+
             const rotationIncrement = 6 * (Math.PI / 180); // 6 degrees per frame
             const totalFrames = 60;
             const staminaToDecrease = 10;
@@ -303,6 +314,9 @@ export const bikeAnimation = async (bike) => {
                 player.currentStamina -= staminaDecrementPerFrame; // Decrease stamina gradually
                 await waitForNextFrame();
             }
+
+            loadLocationLook();
+
             player.currentStamina = Math.round(player.currentStamina);
             player.spd+=10;
             bike.isAnimating = false;
