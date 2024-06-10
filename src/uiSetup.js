@@ -185,3 +185,31 @@ export const changeDayOverlay = (day, strength, speed) => {
     loadingBar.style.width = "0%";
     loadingBar.style.backgroundColor = "green";
     loadingBar.style.transition = "width 0.5s";
+
+    export const createBlackScreen = () => {
+        const blackScreen = document.createElement('div');
+        blackScreen.id = 'black-screen';
+        blackScreen.style.position = 'fixed';
+        blackScreen.style.top = '0';
+        blackScreen.style.left = '0';
+        blackScreen.style.width = '100%';
+        blackScreen.style.height = '100%';
+        blackScreen.style.backgroundColor = 'black';
+        blackScreen.style.zIndex = '9999';
+        blackScreen.style.display = 'none';
+        document.body.appendChild(blackScreen);
+    }
+    
+    export const showBlackScreen = () => {
+        const blackScreen = document.getElementById('black-screen');
+        if (blackScreen) {
+            blackScreen.style.display = 'block';
+        }
+    }
+    
+    export const hideBlackScreen = () => {
+        const blackScreen = document.getElementById('black-screen');
+        if (blackScreen) {
+            blackScreen.style.display = 'none';
+        }
+    }

@@ -162,7 +162,7 @@ loadGroundModel(loadingManager, scene, "ground_road", worldOctree, [0, -0.1, 0],
 // loadObject(scene, "mickey_small", [-8, 4.5, -13], [1, 1, 1], [0, 90, 0]);
 // createBoundingBox(scene, [-8.3, 0.5, -12.9], [4.6, 17, 6], [0, 0, 0], worldOctree, boundingBox);
 
-loadModelInterior(loadingManager, scene, "new_room_4", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
+loadModelInterior(loadingManager, scene, "new_room_5", [0, 0.1, -30], [1, 1, 1], [0, 90, 0]);
 
 loadModelInterior(loadingManager, scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [0, 90, 0], interactables, doorAnimation)
 

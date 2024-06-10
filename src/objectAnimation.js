@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { player, getPlayerLookDirection, controls, movePlayerCollider, loadLocationLook, saveLocationLook } from "./controls.js";
-import { changeDayOverlay } from "./uiSetup.js";
+import { changeDayOverlay, createBlackScreen, showBlackScreen, hideBlackScreen } from "./uiSetup.js";
 import { playPlayerAnimation } from './main.js';
 
 export let day = 1;
@@ -255,12 +255,18 @@ export const punchingBag2Animation = async (punchingBag) => {
     }
 }
 
+// Call this function once during initialization to create the overlay
+createBlackScreen();
 
 export const barbellsAnimation = async (barbells) => {
     console.log(player.currentStamina)
     if (player.currentStamina>=20) {
         if (barbells && !barbells.isAnimating) {
             barbells.isAnimating = true;
+
+            showBlackScreen();
+            await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 0.1 second
+            hideBlackScreen();
             
             const teleportPosition = {
                 x: barbells.model.position.x - 4.5,
@@ -299,6 +305,10 @@ export const barbellsAnimation = async (barbells) => {
             player.currentStamina = Math.round(player.currentStamina);
             player.str += 10;
 
+            showBlackScreen();
+            await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 0.1 second
+            hideBlackScreen();
+
             barbells.isAnimating = false;
         }
     }
@@ -309,6 +319,10 @@ export const bikeAnimation = async (bike) => {
         if (bike && !bike.isAnimating) {
             bike.isAnimating = true;
 
+            showBlackScreen();
+            await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 0.1 second
+            hideBlackScreen();
+
             const teleportPosition = {
                 x: bike.model.position.x - 2,
                 y: bike.model.position.y - 1.2,
@@ -318,7 +332,7 @@ export const bikeAnimation = async (bike) => {
             controls.getObject().rotation.set(0, -Math.PI/2, 0);
             movePlayerCollider(teleportPosition.x, teleportPosition.y, teleportPosition.z);
 
-            const rotationIncrement = 6 * (Math.PI / 180); // 6 degrees per frame
+            const rotationIncrement = 12 * (Math.PI / 180); // 12 degrees per frame
             const totalFrames = 300;
             const staminaToDecrease = 10;
             const staminaDecrementPerFrame = staminaToDecrease / totalFrames;
@@ -333,21 +347,32 @@ export const bikeAnimation = async (bike) => {
 
             player.currentStamina = Math.round(player.currentStamina);
             player.spd+=10;
+
+            showBlackScreen();
+            await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 0.1 second
+            hideBlackScreen();
+
             bike.isAnimating = false;
         }        
     }
 }
 
 export const treadmillAnimation = async (treadmill) => {
-    if (treadmill && !treadmill.isAnimating && player.currentStamina>=10) {
+    if (treadmill && !treadmill.isAnimating && player.currentStamina >= 10) {
         treadmill.isAnimating = true;
+        
+        // Show black screen before starting the animation
+        showBlackScreen();
+        await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 0.1 second
+        hideBlackScreen();
+
         const teleportPosition = {
             x: treadmill.model.position.x,
             y: treadmill.model.position.y + 2.8,
             z: treadmill.model.position.z
-        }
+        };
         saveLocationLook();
-        controls.getObject().rotation.set(0, -Math.PI/2, 0);
+        controls.getObject().rotation.set(0, -Math.PI / 2, 0);
         movePlayerCollider(teleportPosition.x, teleportPosition.y, teleportPosition.z);
         player.sprintMultiplier = 2;
         playPlayerAnimation("Rig|new_man_run_in_place");
@@ -363,13 +388,17 @@ export const treadmillAnimation = async (treadmill) => {
 
         loadLocationLook();
         player.sprintMultiplier = 1;
-
         player.currentStamina = Math.round(player.currentStamina);
-        player.spd+=10;
+        player.spd += 10;
+
+        // Show black screen after the animation ends
+        showBlackScreen();
+        await new Promise(resolve => setTimeout(resolve, 100)); // Wait for 0.1 second
+        hideBlackScreen();
 
         treadmill.isAnimating = false;
     }
-}
+};
 
 export function carAnimation(car) {
     if (car && !car.isAnimating) {
