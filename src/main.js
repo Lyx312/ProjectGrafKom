@@ -7,7 +7,7 @@ import { loadModel, loadModelInterior, createBoundingBox, loadPlayer, createBoun
 import { scene, camera, updateBackground, renderer, composer, outlinePass } from './sceneSetup.js';
 import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation, bandAnimation } from './objectAnimation.js';
 import { changeDayOverlay, updateDebugScreen, startScreen, startButton, loadingBar, loadingBarContainer, title } from './uiSetup.js';
-import { doctor, girl } from './npcInteraction.js';
+import { doctor, girl, introMonolog } from './npcInteraction.js';
 
 const loadingManager = new THREE.LoadingManager();
 export const worldOctree = new Octree();
@@ -298,6 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
             audio.play();
             changeDayOverlay(1, player.str, player.spd);
             document.body.removeChild(startScreen); // Remove start screen
+            introMonolog();
         }
     });
 

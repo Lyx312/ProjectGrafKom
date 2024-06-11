@@ -39,7 +39,7 @@ function showDialog(text, color) {
     dialogBox.style.color = color || "white";
 }
 
-const showPlayerDialog = (text, color) => {
+const showPlayerDialog = (text, color="white") => {
     dialogBox.style.borderRadius = '20px 0px 20px 20px';
     dialogBox.style.justifyContent = 'right';
     npcName.style.display = 'none';
@@ -47,7 +47,7 @@ const showPlayerDialog = (text, color) => {
     showDialog(text, color);
 }
 
-const showNPCDialog = (text, color) => {
+const showNPCDialog = (text, color="white") => {
     dialogBox.style.borderRadius = '0px 20px 20px 20px';
     dialogBox.style.justifyContent = 'left';
     playerName.style.display = 'none';
@@ -67,7 +67,7 @@ function buttonClick(index) {
     dialogStates[dialogStates.length - 1]++;
     dialogStates.push(-1);
     awaitAnswer = false;
-    console.log(dialogStates);
+    // console.log(dialogStates);
     hideDialogs();
 }
 
@@ -355,4 +355,29 @@ export const girl = (npc) => {
             finishDialog();
             break;
     } 
+}
+
+
+export const introMonolog = () => {
+    index = 0;
+    switch(dialogStates[index]) {
+        case 0:
+            initializeDialog("AAA", {startDialog: introMonolog});
+            break;
+        case 1:
+            showPlayerDialog("Waduh gimana nih???");
+            break;
+        case 2:
+            showPlayerDialog("Aku harus keliatan kekar dalam 1 mingguu??!");
+            break;
+        case 3:
+            showPlayerDialog("Yasudah aku coba masuk dulu saja");
+            break;
+        case 4:
+            showPlayerDialog("Mungkin ada orang yang bisa mbantu aku latihan");
+            break;
+        case 5:
+            finishDialog();
+            break;
+    }
 }
