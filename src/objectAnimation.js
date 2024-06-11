@@ -441,47 +441,46 @@ export const bandAnimation = async (band) => {
     }
 }
 
-export const dumpsterAnimation = async (door) => {
-    if (door && !door.isAnimating) {
-        door.isAnimating = true;
-        const isOpening = door.state === 0;
+export const dumpsterAnimation = async (dumpster) => {
+    if (dumpster && !dumpster.isAnimating) {
+        dumpster.isAnimating = true;
+        const isOpening = dumpster.state === 0;
 
         if (isOpening) {
-            door.initialLookDirection = getPlayerLookDirection() > 0 ? 1 : -1;
-            door.positionChanges = [];
-            door.rotationChanges = [];
+            dumpster.positionChanges = [];
+            dumpster.rotationChanges = [];
         } else {
-            door.positionChanges.reverse();
-            door.rotationChanges.reverse();
+            dumpster.positionChanges.reverse();
+            dumpster.rotationChanges.reverse();
         }
 
-        const pivotOffset = 9;
+        const pivotOffset = 1;
         const direction = isOpening ? 1 : -1;
 
-        for (let substate = 0; substate < 30; substate++) {
-            const rotationChange = door.initialLookDirection * 3 * (Math.PI / 180);
-            const currentRotation = (substate + 1) * door.initialLookDirection * (Math.PI / 180);
-            door.model.rotation.y += direction * rotationChange;
+        for (let substate = 0; substate < 15; substate++) {
+            const rotationChange = 6 * (Math.PI/180);
+            dumpster.model.rotation.z += dumpster.state === 0 ? rotationChange : -rotationChange;
 
+            const currentRotation = (substate + 1) * (Math.PI / 180);
             if (isOpening) {
-                const positionChangeX = -pivotOffset * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
-                const positionChangeZ = (pivotOffset+door.initialLookDirection) * 0.3 * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
+                const positionChangeX = -pivotOffset * 11 * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
+                const positionChangeY = pivotOffset * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
 
-                const positionChange = [direction * positionChangeX, 0, direction * positionChangeZ];
-                const rotationChangeArr = [0, direction * rotationChange, 0];
+                const positionChange = [direction * positionChangeX, direction * positionChangeY, 0];
+                const rotationChangeArr = [0, 0, direction * rotationChange];
 
-                door.positionChanges.push(positionChange);
-                door.rotationChanges.push(rotationChangeArr);
+                dumpster.positionChanges.push(positionChange);
+                dumpster.rotationChanges.push(rotationChangeArr);
 
-                incrementBoundingBox(door.collision, positionChange, rotationChangeArr);
+                incrementBoundingBox(dumpster.collision, positionChange, rotationChangeArr);
             } else {
-                incrementBoundingBox(door.collision, door.positionChanges[substate].map(val => -val), door.rotationChanges[substate].map(val => -val));
+                incrementBoundingBox(dumpster.collision, dumpster.positionChanges[substate].map(val => -val), dumpster.rotationChanges[substate].map(val => -val));
             }
 
             await waitForNextFrame();
         }
 
-        door.state = isOpening ? door.initialLookDirection : 0;
-        door.isAnimating = false;
+        dumpster.state ^= 1;
+        dumpster.isAnimating = false;
     }
 };

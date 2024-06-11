@@ -154,204 +154,307 @@ export const girl = (npc) => {
     index = 0;
     switch(dialogStates[index]) {
         case 0:
-            initializeDialog("Girl A", npc);
-            showNPCDialog("Hey there, I'm a tutorial. I'm here to help you.", "blue");
+            initializeDialog("Lia", npc);
+            showNPCDialog("Hai, selamat datang di gym! Saya Lia. Bagaimana bisa saya membantumu hari ini?", "yellow");
             break;
         case 1:
-            showDialogOption(["Accept", "Refuse"], ["red"]);
+            showDialogOption(["Help", "Chat", "Nevermind"], ["red"]);
             break;
         case 2:
             index++;
             if (dialogAnswers[index-1] == 0) {
                 switch (dialogStates[index]) {
                     case 0:
-                        showPlayerDialog("Can you kill me please?", "white");
+                        showPlayerDialog("Halo Lia, senang bertemu denganmu, nama saya Bob. Aku butuh bantuan untuk memulai.", "white");
                         break;
                     case 1:
-                        showNPCDialog("*Stab Noises*", "red");
+                        showNPCDialog("Tentu saja, saya bisa membantu. Di gym ini, kamu bisa menggunakan berbagai peralatan untuk meningkatkan kekuatan atau kecepatanmu, tergantung pada peralatan yang kamu gunakan. Namun, setiap latihan akan menurunkan stamina kamu.", "yellow");
                         break;
                     case 2:
-                        showPlayerDialog("*AHHHHHHHHH*", "red");
+                        showPlayerDialog("Bagaimana cara mengembalikan stamina saya?", "white");
                         break;
                     case 3:
+                        showNPCDialog("Untuk mengembalikan stamina, kamu harus menunggu sampai hari berikutnya. Kamu bisa melakukannya dengan berinteraksi dengan mobilmu di luar gym.", "yellow");
+                        break;
+                    case 4:
+                        showPlayerDialog("Terima kasih, Lia. Itu sangat membantu.", "white");
+                        break;
+                    case 5:
+                        showNPCDialog("Sama-sama! Jangan ragu untuk bertanya jika kamu butuh bantuan lebih lanjut.", "yellow");
+                        break;
+                    case 6:
                         concludeSubdialog();
                         break;
                 }
             } else if (dialogAnswers[index-1] == 1) {
                 switch (dialogStates[index]) {
                     case 0:
-                        showPlayerDialog("No thanks, I know what I'm doing.", "white");
+                        showNPCDialog("Hmm? Mau bicara tentang apa?", "yellow");
                         break;
                     case 1:
-                        showNPCDialog("Oh okay", "yellow");
+                        showDialogOption(["Sering ke gym?", "Suka olah raga apa?"])
                         break;
                     case 2:
-                        showNPCDialog("Have a nice day!", "yellow");
+                        index++;
+                        if (dialogAnswers[index-1] == 0) {
+                            switch(dialogStates[index]) {
+                                case 0:
+                                    showPlayerDialog("Lia, jadi Sudah berapa lama kamu pergi ke sini?", "white");
+                                    break;
+                                case 1:
+                                    showNPCDialog("Saya sudah di gym ini selama lima tahun. Saya sangat menikmati membantu orang-orang mencapai tujuan kebugaran mereka.", "yellow");
+                                    break;
+                                case 2:
+                                    showPlayerDialog("Wah, pasti kamu punya banyak pengalaman ya.", "white");
+                                    break;
+                                case 3:
+                                    showNPCDialog("Ya, saya sudah melihat banyak orang yang datang dan pergi, dan saya senang bisa melihat perkembangan mereka. Apakah kamu punya tujuan khusus dalam latihanmu?", "yellow");
+                                    break;
+                                case 4:
+                                    showPlayerDialog("Sebenarnya sih, saya ada reuni SMA dalam 1 minggu tapi saya tidak terlalu pd dengan tubuh saya maka saya memutuskan untuk pergi ke GYM untuk menjadi kekar", "white");
+                                    break;
+                                case 5:
+                                    showNPCDialog("Ohh begitu. Tetap fokus dan konsisten, dan kamu pasti akan melihat hasilnya.", "yellow");
+                                    break;
+                                case 6:
+                                    showPlayerDialog("Terima kasih, Lia. Saya akan berusaha.", "white");
+                                    break;
+                                case 7:
+                                    showNPCDialog("Semangat ya! Kalau butuh sesuatu, saya selalu ada di sini.", "yellow");
+                                    break;
+                                case 8:
+                                    concludeSubdialog();
+                                    break;
+                                }
+                        } else if (dialogAnswers[index-1]==1) {
+                            switch(dialogStates[index]) {
+                                case 0:
+                                    showPlayerDialog("Lia, kamu suka olahraga apa selain latihan di gym?", "white");
+                                    break;
+                                case 1:
+                                    showNPCDialog("Saya suka bersepeda dan yoga. Keduanya membantu saya tetap bugar dan rileks.", "yellow");
+                                    break;
+                                case 2:
+                                    showPlayerDialog("Kedengarannya menyenangkan. Mungkin aku harus mencobanya juga.", "white");
+                                    break;
+                                case 3:
+                                    showNPCDialog("Tentu! Bersepeda bagus untuk kardio, dan yoga bisa membantu fleksibilitas dan mengurangi stres.", "yellow");
+                                    break;
+                                case 4:
+                                    showPlayerDialog("Terima kasih atas sarannya, Lia.", "white");
+                                    break;
+                                case 5:
+                                    showNPCDialog("Sama-sama! Semoga hari kamu menyenangkan.", "yellow");
+                                    break;
+                                case 6:
+                                    concludeSubdialog();
+                                    break;
+                                }
+                            }
                         break;
                     case 3:
+                        concludeSubdialog();
+                        break;
+                }
+            } else if (dialogAnswers[index-1] == 2) {
+                switch (dialogStates[index]) {
+                    case 0:
+                        showPlayerDialog("Maaf gak jadi deh.", "white");
+                        break;
+                    case 1:
+                        showNPCDialog("Ok", "yellow");
+                        break;
+                    case 2:
                         concludeSubdialog();
                         break;
                 }
             }
             break;
 
-        case 3:
-            showDialogOption(["2 subdialog", "3 subdialog"])
-            break;
-        case 4:
-            index++;
-            if (dialogAnswers[index-1] == 0) {
-                switch (dialogStates[index]) {
-                    case 0:
-                        showPlayerDialog("test00", "white");
-                        break;
-                    case 1:
-                        showNPCDialog("test01", "yellow");
-                        break;
-                    case 2:
-                        concludeSubdialog();
-                        break;
-                }
+        // case 3:
+        //     showDialogOption(["Sering ke gym?", "suka olah raga apa?"])
+        //     break;
+        // case 4:
+        //     index++;
+        //     if (dialogAnswers[index-1] == 0) {
+        //         switch (dialogStates[index]) {
+        //             case 0:
+        //                 showPlayerDialog("Lia, jadi Sudah berapa lama kamu pergi ke sini?", "white");
+        //                 break;
+        //             case 1:
+        //                 showNPCDialog("Saya sudah di gym ini selama lima tahun. Saya sangat menikmati membantu orang-orang mencapai tujuan kebugaran mereka.", "yellow");
+        //                 break;
+        //             case 2:
+        //                 showPlayerDialog("Wah, pasti kamu punya banyak pengalaman ya.", "white");
+        //                 break;
+        //             case 3:
+        //                 showNPCDialog("Ya, saya sudah melihat banyak orang yang datang dan pergi, dan saya senang bisa melihat perkembangan mereka. Apakah kamu punya tujuan khusus dalam latihanmu?", "yellow");
+        //                 break;
+        //             case 4:
+        //                 showPlayerDialog("Sebenarnya sih, saya ada reuni SMA dalam 1 minggu tapi saya tidak terlalu pd dengan tubuh saya maka saya memutuskan untuk pergi ke GYM untuk menjadi kekar", "white");
+        //                 break;
+        //             case 5:
+        //                 showNPCDialog("Ohh begitu. Tetap fokus dan konsisten, dan kamu pasti akan melihat hasilnya.", "yellow");
+        //                 break;
+        //             case 6:
+        //                 showPlayerDialog("Terima kasih, Lia. Saya akan berusaha.", "white");
+        //                 break;
+        //             case 7:
+        //                 showNPCDialog("Semangat ya! Kalau butuh sesuatu, saya selalu ada di sini.", "yellow");
+        //                 break;
+        //             case 8:
+        //                 concludeSubdialog();
+        //                 break;
+        //         }
     
-            } else {
-                switch (dialogStates[index]) {
-                    case 0:
-                        showPlayerDialog("test10", "white");
-                        break;
-                    case 1:
-                        showNPCDialog("test11", "yellow");
-                        break;
-                    case 2:
-                        showNPCDialog("test12", "yellow");
-                        break;
-                    case 3:
-                        concludeSubdialog();
-                        break;
-                }
-            }
-            break;
-        case 5:
-            showDialogOption(["branch again to 3 option", "branch again and again"]);
-            break;
-        case 6:
-            index++;
-            if (dialogAnswers[index-1] == 0) {
-                switch(dialogStates[index]) {
-                    case 0:
-                        showNPCDialog("aaaa", "white");
-                        break;
-                    case 1:
-                        showDialogOption(["a", "b", "c"], []);
-                        break;
-                    case 2:
-                        index++;
-                        if (dialogAnswers[index-1] == 0) {
-                            switch(dialogStates[index]) {
-                                case 0:
-                                    showPlayerDialog("test001", "white");
-                                    break;
-                                case 1:
-                                    concludeSubdialog();
-                                    break;
-                            }
-                        } else if (dialogAnswers[index-1]==1) {
-                            switch(dialogStates[index]) {
-                                case 0:
-                                    showPlayerDialog("test010", "white");
-                                    break;
-                                case 1:
-                                    showPlayerDialog("test011", "white");
-                                    break;
-                                case 2:
-                                    concludeSubdialog();
-                                    break;
-                            }
-                        } else {
-                            switch(dialogStates[index]) {
-                                case 0:
-                                    showPlayerDialog("test010", "white");
-                                    break;
-                                case 1:
-                                    showPlayerDialog("test011", "white");
-                                    break;
-                                case 2:
-                                    showPlayerDialog("test012", "white");
-                                    break;
-                                case 3:
-                                    concludeSubdialog();
-                                    break;
-                            }
-                        }
-                        break;
-                    case 3:
-                        concludeSubdialog();
-                        break;
-                }
-            } else {
-                switch(dialogStates[index]) {
-                    case 0:
-                        showNPCDialog("bbbb", "white");
-                        break;
-                    case 1:
-                        showDialogOption(["a", "b"], []);
-                        break;
-                    case 2:
-                        index++;
-                        if (dialogAnswers[index-1] == 0) {
-                            switch(dialogStates[index]) {
-                                case 0:
-                                    showPlayerDialog("aaaasdasd", "white");
-                                    break;
-                                case 1:
-                                    showDialogOption(["a", "b"]);
-                                    break;
-                                case 2:
-                                    index++;
-                                    if (dialogAnswers[index-1] == 0) {
-                                        switch(dialogStates[index]) {
-                                            case 0:
-                                                showPlayerDialog("test1000", "white");
-                                                break;
-                                            case 1:
-                                                concludeSubdialog();
-                                                break;
-                                        }
-                                    } else {
-                                        switch(dialogStates[index]) {
-                                            case 0:
-                                                showPlayerDialog("test1010", "white");
-                                                break;
-                                            case 1:
-                                                concludeSubdialog();
-                                                break;
-                                        }
-                                    }
-                                    break;
-                                case 3:
-                                    concludeSubdialog();
-                                    break;
-                            }
-                        } else {
-                            switch(dialogStates[index]) {
-                                case 0:
-                                    showPlayerDialog("test1100", "white");
-                                    break;
-                                case 1:
-                                    showPlayerDialog("test1101", "white");
-                                    break;
-                                case 2:
-                                    concludeSubdialog();
-                                    break;
-                            }
-                        }
-                        break;
-                    case 3:
-                        concludeSubdialog();
-                        break;
-                }
-            }
-            break;
-        case 7:
+        //     } else {
+        //         switch (dialogStates[index]) {
+        //             case 0:
+        //                 showPlayerDialog("Lia, kamu suka olahraga apa selain latihan di gym?", "white");
+        //                 break;
+        //             case 1:
+        //                 showNPCDialog("Saya suka bersepeda dan yoga. Keduanya membantu saya tetap bugar dan rileks.", "yellow");
+        //                 break;
+        //             case 2:
+        //                 showPlayerDialog("Kedengarannya menyenangkan. Mungkin aku harus mencobanya juga.", "white");
+        //                 break;
+        //             case 3:
+        //                 showNPCDialog("Tentu! Bersepeda bagus untuk kardio, dan yoga bisa membantu fleksibilitas dan mengurangi stres.", "yellow");
+        //                 break;
+        //             case 4:
+        //                 showPlayerDialog("Terima kasih atas sarannya, Lia.", "white");
+        //                 break;
+        //             case 5:
+        //                 showNPCDialog("Sama-sama! Semoga hari kamu menyenangkan.", "yellow");
+        //                 break;
+        //             case 6:
+        //                 concludeSubdialog();
+        //                 break;
+        //         }
+        //     }
+        //     break;
+        // case 5:
+        //     showDialogOption(["branch again to 3 option", "branch again and again"]);
+        //     break;
+        // case 6:
+        //     index++;
+        //     if (dialogAnswers[index-1] == 0) {
+        //         switch(dialogStates[index]) {
+        //             case 0:
+        //                 showNPCDialog("aaaa", "white");
+        //                 break;
+        //             case 1:
+        //                 showDialogOption(["a", "b", "c"], []);
+        //                 break;
+        //             case 2:
+        //                 index++;
+        //                 if (dialogAnswers[index-1] == 0) {
+        //                     switch(dialogStates[index]) {
+        //                         case 0:
+        //                             showPlayerDialog("test001", "white");
+        //                             break;
+        //                         case 1:
+        //                             concludeSubdialog();
+        //                             break;
+        //                     }
+        //                 } else if (dialogAnswers[index-1]==1) {
+        //                     switch(dialogStates[index]) {
+        //                         case 0:
+        //                             showPlayerDialog("test010", "white");
+        //                             break;
+        //                         case 1:
+        //                             showPlayerDialog("test011", "white");
+        //                             break;
+        //                         case 2:
+        //                             concludeSubdialog();
+        //                             break;
+        //                     }
+        //                 } else {
+        //                     switch(dialogStates[index]) {
+        //                         case 0:
+        //                             showPlayerDialog("test010", "white");
+        //                             break;
+        //                         case 1:
+        //                             showPlayerDialog("test011", "white");
+        //                             break;
+        //                         case 2:
+        //                             showPlayerDialog("test012", "white");
+        //                             break;
+        //                         case 3:
+        //                             concludeSubdialog();
+        //                             break;
+        //                     }
+        //                 }
+        //                 break;
+        //             case 3:
+        //                 concludeSubdialog();
+        //                 break;
+        //         }
+        //     } else {
+        //         switch(dialogStates[index]) {
+        //             case 0:
+        //                 showNPCDialog("bbbb", "white");
+        //                 break;
+        //             case 1:
+        //                 showDialogOption(["a", "b"], []);
+        //                 break;
+        //             case 2:
+        //                 index++;
+        //                 if (dialogAnswers[index-1] == 0) {
+        //                     switch(dialogStates[index]) {
+        //                         case 0:
+        //                             showPlayerDialog("aaaasdasd", "white");
+        //                             break;
+        //                         case 1:
+        //                             showDialogOption(["a", "b"]);
+        //                             break;
+        //                         case 2:
+        //                             index++;
+        //                             if (dialogAnswers[index-1] == 0) {
+        //                                 switch(dialogStates[index]) {
+        //                                     case 0:
+        //                                         showPlayerDialog("test1000", "white");
+        //                                         break;
+        //                                     case 1:
+        //                                         concludeSubdialog();
+        //                                         break;
+        //                                 }
+        //                             } else {
+        //                                 switch(dialogStates[index]) {
+        //                                     case 0:
+        //                                         showPlayerDialog("test1010", "white");
+        //                                         break;
+        //                                     case 1:
+        //                                         concludeSubdialog();
+        //                                         break;
+        //                                 }
+        //                             }
+        //                             break;
+        //                         case 3:
+        //                             concludeSubdialog();
+        //                             break;
+        //                     }
+        //                 } else {
+        //                     switch(dialogStates[index]) {
+        //                         case 0:
+        //                             showPlayerDialog("test1100", "white");
+        //                             break;
+        //                         case 1:
+        //                             showPlayerDialog("test1101", "white");
+        //                             break;
+        //                         case 2:
+        //                             concludeSubdialog();
+        //                             break;
+        //                     }
+        //                 }
+        //                 break;
+        //             case 3:
+        //                 concludeSubdialog();
+        //                 break;
+        //         }
+        //     }
+        //     break;
+        case 3:
             finishDialog();
             break;
     } 

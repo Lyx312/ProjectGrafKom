@@ -215,7 +215,7 @@ createBoundingBox(scene, [17, 5.5, -48.2], [5, 0.5, 0.5], [0, 0, 0], worldOctree
 
 createBoundingBox(scene, [30, 7, -27.5], [3, 8, 80], [0, 0, 0], worldOctree);
 createBoundingBox(scene, [-28, 7, -28], [3, 8, 80], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [9, 7, 11.5], [2.5, 8, 39.5], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [9, 11, 11.5], [2.5, 14, 39.5], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 8, 12], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 8, 57], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree);
@@ -255,7 +255,12 @@ createBoundingBox(scene, [10, 7, 15], [18, 2, 5], [65, 0, 0], worldOctree);
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
 loadModelInterior(loadingManager, scene, "dumpster_base", [20, 0, -72.5], [1, 1, 1], [0, 90, 0]);
-loadModelInterior(loadingManager, scene, "dumpster_lid", [20, 9.4, -72.5], [1, 1, 1], [0, 90, 0], interactables, dumpsterAnimation);
+loadModelInterior(loadingManager, scene, "dumpster_lid", [20, 9.4, -68], [1, 1, 1], [0, 90, 0], interactables, dumpsterAnimation);
+createBoundingBox(scene, [13.75, 5.5, -72], [0.5, 5, 10], [-20, 0, 0], worldOctree);
+createBoundingBox(scene, [20, 4, -77.25], [12, 4, 0.5], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [26.5, 5.5, -72], [0.5, 5, 10], [-20, 0, 0], worldOctree);
+// createBoundingBox(scene, [13.5, 3.5, -72.5], [0.5, 5, 10], [0, 0, 0], worldOctree);
+// createBoundingBox(scene, [26.5, 3.5, -72.5], [0.5, 5, 10], [0, 0, 0], worldOctree);
 
 const audioPosition = new THREE.Vector3(0,17,-65); // Example position
 const audioVolume = 2; // Example volume (0.0 to 1.0)
@@ -327,6 +332,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 createBoundingBox(scene, [-14, 7, 11.5], [6.5, 13, 1.7], [0, 0, 0], null, (collision) => {
                     updateableCollision.push(collision);
                     interactables["object_door_0"].collision = collision;
+                });
+
+                createBoundingBox(scene, [20, 9.4, -68], [10, 1, 5], [0, 0, 0], null, (collision) => {
+                    updateableCollision.push(collision);
+                    interactables["object_dumpster_lid_0"].collision = collision;
                 });
 
                 for (let i = 0; i < 10; i++) {
@@ -463,7 +473,7 @@ export function playPlayerAnimation(animationName) {
 
 // Function to calculate volume based on distance
 function calculateVolume(distance) {
-    const maxVolumeDistance = 75; // Adjust maximum distance where audio is audible
+    const maxVolumeDistance = 50; // Adjust maximum distance where audio is audible
     const minVolumeDistance = 85; // Adjust minimum distance where audio becomes inaudible
     const rolloffFactor = 0.5; // Adjust the rolloff factor for attenuation
     
