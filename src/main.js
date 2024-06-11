@@ -5,7 +5,7 @@ import Stats from 'three/addons/libs/stats.module.js';
 import { controls, updateStamina, updatePlayer, playerControls, getPlayerLookDirection, getMoveDirection, getCameraOffset, player } from './controls.js';
 import { loadModel, loadModelInterior, createBoundingBox, loadPlayer, createBoundingCylinder, loadGroundModel, loadAnimatedModel, loadAudio, loadAnimatedModelInterior } from './objectLoader.js';
 import { scene, camera, updateBackground, renderer, composer, outlinePass } from './sceneSetup.js';
-import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation, bandAnimation } from './objectAnimation.js';
+import { doorAnimation, punchingBag1Animation, punchingBag2Animation, barbellsAnimation, treadmillAnimation, bikeAnimation, lockerAnimation, carAnimation, bandAnimation, dumpsterAnimation } from './objectAnimation.js';
 import { changeDayOverlay, updateDebugScreen, startScreen, startButton, loadingBar, loadingBarContainer, title } from './uiSetup.js';
 import { doctor, girl, introMonolog } from './npcInteraction.js';
 
@@ -254,6 +254,8 @@ createBoundingBox(scene, [10, 7, 15], [18, 2, 5], [65, 0, 0], worldOctree);
 
 //createBoundingBox(scene, [30, player.height + player.width + 0.5, 1], [player.width * 2, 1, player.width * 2], [0, 0, 0], worldOctree, boundingBox)
 
+loadModelInterior(loadingManager, scene, "dumpster_base", [20, 0, -72.5], [1, 1, 1], [0, 90, 0]);
+loadModelInterior(loadingManager, scene, "dumpster_lid", [20, 9.4, -72.5], [1, 1, 1], [0, 90, 0], interactables, dumpsterAnimation);
 
 const audioPosition = new THREE.Vector3(0,17,-65); // Example position
 const audioVolume = 2; // Example volume (0.0 to 1.0)
@@ -303,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.body.removeChild(intro);
                 changeDayOverlay(1, player.str, player.spd);
                 introMonolog();
-            }, 10000);
+            }, 100);
         }
     });
 
@@ -400,7 +402,7 @@ function updateMixers(deltaTime) {
     }
 }
 
-function updatePlayerModelPositionAndAnimation() {
+async function updatePlayerModelPositionAndAnimation() {
     if (!player.cheat) {
         const lookDirection = getPlayerLookDirection();
         const moveDirection = getMoveDirection();
@@ -408,6 +410,10 @@ function updatePlayerModelPositionAndAnimation() {
         modelOffset.set(Math.cos(lookDirection), 0, Math.sin(lookDirection));
         modelOffset.multiplyScalar(getCameraOffset() + ((player.sprintMultiplier != 1 && (moveDirection == "forward" || player.pause)) ? player.height * 0.1 : 0));
 
+        if (camera.position == undefined) {
+            await new Promise(resolve => setTimeout(resolve, 100)); 
+        }
+        
         casualMaleModel.position.copy(camera.position);
         casualMaleModel.position.y -= player.height + player.width / 2;
         casualMaleModel.rotation.y = -lookDirection + Math.PI / 2;

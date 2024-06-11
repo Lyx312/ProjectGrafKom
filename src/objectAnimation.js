@@ -412,7 +412,7 @@ export function carAnimation(car) {
             }, 5000);
         } else {
             let outro;
-            if (player.str > 100 && player.spd > 100) {
+            if (player.str >= 100 && player.spd >= 100) {
                 outro = document.getElementById("outro-success-overlay");
             } else { 
                 outro = document.getElementById("outro-fail-overlay");
@@ -440,3 +440,48 @@ export const bandAnimation = async (band) => {
         bandAnimation(band);
     }
 }
+
+export const dumpsterAnimation = async (door) => {
+    if (door && !door.isAnimating) {
+        door.isAnimating = true;
+        const isOpening = door.state === 0;
+
+        if (isOpening) {
+            door.initialLookDirection = getPlayerLookDirection() > 0 ? 1 : -1;
+            door.positionChanges = [];
+            door.rotationChanges = [];
+        } else {
+            door.positionChanges.reverse();
+            door.rotationChanges.reverse();
+        }
+
+        const pivotOffset = 9;
+        const direction = isOpening ? 1 : -1;
+
+        for (let substate = 0; substate < 30; substate++) {
+            const rotationChange = door.initialLookDirection * 3 * (Math.PI / 180);
+            const currentRotation = (substate + 1) * door.initialLookDirection * (Math.PI / 180);
+            door.model.rotation.y += direction * rotationChange;
+
+            if (isOpening) {
+                const positionChangeX = -pivotOffset * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
+                const positionChangeZ = (pivotOffset+door.initialLookDirection) * 0.3 * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
+
+                const positionChange = [direction * positionChangeX, 0, direction * positionChangeZ];
+                const rotationChangeArr = [0, direction * rotationChange, 0];
+
+                door.positionChanges.push(positionChange);
+                door.rotationChanges.push(rotationChangeArr);
+
+                incrementBoundingBox(door.collision, positionChange, rotationChangeArr);
+            } else {
+                incrementBoundingBox(door.collision, door.positionChanges[substate].map(val => -val), door.rotationChanges[substate].map(val => -val));
+            }
+
+            await waitForNextFrame();
+        }
+
+        door.state = isOpening ? door.initialLookDirection : 0;
+        door.isAnimating = false;
+    }
+};
