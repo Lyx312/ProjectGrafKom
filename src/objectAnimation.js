@@ -404,10 +404,21 @@ export function carAnimation(car) {
     if (car && !car.isAnimating) {
         car.isAnimating = true;
         player.currentStamina = 100;
-        changeDayOverlay(++day, player.str, player.spd);
-        setTimeout(() => {
-            car.isAnimating = false;
-        }, 5000);
+
+        if (day<7) {
+            changeDayOverlay(++day, player.str, player.spd);
+            setTimeout(() => {
+                car.isAnimating = false;
+            }, 5000);
+        } else {
+            let outro;
+            if (player.str > 100 && player.spd > 100) {
+                outro = document.getElementById("outro-success-overlay");
+            } else { 
+                outro = document.getElementById("outro-fail-overlay");
+            }
+            outro.style.display = "flex";
+        }
     }
 }
 
