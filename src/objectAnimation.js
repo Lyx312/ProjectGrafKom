@@ -59,17 +59,17 @@ export const doorAnimation = async (door) => {
             door.rotationChanges.reverse();
         }
 
-        const pivotOffset = 3.3;
+        const pivotOffset = 9;
         const direction = isOpening ? 1 : -1;
 
-        for (let substate = 0; substate < 90; substate++) {
-            const rotationChange = door.initialLookDirection * (Math.PI / 180);
+        for (let substate = 0; substate < 30; substate++) {
+            const rotationChange = door.initialLookDirection * 3 * (Math.PI / 180);
             const currentRotation = (substate + 1) * door.initialLookDirection * (Math.PI / 180);
             door.model.rotation.y += direction * rotationChange;
 
             if (isOpening) {
                 const positionChangeX = -pivotOffset * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
-                const positionChangeZ = pivotOffset * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
+                const positionChangeZ = (pivotOffset+door.initialLookDirection) * 0.3 * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
 
                 const positionChange = [direction * positionChangeX, 0, direction * positionChangeZ];
                 const rotationChangeArr = [0, direction * rotationChange, 0];
@@ -372,7 +372,7 @@ export const treadmillAnimation = async (treadmill) => {
             z: treadmill.model.position.z
         };
         saveLocationLook();
-        controls.getObject().rotation.set(0, -Math.PI / 2, 0);
+        controls.getObject().rotation.set(-Math.PI/2, -0.6, -Math.PI/2);
         movePlayerCollider(teleportPosition.x, teleportPosition.y, teleportPosition.z);
         player.sprintMultiplier = 2;
         playPlayerAnimation("Rig|new_man_run_in_place");
@@ -414,8 +414,18 @@ export function carAnimation(car) {
 
 export const bandAnimation = async (band) => {
     if (band) {
-        // console.log(band);
-        // waitForNextFrame();
-        // bandAnimation(band);
+        for (let i = 0; i < 50; i++) {
+            band.rotation.z += 0.001;
+            await waitForNextFrame();
+        }
+        for (let i = 0; i < 100; i++) {
+            band.rotation.z -= 0.001;
+            await waitForNextFrame();
+        }
+        for (let i = 0; i < 50; i++) {
+            band.rotation.z += 0.001;
+            await waitForNextFrame();
+        }
+        bandAnimation(band);
     }
 }

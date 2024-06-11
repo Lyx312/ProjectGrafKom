@@ -1,5 +1,5 @@
 // uiSetup.js
-import { player, playerCollider } from './controls.js'
+import { controls, player, playerCollider } from './controls.js'
 import * as THREE from 'three';
 
 // Create a UI element for the stamina bar
@@ -94,6 +94,9 @@ export function updateDebugScreen() {
     document.getElementById('velocity_x').innerText = "vx: " + player.velocity.x;
     document.getElementById('velocity_y').innerText = "vy: " + player.velocity.y;
     document.getElementById('velocity_z').innerText = "vz: " + player.velocity.z;
+    document.getElementById('look_x').innerText = "lx: " + controls.getObject().rotation.x;
+    document.getElementById('look_y').innerText = "ly: " + controls.getObject().rotation.y;
+    document.getElementById('look_z').innerText = "lz: " + controls.getObject().rotation.z;
 }
 
 const listener = new THREE.AudioListener();
