@@ -295,10 +295,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // Add click event to the button
     startButton.addEventListener("click", function () {
         if (!startButton.disabled) {
-            audio.play();
-            changeDayOverlay(1, player.str, player.spd);
+            const intro = document.getElementById("intro-overlay");
+            intro.style.display = "flex";
             document.body.removeChild(startScreen); // Remove start screen
-            introMonolog();
+            setTimeout(() => {
+                audio.play();
+                document.body.removeChild(intro);
+                changeDayOverlay(1, player.str, player.spd);
+                introMonolog();
+            }, 10000);
         }
     });
 

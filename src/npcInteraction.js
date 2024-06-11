@@ -363,20 +363,18 @@ export const introMonolog = () => {
     switch(dialogStates[index]) {
         case 0:
             initializeDialog("AAA", {startDialog: introMonolog});
-            break;
-        case 1:
             showPlayerDialog("Waduh gimana nih???");
             break;
-        case 2:
+        case 1:
             showPlayerDialog("Aku harus keliatan kekar dalam 1 mingguu??!");
             break;
-        case 3:
+        case 2:
             showPlayerDialog("Yasudah aku coba masuk dulu saja");
             break;
-        case 4:
+        case 3:
             showPlayerDialog("Mungkin ada orang yang bisa mbantu aku latihan");
             break;
-        case 5:
+        case 4:
             finishDialog();
             break;
     }

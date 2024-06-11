@@ -334,17 +334,6 @@ export function playerControls(deltaTime) {
 
 let lastStaminaValue = player.currentStamina;
 export function updateStamina() {
-    if (!player.cheat && keys.shift && (keys.w || keys.a || keys.s || keys.d)) {
-        // if (player.currentStamina > 0) {
-        //     player.currentStamina -= 0.5;
-        // } else {
-        //     player.sprintMultiplier = 1;
-        // }
-    }
-    else if (player.currentStamina < MAX_STAMINA) {
-        //player.currentStamina += 0.2;
-    }
-
     if (player.currentStamina !== lastStaminaValue) {
         updateStaminaBar((player.currentStamina / MAX_STAMINA) * 100);
         lastStaminaValue = player.currentStamina;

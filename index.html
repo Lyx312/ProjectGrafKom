@@ -101,6 +101,24 @@
             border-bottom: 2px solid white;
         }
 
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 70vw;
+            height: 60vh;
+            background-color: black;
+            opacity: 1;
+            z-index: 1000;
+            color: white;
+            text-align: center;
+            padding: 20vh 15vw;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+
         #change-day-overlay {
             position: fixed;
             top: 0;
@@ -108,7 +126,7 @@
             width: 100vw;
             height: 100vh;
             background-color: black;
-            opacity: 1;
+            opacity: 0;
             z-index: 100;
             color: white;
         }
@@ -206,6 +224,12 @@
         <h1 id="day">Day 1</h1>
         <p id="str">Strength: 0</p>
         <p id="spd">Speed: 0</p>
+    </div>
+
+    <div id="intro-overlay">
+        <h1>Bob adalah seorang pria culun berumur 20an. Dia memiliki tubuh yang tidak bagus. Pada saat SMA, dia sering sekali diejek oleh teman-temannya yang lebih kekar darinya.</h1>
+        <h1>Pada suatu hari, dia mendapat undangan untuk datang ke reuni SMA. Dia pun teringat dengan trauma masa lalunya. Dia ingin datang, namun takut menghadapi teman-teman SMA-nya</h1>
+        <h1>Akhirnya dia memutuskan untuk pergi ke GYM untuk menjadi kekar. Dia hanya punya waktu 1 minggu sebelum hari reuni SMA nya</h1>
     </div>
 
     <div id="dialogOptionBox">
