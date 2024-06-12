@@ -62,6 +62,12 @@ const equipmentStats = {
 
 let hoveredInteractable;
 function raycasting() {
+    outlinePass.selectedObjects = [];
+
+    if (player.inDialog || player.pause) {
+        return;
+    }
+
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
 
@@ -70,16 +76,22 @@ function raycasting() {
     const minDistance = -cameraOffset;
 
     // console.log('intersects:',intersects);
-    if (!player.inDialog) hoveredInteractable = "";
-    outlinePass.selectedObjects = [];
+    hoveredInteractable = "";
     // hideInteractables();
 
     for (const intersect of intersects) {
         if (intersect.object.interact && intersect.distance > minDistance && intersect.distance<maxDistance) {
-            // console.log(intersect.object.name);
+            const name = intersect.object.interact;
+
+            if (interactables[name].isAnimating) {
+                continue;
+            }
+            if (name.startsWith("object_exercise_bike_") && interactables[`object_bike_pedals_${parseInt(name.replace("object_exercise_bike_", ""))}`].isAnimating) {
+                continue;
+            }
+
             const object = traverseUntilLastParent(intersect.object);
             outlinePass.selectedObjects = [object];
-            const name = intersect.object.interact;
             hoveredInteractable = name;
             if (!name.startsWith("npc_") && !name.startsWith("object_door_") && !name.startsWith("object_locker_door_") && !name.startsWith("object_lowpoly_car_")) {
                 const equipmentTypes = name.split('_');
@@ -121,7 +133,7 @@ function raycasting() {
 }
 
 document.addEventListener('click', function () {
-    if (controls.isLocked) {
+    if (controls.isLocked && !player.pause) {
         if (hoveredInteractable.startsWith("object")) {
             interactables[hoveredInteractable].startAnimation(interactables[hoveredInteractable]);
         } else if (hoveredInteractable.startsWith("npc")) {
@@ -216,11 +228,11 @@ for (let i = 0; i < 2; i++) {
     createBoundingBox(scene, [17, 5.5, -43.2+(i*8)], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
 }
 
-createBoundingBox(scene, [30, 7, -27.5], [3, 8, 80], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [-28, 7, -28], [3, 8, 80], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [9, 11, 11.5], [2.5, 14, 39.5], [0, 90, 0], worldOctree);
-createBoundingBox(scene, [-23.5, 7, 11.5], [2.5, 8, 12], [0, 90, 0], worldOctree);
-createBoundingBox(scene, [0.5, 7, -66.5], [2.5, 8, 57], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [30, 10, -27.5], [3, 18, 80], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-28, 10, -28], [3, 18, 80], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [9, 10, 11.5], [2.5, 18, 39.5], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [-23.5, 10, 11.5], [2.5, 18, 12], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [0.5, 10, -66.5], [2.5, 18, 57], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree);
 createBoundingBox(scene, [-14, 16.5, 11.5], [2.5, 5, 10], [0, 90, 0], worldOctree);
 
