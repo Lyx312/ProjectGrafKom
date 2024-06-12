@@ -1,6 +1,7 @@
-import { controls, onKeyDown, onKeyUp, player, resetControls, addStamina, MAX_STAMINA } from "./controls.js";
-import { goalStr, goalSpd } from "./uiSetup.js";
+import * as THREE from 'three';
+import { controls, onKeyDown, onKeyUp, player, resetControls, addStamina } from "./controls.js";
 import { day } from "./objectAnimation.js";
+import { camera } from "./sceneSetup.js";
 
 const dialogBox = document.getElementById("dialog");
 const playerName = document.getElementById("playerName");
@@ -12,6 +13,12 @@ let awaitAnswer = false;
 let dialogStates = [0];
 let currentNPC = null;
 let index = 0;
+
+function waitForNextFrame() {
+    return new Promise(resolve => {
+        requestAnimationFrame(resolve);
+    });
+}
 
 const initializeDialog = (name, npc) => {
     currentNPC = npc;
@@ -292,11 +299,28 @@ export const doctor = (npc) => {
     } 
 }
 
-export const girl = (npc) => {
+const rotateModel = async (npc, targetPosition, totalFrames) => {
+    const startQuaternion = npc.model.quaternion.clone();
+    npc.model.lookAt(...targetPosition);
+    const endQuaternion = npc.model.quaternion.clone();
+    npc.model.quaternion.copy(startQuaternion); // Reset to start orientation
+
+    // Gradually interpolate from start to end quaternion
+    for (let i = 0; i <= totalFrames; i++) {
+        const t = i / totalFrames; // Interpolation factor
+        npc.model.quaternion.slerp(endQuaternion, t);
+        await waitForNextFrame();
+    }
+}
+
+export const girl = async (npc) => {
     index = 0;
     switch(dialogStates[index]) {
         case 0:
             initializeDialog("Lia", npc);
+            currentNPC.animations["Take 001"].stop();
+            rotateModel(currentNPC, [camera.position.x, currentNPC.model.position.y, camera.position.z], 60)
+
             showNPCDialog("Hai, selamat datang di gym! Saya Lia. Bagaimana bisa saya membantumu hari ini?", "yellow");
             break;
         case 1:
@@ -603,6 +627,8 @@ export const girl = (npc) => {
         //     }
         //     break;
         case 3:
+            currentNPC.animations["Take 001"].play();
+            rotateModel(currentNPC, [currentNPC.model.position.x, currentNPC.model.position.y, currentNPC.model.position.z-1], 60)
             finishDialog();
             break;
     } 

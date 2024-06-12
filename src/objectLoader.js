@@ -65,6 +65,7 @@ function loadGLTF(loadingManager, path, name, scene, position, scale, rotation, 
                     };
                 } else if (type == "npc") {
                     interactables[newKey] = {
+                        model: model,
                         startDialog: callFunction
                     };
                 }
@@ -175,13 +176,16 @@ export function loadGroundModel(loadingManager, scene, file, worldOctree, positi
     loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${file}.glb`, null, scene, position, scale, rotation, null, null, null, worldOctree);
 }
 
-export function loadAnimatedModel(loadingManager, scene, folder, name, position, scale, rotation, animationName, interactable, dialogueFunction, callback) {
-    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, name, scene, position, scale, rotation, interactable, "npc", dialogueFunction, null, (mixer) => {
+export function loadAnimatedModel(loadingManager, scene, folder, name, position, scale, rotation, animationName, interactables, dialogueFunction, callback) {
+    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, name, scene, position, scale, rotation, interactables, "npc", dialogueFunction, null, (mixer) => {
+        const animations = {};
         if (mixer) {
             mixer._actions.forEach(action => {
+                animations[action._clip.name] = action;
                 if (action._clip.name === animationName) action.play();
             });
         }
+        interactables[`npc_${name}`].animations = animations;
         callback(mixer);
     });
 }
