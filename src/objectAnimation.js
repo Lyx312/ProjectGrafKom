@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { player, getPlayerLookDirection, controls, movePlayerCollider, loadLocationLook, saveLocationLook, MAX_STAMINA } from "./controls.js";
+import { player, getPlayerLookDirection, controls, movePlayerCollider, loadLocationLook, saveLocationLook, MAX_STAMINA, addStamina } from "./controls.js";
 import { changeDayOverlay, createBlackScreen, showBlackScreen, hideBlackScreen, goalStr, goalSpd } from "./uiSetup.js";
 import { playPlayerAnimation } from './main.js';
 import { introHelpMonolog } from './npcInteraction.js';
@@ -422,13 +422,41 @@ export const treadmillAnimation = async (treadmill) => {
         }
     }
 };
+export let tempStaminaTick = 0;
+
+export function addStaminaTick(){
+    tempStaminaTick++;
+}
+
+const listener = new THREE.AudioListener();
+const sound = new THREE.Audio(listener);
+
+const initializeAudio = () => {
+    sound.setLoop(false);
+    sound.setVolume(0.35);
+};
+
+const playSound = () => {
+    if (sound.buffer && sound.context.state === 'suspended') {
+        sound.context.resume().then(() => {
+            sound.play();
+        });
+    } else {
+        sound.play();
+    }
+};
+
+const audioLoader = new THREE.AudioLoader();
 
 export function carAnimation(car) {
     if (car && !car.isAnimating) {
         car.isAnimating = true;
+        for (let i = 0; i < tempStaminaTick; i++) {
+            addStamina();
+        }
         player.currentStamina = MAX_STAMINA;
-
-        if (day<7) {
+        tempStaminaTick = 0;
+        if (day<1) {
             changeDayOverlay(++day, player.str, player.spd);
             setTimeout(() => {
                 car.isAnimating = false;
@@ -436,15 +464,25 @@ export function carAnimation(car) {
         } else {
             let outro;
             if (player.str >= goalStr && player.spd >= goalSpd) {
+                audioLoader.load('../assets/audio/Victory_Sound_Effect.mp3', function (buffer) {
+                    sound.setBuffer(buffer);
+                    initializeAudio();
+                    playSound();
+                });
                 outro = document.getElementById("outro-success-overlay");
             } else { 
+                audioLoader.load('../assets/audio/Sad_Trombone_Sound_Effect.mp3', function (buffer) {
+                    sound.setBuffer(buffer);
+                    initializeAudio();
+                    playSound();
+                });
                 outro = document.getElementById("outro-fail-overlay");
             }
             outro.style.display = "flex";
+
         }
     }
 }
-
 
 export const bandAnimation = async (band) => {
     if (band) {

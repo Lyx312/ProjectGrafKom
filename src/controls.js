@@ -366,6 +366,5 @@ export function getCameraOffset() {
 
 export function addStamina() {
     MAX_STAMINA += 20;
-    player.currentStamina += 20;
     updateStamina();
 }

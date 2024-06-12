@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { controls, onKeyDown, onKeyUp, player, resetControls, addStamina } from "./controls.js";
-import { day } from "./objectAnimation.js";
+import { controls, onKeyDown, onKeyUp, player, resetControls } from "./controls.js";
+import { addStaminaTick, day } from "./objectAnimation.js";
 import { camera } from "./sceneSetup.js";
 
 const dialogBox = document.getElementById("dialog");
@@ -178,7 +178,7 @@ export const doctor = (npc) => {
                                         showPlayerDialog("Upgrade stamina saya dok.", "white");
                                         break;
                                     case 1:
-                                        showNPCDialog(`Ok, stamina kamu sudah ditambah 20.`, "yellow");
+                                        showNPCDialog(`Ok, stamina kamu akan ditambah 20 besok.`, "yellow");
                                         break;
                                     case 2:
                                         showNPCDialog(`Kembali lagi jika kamu memiliki ${(upgrade*50)+50} Strength dan ${(upgrade*50)+50} Speed, dan saya bisa upgrade stamina mu lagi.`, "yellow");
@@ -201,6 +201,7 @@ export const doctor = (npc) => {
                                     showNPCDialog("Ok, kembali ke saya jika mau upgrade.", "yellow");
                                     break;
                                 case 2:
+                                    tempUpgrade = false;
                                     concludeSubdialog();
                                     break;
                                 }
@@ -213,6 +214,7 @@ export const doctor = (npc) => {
             } else if (dialogAnswers[index-1] == 1) {
                 switch (dialogStates[index]) {
                     case 0:
+                        tempUpgrade = false;
                         showNPCDialog("Hmm? Mau bicara tentang apa?", "yellow");
                         break;
                     case 1:
@@ -277,6 +279,7 @@ export const doctor = (npc) => {
             } else if (dialogAnswers[index-1] == 2) {
                 switch (dialogStates[index]) {
                     case 0:
+                        tempUpgrade = false;
                         showPlayerDialog("Maaf gak jadi deh.", "white");
                         break;
                     case 1:
@@ -291,7 +294,7 @@ export const doctor = (npc) => {
         case 3:
             if (tempUpgrade) {
                 upgrade++;
-                addStamina();
+                addStaminaTick();
                 tempUpgrade = false;
             }
             finishDialog();

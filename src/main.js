@@ -193,6 +193,10 @@ createBoundingBox(scene, [-22, 0.5, -61.5], [1.5, 1, 3], [0, 0, 0], worldOctree)
 
 loadModelInterior(loadingManager, scene, "punching_bag_1", [-20.2, 0.1, 1.2], [11, 11, 11], [0, 0, 0], interactables, punchingBag1Animation);
 createBoundingCylinder(scene, [-20.1, 8, 1.1], [1.5, 2, 1.5], [0, 0, 0], worldOctree)
+createBoundingBox(scene, [-24, 12.5, 7.7], [7, 0.5, 0.5], [0, 0, 21], worldOctree)
+createBoundingBox(scene, [-24, 12.5, -6], [7, 0.5, 1.5], [0, 0, 21], worldOctree)
+createBoundingBox(scene, [-24, 12.5, -19.7], [7, 0.5, 0.5], [0, 0, 21], worldOctree)
+createBoundingBox(scene, [-20.1, 14, -6], [0.5, 0.5, 28], [0, 0, 0], worldOctree)
 
 loadModelInterior(loadingManager, scene, "punching_bag_2", [-20, 0.1, -12.8], [11, 11, 11], [0, 0, 0], interactables, punchingBag2Animation);
 createBoundingCylinder(scene, [-20.1, 7, -13.1], [1.5, 5, 1.5], [0, 0, 0], worldOctree)
