@@ -230,11 +230,11 @@ for (let i = 0; i < 2; i++) {
 
 createBoundingBox(scene, [30, 10, -27.5], [3, 18, 80], [0, 0, 0], worldOctree);
 createBoundingBox(scene, [-28, 10, -28], [3, 18, 80], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [9, 10, 11.5], [2.5, 18, 39.5], [0, 90, 0], worldOctree);
-createBoundingBox(scene, [-23.5, 10, 11.5], [2.5, 18, 12], [0, 90, 0], worldOctree);
-createBoundingBox(scene, [0.5, 10, -66.5], [2.5, 18, 57], [0, 90, 0], worldOctree);
-createBoundingBox(scene, [1, 20, -27.5], [79, 1, 59], [0, 90, 0], worldOctree);
-createBoundingBox(scene, [-14, 16.5, 11.5], [2.5, 5, 10], [0, 90, 0], worldOctree);
+createBoundingBox(scene, [9, 10, 11.5], [39.5, 18, 2.5], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-23.5, 10, 11.5], [12, 18, 2.5], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [0.5, 10, -66.5], [57, 18, 2.5], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [1, 20, -27.5], [59, 1, 79], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-14, 16.5, 11.5], [7, 5, 2.5], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "Gym_Poster", [-7.65, 7.9, 11.3], [4, 4, 4], [0, 180, 0]);
 
