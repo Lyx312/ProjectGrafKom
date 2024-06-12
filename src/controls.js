@@ -30,7 +30,7 @@ export const resetControls = () => {
 }
 
 
-const MAX_STAMINA = 100;
+export const MAX_STAMINA = 100;
 const SPRINT_MULTIPLIER = 2;
 const CROUCH_MULTIPLIER = 0.5;
 const PLAYER_SIZE = 1.3;
@@ -53,7 +53,8 @@ export const player = {
     inDialog: false,
     pause: false,
     str: 0,
-    spd: 0
+    spd: 0,
+    canExercise: false
 }
 
 const cameraOffset = {

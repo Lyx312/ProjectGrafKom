@@ -201,17 +201,20 @@ loadPlayer(loadingManager, scene, "casual_male", [0, 0, 0], [player.height * 0.7
     playerAnimations = animations;
 });
 
-loadModelInterior(loadingManager, scene, "barbell_chair", [-10, 0, -40], [10, 10, 10], [0, 90, 0]);
-createBoundingBox(scene, [-10.13, 2, -40.15], [7, 2, 2.9], [0, 0, 0], worldOctree);
+for (let i = 0; i < 2; i++) {
+    loadModelInterior(loadingManager, scene, "barbell_chair", [-10, 0, -40+(i*15)], [10, 10, 10], [0, 90, 0]);
+    createBoundingBox(scene, [-10.13, 2, -40.15+(i*15)], [7, 2, 2.9], [0, 0, 0], worldOctree);
+    loadModelInterior(loadingManager, scene, "barbells", [-10, 0, -40+(i*15)], [10, 10, 10], [0, 90, 0], interactables, barbellsAnimation, i);
+    createBoundingBox(scene, [-12.9, 5.5, -40+(i*15)], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree);
+}
 
-loadModelInterior(loadingManager, scene, "barbells", [-10, 0, -40], [10, 10, 10], [0, 90, 0], interactables, barbellsAnimation);
-createBoundingBox(scene, [-12.9, 5.5, -40], [2.7, 2.7, 10.2], [0, 0, 0], worldOctree);
-
-loadModelInterior(loadingManager, scene, "treadmill", [15, 0, -50], [10, 10, 10], [0, 90, 0], interactables, treadmillAnimation);
-createBoundingBox(scene, [14.4, 1, -50], [6.8, 1, 4], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [19, 3.5, -50], [2, 6, 4], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [17, 5.5, -51.8], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
-createBoundingBox(scene, [17, 5.5, -48.2], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
+for (let i = 0; i < 2; i++) {
+    loadModelInterior(loadingManager, scene, "treadmill", [15, 0, -45+(i*8)], [10, 10, 10], [0, 90, 0], interactables, treadmillAnimation, i);
+    createBoundingBox(scene, [14.4, 1, -45+(i*8)], [6.8, 1, 4], [0, 0, 0], worldOctree);
+    createBoundingBox(scene, [19, 3.5, -45+(i*8)], [2, 6, 4], [0, 0, 0], worldOctree);
+    createBoundingBox(scene, [17, 5.5, -46.8+(i*8)], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
+    createBoundingBox(scene, [17, 5.5, -43.2+(i*8)], [5, 0.5, 0.5], [0, 0, 0], worldOctree);
+}
 
 createBoundingBox(scene, [30, 7, -27.5], [3, 8, 80], [0, 0, 0], worldOctree);
 createBoundingBox(scene, [-28, 7, -28], [3, 8, 80], [0, 0, 0], worldOctree);
@@ -223,10 +226,10 @@ createBoundingBox(scene, [-14, 16.5, 11.5], [2.5, 5, 10], [0, 90, 0], worldOctre
 
 loadModelInterior(loadingManager, scene, "Gym_Poster", [-7.65, 7.9, 11.3], [4, 4, 4], [0, 180, 0]);
 
-loadAnimatedModel(loadingManager, scene, "mujer_bodytech", "workout_girl", [15, 0, -20], [0.13, 0.13, 0.13], [0, -90, 0], "Take 001", interactables, girl, (animationMixer) => {
+loadAnimatedModel(loadingManager, scene, "mujer_bodytech", "workout_girl", [5, 0, 0], [0.13, 0.13, 0.13], [0, 180, 0], "Take 001", interactables, girl, (animationMixer) => {
     mixers["mujer_bodytech"] = animationMixer;
 });
-createBoundingCylinder(scene, [15, 5, -20], [1.5, 10, 1.5], [0, 0, 0], worldOctree)
+createBoundingCylinder(scene, [5, 5, 0], [1.5, 10, 1.5], [0, 0, 0], worldOctree)
 
 loadAnimatedModel(loadingManager, scene, "dr_ahmad_sitting_pose", "Dr.Ahmad", [10, 1, 20], [3, 3, 3], [0, 0, 0], "mixamo.com", interactables, doctor, (animationMixer) => {
     mixers["dr_ahmad_sitting_pose"] = animationMixer;
@@ -236,9 +239,11 @@ createBoundingCylinder(scene, [10, 5, 21], [2, 10, 2], [0, 0, 0], worldOctree)
 loadModelInterior(loadingManager, scene, "lowpoly_car", [-50, 0, -20], [7, 7, 7], [0, 90, 0], interactables, carAnimation);
 createBoundingBox(scene, [-22, 7, 50.5], [34, 8, 14], [0, 0, 0], worldOctree);
 
-loadModelInterior(loadingManager, scene, "exercise_bike", [15, 0, -35], [3, 3, 3], [0, 90, 0], interactables);
-loadModelInterior(loadingManager, scene, "bike_pedals", [13.2, 2.4, -35], [3, 3, 3], [0, 180, 0], interactables, bikeAnimation);
-createBoundingBox(scene, [15, 4, -35], [9, 8, 2], [0, 0, 0], worldOctree);
+for (let i = 0; i < 2; i++) {
+    loadModelInterior(loadingManager, scene, "exercise_bike", [15, 0, -25+(i*8)], [3, 3, 3], [0, 90, 0], interactables, null , i);
+    loadModelInterior(loadingManager, scene, "bike_pedals", [13.2, 2.4, -25+(i*8)], [3, 3, 3], [0, 180, 0], interactables, bikeAnimation, i);
+    createBoundingBox(scene, [15, 4, -25+(i*8)], [9, 8, 2], [0, 0, 0], worldOctree);
+}
 
 for (let i = 0; i < 10; i++) {
     loadModelInterior(loadingManager, scene, "locker", [26-(i*4), 0.2, -63.5], [8, 8, 8], [0, 0, 0]);
@@ -262,15 +267,15 @@ createBoundingBox(scene, [26.5, 5.5, -72], [0.5, 5, 10], [-20, 0, 0], worldOctre
 // createBoundingBox(scene, [13.5, 3.5, -72.5], [0.5, 5, 10], [0, 0, 0], worldOctree);
 // createBoundingBox(scene, [26.5, 3.5, -72.5], [0.5, 5, 10], [0, 0, 0], worldOctree);
 
-const audioPosition = new THREE.Vector3(0,17,-65); // Example position
-const audioVolume = 2; // Example volume (0.0 to 1.0)
-const audioFile = '../assets/audio/chill_workout.mp3';
-const loopAudio = true; // Example: Loop the audio
+// const audioPosition = new THREE.Vector3(0,17,-65); // Example position
+// const audioVolume = 2; // Example volume (0.0 to 1.0)
+// const audioFile = '../assets/audio/chill_workout.mp3';
+// const loopAudio = true; // Example: Loop the audio
 
-// Call the function to load the audio
-const audio = loadAudio(loadingManager, scene, audioFile, audioPosition, audioVolume, loopAudio);
+// // Call the function to load the audio
+// const audio = loadAudio(loadingManager, scene, audioFile, audioPosition, audioVolume, loopAudio);
 
-loadModelInterior(loadingManager, scene, "speaker", [0,16,-65.2], [2, 2, 2], [0, -90, 0]);
+//loadModelInterior(loadingManager, scene, "speaker", [0,16,-65.2], [2, 2, 2], [0, -90, 0]);
 
 const capsuleGeometry = new THREE.CapsuleGeometry(player.width/2, player.height);
 const capsuleMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }); // Yellow, wireframe material
@@ -306,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
             intro.style.display = "flex";
             document.body.removeChild(startScreen); // Remove start screen
             setTimeout(() => {
-                audio.play();
+                //audio.play();
                 document.body.removeChild(intro);
                 changeDayOverlay(1, player.str, player.spd);
                 introMonolog();
@@ -359,7 +364,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
     const currentTime = clock.getElapsedTime();
-    audioManager();
+    //audioManager();
     // console.log(getPlayerLookDirection() * 180 / Math.PI);
     // console.log(hoveredInteractable);
 

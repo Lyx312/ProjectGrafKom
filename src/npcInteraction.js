@@ -158,7 +158,13 @@ export const girl = (npc) => {
             showNPCDialog("Hai, selamat datang di gym! Saya Lia. Bagaimana bisa saya membantumu hari ini?", "yellow");
             break;
         case 1:
-            showDialogOption(["Help", "Chat", "Nevermind"], ["red"]);
+            if (!player.canExercise) {
+                showDialogOption(["Help"]); 
+                player.canExercise = true;  
+            }
+            else{
+                showDialogOption(["Help", "Chat", "Nevermind"]);                
+            }
             break;
         case 2:
             index++;
@@ -476,6 +482,28 @@ export const introMonolog = () => {
             break;
         case 3:
             showPlayerDialog("Mungkin ada orang yang bisa mbantu aku latihan");
+            break;
+        case 4:
+            finishDialog();
+            break;
+    }
+}
+
+export const introHelpMonolog = () => {
+    index = 0;
+    switch(dialogStates[index]) {
+        case 0:
+            initializeDialog("AAA", {startDialog: introHelpMonolog});
+            showPlayerDialog("Hmm mulai dari mana ya?");
+            break;
+        case 1:
+            showPlayerDialog("Aku gak pernah ke gym sebelumnya.");
+            break;
+        case 2:
+            showPlayerDialog("Huh?");
+            break;
+        case 3:
+            showPlayerDialog("Mungkin aku bisa bertanya pada gadis di sana itu.");
             break;
         case 4:
             finishDialog();
