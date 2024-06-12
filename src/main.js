@@ -267,15 +267,15 @@ createBoundingBox(scene, [26.5, 5.5, -72], [0.5, 5, 10], [-20, 0, 0], worldOctre
 // createBoundingBox(scene, [13.5, 3.5, -72.5], [0.5, 5, 10], [0, 0, 0], worldOctree);
 // createBoundingBox(scene, [26.5, 3.5, -72.5], [0.5, 5, 10], [0, 0, 0], worldOctree);
 
-// const audioPosition = new THREE.Vector3(0,17,-65); // Example position
-// const audioVolume = 2; // Example volume (0.0 to 1.0)
-// const audioFile = '../assets/audio/chill_workout.mp3';
-// const loopAudio = true; // Example: Loop the audio
+const audioPosition = new THREE.Vector3(0,17,-65); // Example position
+const audioVolume = 2; // Example volume (0.0 to 1.0)
+const audioFile = '../assets/audio/chill_workout.mp3';
+const loopAudio = true; // Example: Loop the audio
 
-// // Call the function to load the audio
-// const audio = loadAudio(loadingManager, scene, audioFile, audioPosition, audioVolume, loopAudio);
+// Call the function to load the audio
+const audio = loadAudio(loadingManager, scene, audioFile, audioPosition, audioVolume, loopAudio);
 
-//loadModelInterior(loadingManager, scene, "speaker", [0,16,-65.2], [2, 2, 2], [0, -90, 0]);
+loadModelInterior(loadingManager, scene, "speaker", [0,16,-65.2], [2, 2, 2], [0, -90, 0]);
 
 const capsuleGeometry = new THREE.CapsuleGeometry(player.width/2, player.height);
 const capsuleMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }); // Yellow, wireframe material
@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
             intro.style.display = "flex";
             document.body.removeChild(startScreen); // Remove start screen
             setTimeout(() => {
-                //audio.play();
+                audio.play();
                 document.body.removeChild(intro);
                 changeDayOverlay(1, player.str, player.spd);
                 introMonolog();
@@ -367,10 +367,14 @@ document.addEventListener("DOMContentLoaded", function () {
 function animate() {
     const deltaTime = Math.min(0.05, clock.getDelta());
     const currentTime = clock.getElapsedTime();
-    //audioManager();
-    // console.log(getPlayerLookDirection() * 180 / Math.PI);
-    // console.log(hoveredInteractable);
 
+    // Update audio volume at specified intervals
+    if (currentTime - lastUpdateTime >= updateInterval) {
+        updateAudioVolume();
+        lastUpdateTime = currentTime;
+    }
+
+    // Existing code
     updateBackground(player.currentStamina); // Pass the player's current stamina
 
     if (currentTime - lastRaycastTime > raycastInterval) {
@@ -381,12 +385,9 @@ function animate() {
     playerControls(deltaTime);
     updatePlayer(deltaTime);
     updateStamina();
-
     updatePlayerModelPositionAndAnimation(deltaTime);
-
     updateFanRotation(deltaTime);
     updateMixers(deltaTime);
-
     stats.update();
     updateDebugScreen();
     composer.render();
@@ -471,36 +472,35 @@ export function playPlayerAnimation(animationName) {
     }
 }
 
+const updateInterval = 1; // Update every 0.1 seconds
+let lastUpdateTime = 0;
+
 // Function to calculate volume based on distance
 function calculateVolume(distance) {
-    const maxVolumeDistance = 50; // Adjust maximum distance where audio is audible
-    const minVolumeDistance = 85; // Adjust minimum distance where audio becomes inaudible
-    const rolloffFactor = 0.5; // Adjust the rolloff factor for attenuation
+    const maxVolumeDistance = 50; // Maximum distance where audio is audible
+    const minVolumeDistance = 85; // Minimum distance where audio becomes inaudible
+    const rolloffFactor = 0.5; // Rolloff factor for attenuation
     
-    // Ensure distance is a finite number
-    if (!isFinite(distance)) {
-        return 0; // Return 0 volume if distance is non-finite
+    if (!isFinite(distance) || distance <= 0) {
+        return 0; // Return 0 volume if distance is non-finite or non-positive
     }
-    
+
+    if (distance > minVolumeDistance) {
+        return 0; // Volume is 0 beyond minVolumeDistance
+    }
+
     // Calculate volume based on distance (inverse square law attenuation)
     let volume = audioVolume / Math.pow(distance / maxVolumeDistance, rolloffFactor);
-    
-    // Ensure volume is a finite number and within valid range
-    if (!isFinite(volume) || isNaN(volume)) {
-        return 0; // Return 0 volume if calculated volume is non-finite or NaN
-    }
-    
+
     // Gradually fade out volume beyond maxVolumeDistance
-    if (distance > maxVolumeDistance && distance <= minVolumeDistance) {
+    if (distance > maxVolumeDistance) {
         volume *= 1 - (distance - maxVolumeDistance) / (minVolumeDistance - maxVolumeDistance);
-    } else if (distance > minVolumeDistance) {
-        volume = 0; // Volume is 0 beyond minVolumeDistance
     }
     
     return Math.max(volume, 0); // Ensure volume doesn't go negative
 }
 
-function audioManager() {
+function updateAudioVolume() {
     const distance = camera.position.distanceTo(audio.position);
     
     // Calculate volume based on distance
@@ -508,6 +508,5 @@ function audioManager() {
     
     // Update audio volume
     audio.setVolume(volume);
-    
-    renderer.render(scene, camera);
 }
+
