@@ -456,7 +456,7 @@ export function carAnimation(car) {
         }
         player.currentStamina = MAX_STAMINA;
         tempStaminaTick = 0;
-        if (day<1) {
+        if (day<7) {
             changeDayOverlay(++day, player.str, player.spd);
             setTimeout(() => {
                 car.isAnimating = false;
