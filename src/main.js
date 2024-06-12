@@ -334,16 +334,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Rest of your onLoad functionality
                 animate();
 
+                // door collision
                 createBoundingBox(scene, [-14, 7, 11.5], [6.5, 13, 1.7], [0, 0, 0], null, (collision) => {
                     updateableCollision.push(collision);
                     interactables["object_door_0"].collision = collision;
                 });
 
-                createBoundingBox(scene, [20, 9.4, -68], [10, 1, 5], [0, 0, 0], null, (collision) => {
+                // dumpster collision
+                createBoundingBox(scene, [20, 8, -72.5], [13, 1, 10], [-20, 0, 0], null, (collision) => {
                     updateableCollision.push(collision);
                     interactables["object_dumpster_lid_0"].collision = collision;
                 });
 
+                // locker collisions
                 for (let i = 0; i < 10; i++) {
                     createBoundingBox(scene, [26 - (i * 4), 7.5, -61.5], [4, 14, 0.5], [0, 0, 0], null, (collision) => {
                         updateableCollision.push(collision);
@@ -381,7 +384,6 @@ function animate() {
 
     updatePlayerModelPositionAndAnimation(deltaTime);
 
-    updateBandRotation(deltaTime);
     updateFanRotation(deltaTime);
     updateMixers(deltaTime);
 
@@ -401,13 +403,6 @@ function updateFanRotation(deltaTime) {
         }
     }
 }
-
-function updateBandRotation(deltaTime) {
-    const band1Model = scene.getObjectByName('Object_band_1_0');
-        if (band1Model) {
-            band1Model.rotation.x += deltaTime * 10;
-        }
-    }
 
 function updateMixers(deltaTime) {
     for (const mixerName in mixers) {
