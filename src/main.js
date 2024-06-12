@@ -343,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Simulate loading of assets
     const loadingManager = {
-        totalAssets: 10, // Assume 10 assets for this example
+        totalAssets: 55, // Assume 10 assets for this example
         loadedAssets: 0,
         onLoad: function () {
             this.loadedAssets++;
