@@ -30,7 +30,7 @@ export const resetControls = () => {
 }
 
 
-export const MAX_STAMINA = 100;
+export let MAX_STAMINA = 100;
 const SPRINT_MULTIPLIER = 2;
 const CROUCH_MULTIPLIER = 0.5;
 const PLAYER_SIZE = 1.3;
@@ -52,8 +52,8 @@ export const player = {
     cheat: false,
     inDialog: false,
     pause: false,
-    str: 0,
-    spd: 0,
+    str: 70,
+    spd: 70,
     canExercise: false
 }
 
@@ -362,4 +362,10 @@ export function getMoveDirection() {
 export function getCameraOffset() {
     if (player.viewMode == 0 || player.cheat) return cameraOffset.firstPerson;
     return cameraOffset.thirdPerson;
+}
+
+export function addStamina() {
+    MAX_STAMINA += 20;
+    player.currentStamina += 20;
+    updateStamina();
 }

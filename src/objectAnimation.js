@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { player, getPlayerLookDirection, controls, movePlayerCollider, loadLocationLook, saveLocationLook, MAX_STAMINA } from "./controls.js";
-import { changeDayOverlay, createBlackScreen, showBlackScreen, hideBlackScreen } from "./uiSetup.js";
+import { changeDayOverlay, createBlackScreen, showBlackScreen, hideBlackScreen, goalStr, goalSpd } from "./uiSetup.js";
 import { playPlayerAnimation } from './main.js';
 import { introHelpMonolog } from './npcInteraction.js';
 
@@ -435,7 +435,7 @@ export function carAnimation(car) {
             }, 5000);
         } else {
             let outro;
-            if (player.str >= 100 && player.spd >= 100) {
+            if (player.str >= goalStr && player.spd >= goalSpd) {
                 outro = document.getElementById("outro-success-overlay");
             } else { 
                 outro = document.getElementById("outro-fail-overlay");

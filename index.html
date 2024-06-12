@@ -157,6 +157,32 @@
             display: inline-block;
         }
 
+        #goal {
+            position: absolute;
+            top: 85%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: calc(1.5vh + 1.5vw);
+        }
+
+        #goalStr {
+            position: absolute;
+            top: 90%;
+            left: 46%;
+            transform: translate(-50%, -50%);
+            font-size: calc(0.8vh + 0.8vw);
+            display: inline-block;
+        }
+
+        #goalSpd {
+            position: absolute;
+            top: 90%;
+            left: 54%;
+            transform: translate(-50%, -50%);
+            font-size: calc(0.8vh + 0.8vw);
+            display: inline-block;
+        }
+
         .fade {
             transition: opacity 3s ease-in;
         }
@@ -224,6 +250,9 @@
         <h1 id="day">Day 1</h1>
         <p id="str">Strength: 0</p>
         <p id="spd">Speed: 0</p>
+        <h3 id="goal">Goal</h3>
+        <p id="goalStr">Strength: 0</p>
+        <p id="goalSpd">Speed: 0</p>
     </div>
 
     <div class="intro-outro-overlay" id="intro-overlay">

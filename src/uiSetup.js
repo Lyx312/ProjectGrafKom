@@ -1,6 +1,9 @@
 // uiSetup.js
-import { controls, player, playerCollider } from './controls.js'
+import { controls, player, playerCollider } from './controls.js';
 import * as THREE from 'three';
+
+export const goalStr = 250;
+export const goalSpd = 250;
 
 // Create a UI element for the stamina bar
 const staminaBarBorder = document.createElement('div');
@@ -131,6 +134,8 @@ export const changeDayOverlay = (day, strength, speed) => {
     overlay.querySelector('#day').textContent = `Day ${day}`;
     overlay.querySelector('#str').textContent = `Strength: ${strength}`;
     overlay.querySelector('#spd').textContent = `Speed: ${speed}`;
+    overlay.querySelector('#goalStr').textContent = `Strength: ${goalStr}`;
+    overlay.querySelector('#goalSpd').textContent = `Speed: ${goalSpd}`;
 
     playSound();
     overlay.classList.remove('fade');

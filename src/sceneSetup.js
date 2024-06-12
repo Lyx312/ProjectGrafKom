@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+import { MAX_STAMINA } from './controls.js';
 
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -64,7 +65,7 @@ const nightColor = new THREE.Color('black');
 
 export function updateBackground(stamina) {
     // Map stamina (0-100) to currentHour (240 to 60)
-    let currentHour = 240 - (stamina * 1.8);
+    let currentHour = 240 - ((stamina/MAX_STAMINA) * 180);
     let currentColor = new THREE.Color();
 
     // Interpolate between the colors for different times of the day

@@ -1,4 +1,6 @@
-import { controls, onKeyDown, onKeyUp, player, resetControls } from "./controls.js";
+import { controls, onKeyDown, onKeyUp, player, resetControls, addStamina, MAX_STAMINA } from "./controls.js";
+import { goalStr, goalSpd } from "./uiSetup.js";
+import { day } from "./objectAnimation.js";
 
 const dialogBox = document.getElementById("dialog");
 const playerName = document.getElementById("playerName");
@@ -115,52 +117,176 @@ document.addEventListener('keyup', (event) => {
     }
 })
 
+let upgrade = 1;
+let tempUpgrade = false;
+
 export const doctor = (npc) => {
-    switch(dialogStates[0]) {
+    index = 0;
+    switch(dialogStates[index]) {
         case 0:
-            initializeDialog("The Doctor", npc);
-            showNPCDialog("Hello, sick people and their loved ones!", "yellow");
+            initializeDialog("Dr. Ahmad", npc);
+            showNPCDialog("Halo, saya Dr. Ahmad. Saya di sini untuk membantu kamu menjaga kesehatan selama berlatih. Ada yang bisa saya bantu?", "yellow");
             break;
         case 1:
-            showNPCDialog("In the interest of saving time and avoiding a lot of boring chitchat later, I'm Doctor Gregory House; you can call me Greg.", "yellow");
+            showDialogOption(["Stats", "Chat", "Nevermind"]);
             break;
         case 2:
-            showNPCDialog("I'm one of three doctors staffing this clinic this morning.", "yellow");
+            index++;
+            if (dialogAnswers[index-1] == 0) {
+                switch (dialogStates[index]) {
+                    case 0:
+                        showPlayerDialog("Bisa beri tahu stat ku dok?", "white");
+                        break;
+                    case 1:
+                        showNPCDialog(`Ok, kamu saat ini memiliki ${(player.str)} Strength dan ${(player.spd)} Speed. Ketika kamu mencapai ${(upgrade*50)} Strength dan ${(upgrade*50)} Speed, kamu bisa kembali untuk menambah stamina mu sebanyak 20. Jadi mau upgrade?`, "yellow");
+                        break;
+                    case 2:
+                        showDialogOption(["Upgrade", "Lain Kali"]);
+                        break;
+                    case 3:
+                        index++;
+                        if (dialogAnswers[index-1] == 0) {
+                            if (player.str < (upgrade*50) || player.spd < (upgrade*50)) {
+                                switch(dialogStates[index]) {
+                                    case 0:
+                                        showPlayerDialog("Upgrade stamina saya dok", "white");
+                                        break;
+                                    case 1:
+                                        showNPCDialog("Maaf tetapi stat mu belum cukup untuk upgrade stamina.", "yellow");
+                                        break;
+                                    case 2:
+                                        let tempStr = Math.max(0, (upgrade * 50) - player.str);
+                                        let tempSpd = Math.max(0, (upgrade * 50) - player.spd);
+                                        showNPCDialog(`kamu masih perlu ${tempStr} Strength dan ${tempSpd} Speed lagi.`, "yellow");
+                                        break;
+                                    case 3:
+                                        tempUpgrade = false; 
+                                        concludeSubdialog();
+                                        break;
+                                }
+                            }
+                            else{
+                                switch(dialogStates[index]) {
+                                    case 0:
+                                        showPlayerDialog("Upgrade stamina saya dok.", "white");
+                                        break;
+                                    case 1:
+                                        showNPCDialog(`Ok, stamina kamu sudah ditambah 20.`, "yellow");
+                                        break;
+                                    case 2:
+                                        showNPCDialog(`Kembali lagi jika kamu memiliki ${(upgrade*50)+50} Strength dan ${(upgrade*50)+50} Speed, dan saya bisa upgrade stamina mu lagi.`, "yellow");
+                                        break;
+                                    case 3:
+                                        showPlayerDialog("Ok, terima kasih dok", "white");
+                                        break;
+                                    case 4:
+                                        concludeSubdialog();
+                                        break;
+                                    }
+                                tempUpgrade = true;                          
+                                }
+                        } else if (dialogAnswers[index-1]==1) {
+                            switch(dialogStates[index]) {
+                                case 0:
+                                    showPlayerDialog("Lain kali saja dok.", "white");
+                                    break;
+                                case 1:
+                                    showNPCDialog("Ok, kembali ke saya jika mau upgrade.", "yellow");
+                                    break;
+                                case 2:
+                                    concludeSubdialog();
+                                    break;
+                                }
+                            }
+                        break;
+                    case 4:
+                        concludeSubdialog();
+                        break;
+                }
+            } else if (dialogAnswers[index-1] == 1) {
+                switch (dialogStates[index]) {
+                    case 2:
+                        index++;
+                        if (dialogAnswers[index-1] == 0) {
+                            switch(dialogStates[index]) {
+                                case 0:
+                                    showPlayerDialog("Lia, jadi Sudah berapa lama kamu pergi ke sini?", "white");
+                                    break;
+                                case 1:
+                                    showNPCDialog("Saya sudah di gym ini selama lima tahun. Saya sangat menikmati membantu orang-orang mencapai tujuan kebugaran mereka.", "yellow");
+                                    break;
+                                case 2:
+                                    showPlayerDialog("Wah, pasti kamu punya banyak pengalaman ya.", "white");
+                                    break;
+                                case 3:
+                                    showNPCDialog("Ya, saya sudah melihat banyak orang yang datang dan pergi, dan saya senang bisa melihat perkembangan mereka. Apakah kamu punya tujuan khusus dalam latihanmu?", "yellow");
+                                    break;
+                                case 4:
+                                    showPlayerDialog("Sebenarnya sih, saya ada reuni SMA dalam 1 minggu tapi saya tidak terlalu pd dengan tubuh saya maka saya memutuskan untuk pergi ke GYM untuk menjadi kekar", "white");
+                                    break;
+                                case 5:
+                                    showNPCDialog("Ohh begitu. Tetap fokus dan konsisten, dan kamu pasti akan melihat hasilnya.", "yellow");
+                                    break;
+                                case 6:
+                                    showPlayerDialog("Terima kasih, Lia. Saya akan berusaha.", "white");
+                                    break;
+                                case 7:
+                                    showNPCDialog("Semangat ya! Kalau butuh sesuatu, saya selalu ada di sini.", "yellow");
+                                    break;
+                                case 8:
+                                    concludeSubdialog();
+                                    break;
+                                }
+                        } else if (dialogAnswers[index-1]==1) {
+                            switch(dialogStates[index]) {
+                                case 0:
+                                    showPlayerDialog("Lia, kamu suka olahraga apa selain latihan di gym?", "white");
+                                    break;
+                                case 1:
+                                    showNPCDialog("Saya suka bersepeda dan yoga. Keduanya membantu saya tetap bugar dan rileks.", "yellow");
+                                    break;
+                                case 2:
+                                    showPlayerDialog("Kedengarannya menyenangkan. Mungkin aku harus mencobanya juga.", "white");
+                                    break;
+                                case 3:
+                                    showNPCDialog("Tentu! Bersepeda bagus untuk kardio, dan yoga bisa membantu fleksibilitas dan mengurangi stres.", "yellow");
+                                    break;
+                                case 4:
+                                    showPlayerDialog("Terima kasih atas sarannya, Lia.", "white");
+                                    break;
+                                case 5:
+                                    showNPCDialog("Sama-sama! Semoga hari kamu menyenangkan.", "yellow");
+                                    break;
+                                case 6:
+                                    concludeSubdialog();
+                                    break;
+                                }
+                            }
+                        break;
+                    case 3:
+                        concludeSubdialog();
+                        break;
+                }
+            } else if (dialogAnswers[index-1] == 2) {
+                switch (dialogStates[index]) {
+                    case 0:
+                        showPlayerDialog("Maaf gak jadi deh.", "white");
+                        break;
+                    case 1:
+                        showNPCDialog("Oh, Ok", "yellow");
+                        break;
+                    case 2:
+                        concludeSubdialog();
+                        break;
+                }
+            }
             break;
         case 3:
-            showNPCDialog("I am a Board certified diagnostician with a double specialty in infectious disease and nephrology.", "yellow");
-            break;
-        case 4:
-            showNPCDialog("I am also the only doctor currently employed at this clinic who is forced to be here against his will.", "yellow");
-            break;
-        case 5:
-            showNPCDialog("But not to worry, because for most of you, this job could be done by a monkey with a bottle of Motrin.", "yellow");
-            break;
-        case 6:
-            showNPCDialog("Speaking of which, if you're particularly annoying, you may see me reach for this: this is Vicodin.", "yellow");
-            break;
-        case 7:
-            showPlayerDialog("It's mine. You can't have any.", "red");
-            break;
-        case 8:
-            showNPCDialog("And no, I do not have a pain management problem, I have a pain problem.", "yellow");
-            break;
-        case 9:
-            showNPCDialog("But who knows?", "yellow");
-            break;
-        case 10:
-            showNPCDialog("Maybe I'm wrong.", "yellow");
-            break;
-        case 11:
-            showPlayerDialog("Maybe I'm too stoned to tell.", "red");
-            break;
-        case 12:
-            showNPCDialog("So, who wants me?", "yellow");
-            break;
-        case 13:
-            showNPCDialog("Well, I'll be in Exam Room One if you change your mind.", "yellow");
-            break;
-        case 14:
+            if (tempUpgrade) {
+                upgrade++;
+                addStamina();
+                tempUpgrade = false;
+            }
             finishDialog();
             break;
     } 
@@ -233,7 +359,7 @@ export const girl = (npc) => {
                                     showNPCDialog("Ya, saya sudah melihat banyak orang yang datang dan pergi, dan saya senang bisa melihat perkembangan mereka. Apakah kamu punya tujuan khusus dalam latihanmu?", "yellow");
                                     break;
                                 case 4:
-                                    showPlayerDialog("Sebenarnya sih, saya ada reuni SMA dalam 1 minggu tapi saya tidak terlalu pd dengan tubuh saya maka saya memutuskan untuk pergi ke GYM untuk menjadi kekar", "white");
+                                    showPlayerDialog(`Sebenarnya sih, saya ada reuni SMA dalam ${(8-day)} hari tapi saya tidak terlalu pd dengan tubuh saya maka saya memutuskan untuk pergi ke GYM untuk menjadi kekar`, "white");
                                     break;
                                 case 5:
                                     showNPCDialog("Ohh begitu. Tetap fokus dan konsisten, dan kamu pasti akan melihat hasilnya.", "yellow");
