@@ -205,57 +205,57 @@ export const doctor = (npc) => {
                 }
             } else if (dialogAnswers[index-1] == 1) {
                 switch (dialogStates[index]) {
+                    case 0:
+                        showNPCDialog("Hmm? Mau bicara tentang apa?", "yellow");
+                        break;
+                    case 1:
+                        showDialogOption(["Dokter di luar gym?", "Ada cerita menarik?"])
+                        break;
                     case 2:
                         index++;
                         if (dialogAnswers[index-1] == 0) {
                             switch(dialogStates[index]) {
                                 case 0:
-                                    showPlayerDialog("Lia, jadi Sudah berapa lama kamu pergi ke sini?", "white");
+                                    showPlayerDialog("Kok ada dokter di luar gym?", "white");
                                     break;
                                 case 1:
-                                    showNPCDialog("Saya sudah di gym ini selama lima tahun. Saya sangat menikmati membantu orang-orang mencapai tujuan kebugaran mereka.", "yellow");
+                                    showNPCDialog("Karena kesehatan dan kebugaran tak bisa dipisahkan. Saya di sini untuk memastikan para atlet dan pengunjung gym ini tetap dalam kondisi terbaik saat mereka berlatih keras.", "yellow");
                                     break;
                                 case 2:
-                                    showPlayerDialog("Wah, pasti kamu punya banyak pengalaman ya.", "white");
+                                    showPlayerDialog("Menarik. Apakah Anda sering melihat cedera atau masalah kesehatan lainnya di sini?", "white");
                                     break;
                                 case 3:
-                                    showNPCDialog("Ya, saya sudah melihat banyak orang yang datang dan pergi, dan saya senang bisa melihat perkembangan mereka. Apakah kamu punya tujuan khusus dalam latihanmu?", "yellow");
+                                    showNPCDialog("Tentu saja. Olahraga yang intens dapat meningkatkan risiko cedera, jadi penting untuk selalu siap siaga.", "yellow");
                                     break;
                                 case 4:
-                                    showPlayerDialog("Sebenarnya sih, saya ada reuni SMA dalam 1 minggu tapi saya tidak terlalu pd dengan tubuh saya maka saya memutuskan untuk pergi ke GYM untuk menjadi kekar", "white");
+                                    showPlayerDialog("Benar sekali. Saya merasa lebih aman berlatih dengan ada dokter di dekatnya.", "white");
                                     break;
                                 case 5:
-                                    showNPCDialog("Ohh begitu. Tetap fokus dan konsisten, dan kamu pasti akan melihat hasilnya.", "yellow");
+                                    showNPCDialog("Itu memang tujuannya. Selalu lebih baik mencegah daripada mengobati, bukan?", "yellow");
                                     break;
                                 case 6:
-                                    showPlayerDialog("Terima kasih, Lia. Saya akan berusaha.", "white");
-                                    break;
-                                case 7:
-                                    showNPCDialog("Semangat ya! Kalau butuh sesuatu, saya selalu ada di sini.", "yellow");
-                                    break;
-                                case 8:
                                     concludeSubdialog();
                                     break;
                                 }
                         } else if (dialogAnswers[index-1]==1) {
                             switch(dialogStates[index]) {
                                 case 0:
-                                    showPlayerDialog("Lia, kamu suka olahraga apa selain latihan di gym?", "white");
+                                    showPlayerDialog("Dok, saya penasaran. Apa ada cerita yang menarik?", "white");
                                     break;
                                 case 1:
-                                    showNPCDialog("Saya suka bersepeda dan yoga. Keduanya membantu saya tetap bugar dan rileks.", "yellow");
+                                    showNPCDialog("Ada satu, cerita lama. Saya dulu seorang atlet juga, suka bermain sepak bola. Sayangnya, satu kali kecelakaan mengubah segalanya.", "yellow");
                                     break;
                                 case 2:
-                                    showPlayerDialog("Kedengarannya menyenangkan. Mungkin aku harus mencobanya juga.", "white");
+                                    showPlayerDialog("Bisakah Anda menceritakan lebih banyak?", "white");
                                     break;
                                 case 3:
-                                    showNPCDialog("Tentu! Bersepeda bagus untuk kardio, dan yoga bisa membantu fleksibilitas dan mengurangi stres.", "yellow");
+                                    showNPCDialog("Ketika itu, saya mengalami patah tulang yang cukup parah saat bermain. Itu saat saya mulai tertarik pada kedokteran dan rehabilitasi fisik.", "yellow");
                                     break;
                                 case 4:
-                                    showPlayerDialog("Terima kasih atas sarannya, Lia.", "white");
+                                    showPlayerDialog("Saya bisa bayangkan betapa sulitnya itu.", "white");
                                     break;
                                 case 5:
-                                    showNPCDialog("Sama-sama! Semoga hari kamu menyenangkan.", "yellow");
+                                    showNPCDialog("Ya, tapi dari situ saya belajar banyak. Sekarang, saya bisa membantu orang lain dengan pengalaman dan pengetahuan yang saya dapatkan.", "yellow");
                                     break;
                                 case 6:
                                     concludeSubdialog();

@@ -181,7 +181,15 @@ loadModelInterior(loadingManager, scene, "door", [-10.65, 0.1, 12], [1, 1, 1], [
 loadModelInterior(loadingManager, scene, "yoga_mat", [20, 0.1, 0], [3, 3, 3], [0, 90, 0]);
 
 loadModelInterior(loadingManager, scene, "gym_decoration_1_v2", [-24, 0.1, -29], [11, 11, 11], [0, 90, 0]);
-createBoundingBox(scene, [-25, 6, -27.8], [1, 6, 12.2], [0, 0, 0], worldOctree)
+createBoundingBox(scene, [-25, 6, -27.8], [1, 6, 12.2], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-25, 2.5, -41.3], [2, 4, 8], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-25, 0.5, -49], [2, 1, 5], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-20.7, 0.5, -43.8], [2, 1, 4.5], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-23.8, 0.5, -54], [2, 1, 3], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-21.2, 0.75, -32.5], [1.5, 1.5, 1.5], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-25.5, 0.5, -35.4], [2, 1, 1.5], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-25, 2, -60.5], [2, 3, 8], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-22, 0.5, -61.5], [1.5, 1, 3], [0, 0, 0], worldOctree);
 
 loadModelInterior(loadingManager, scene, "punching_bag_1", [-20.2, 0.1, 1.2], [11, 11, 11], [0, 0, 0], interactables, punchingBag1Animation);
 createBoundingCylinder(scene, [-20.1, 8, 1.1], [1.5, 2, 1.5], [0, 0, 0], worldOctree)
@@ -198,6 +206,8 @@ loadAnimatedModelInterior(loadingManager, scene, "band_3", [28.8, 10.05, -33.85]
 loadAnimatedModelInterior(loadingManager, scene, "band_4", [28.8, 10.05, -33.42], [9, 9, 9], [0, -90, 0], bandAnimation);
 
 loadModelInterior(loadingManager, scene, "gym_decoration_3", [-10, 0.1, -50], [10, 10, 10], [0, 90, 0]);
+createBoundingBox(scene, [-11, 1.5, -50.5], [3, 2, 11], [0, 0, 0], worldOctree);
+createBoundingBox(scene, [-8.5, 0.5, -48.2], [2, 0.5, 4], [0, 0, 0], worldOctree);
 
 loadModel(loadingManager, scene, "ceiling_fan", [0, 11, -10], [10, 2.8, 10], [0, 90, 0], function (mixer) {
     fanModel["one"] = mixer.getRoot();
@@ -327,7 +337,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.body.removeChild(intro);
                 changeDayOverlay(1, player.str, player.spd);
                 introMonolog();
-            }, 100);
+            }, 10000);
         }
     });
 

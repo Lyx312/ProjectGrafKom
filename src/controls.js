@@ -52,8 +52,8 @@ export const player = {
     cheat: false,
     inDialog: false,
     pause: false,
-    str: 70,
-    spd: 70,
+    str: 0,
+    spd: 0,
     canExercise: false
 }
 
