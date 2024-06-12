@@ -99,6 +99,22 @@ document.addEventListener('click', function () {
     }
 }, false);
 
+let spacePressed = false;
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space' && !spacePressed) {
+        spacePressed = true;
+        if (player.inDialog && !awaitAnswer) {
+            dialogStates[dialogStates.length-1]++;
+            currentNPC.startDialog();
+        }
+    }
+})
+document.addEventListener('keyup', (event) => {
+    if (event.code === 'Space') {
+        spacePressed = false;
+    }
+})
+
 export const doctor = (npc) => {
     switch(dialogStates[0]) {
         case 0:

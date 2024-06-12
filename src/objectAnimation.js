@@ -454,20 +454,20 @@ export const dumpsterAnimation = async (dumpster) => {
             dumpster.rotationChanges.reverse();
         }
 
-        const pivotOffset = 1;
+        const pivotOffset = 4;
         const direction = isOpening ? 1 : -1;
 
         for (let substate = 0; substate < 15; substate++) {
             const rotationChange = 6 * (Math.PI/180);
-            dumpster.model.rotation.z += dumpster.state === 0 ? rotationChange : -rotationChange;
+            dumpster.model.rotation.x += dumpster.state === 0 ? rotationChange : -rotationChange;
 
             const currentRotation = (substate + 1) * (Math.PI / 180);
             if (isOpening) {
-                const positionChangeX = -pivotOffset * 11 * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
+                const positionChangeZ = -pivotOffset * 5 * (Math.cos(currentRotation) - Math.cos(currentRotation - rotationChange));
                 const positionChangeY = pivotOffset * (Math.sin(currentRotation) - Math.sin(currentRotation - rotationChange));
 
-                const positionChange = [direction * positionChangeX, direction * positionChangeY, 0];
-                const rotationChangeArr = [0, 0, direction * rotationChange];
+                const positionChange = [0, direction * positionChangeY, direction * positionChangeZ];
+                const rotationChangeArr = [direction * rotationChange, 0, 0];
 
                 dumpster.positionChanges.push(positionChange);
                 dumpster.rotationChanges.push(rotationChangeArr);
