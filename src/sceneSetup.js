@@ -26,7 +26,7 @@ const sphereMaterial = new THREE.MeshBasicMaterial({
     blendEquation: THREE.AddEquation
 });
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-sphere.position.set(0, 200, 0);
+sphere.position.set(0, 400, 0);
 sphere.renderOrder = -1; // Ensure the sphere renders before other objects
 scene.add(sphere);
 
