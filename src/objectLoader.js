@@ -152,7 +152,7 @@ export function createBoundingCylinder(scene, position, scale, rotation, octree)
     scene.add(line);
 }
 export function loadPlayer(loadingManager, scene, folder, position, scale, rotation, callback) {
-    loadGLTF(loadingManager, `${MODEL_PATH}${folder}/scene.gltf`, null, scene, position, scale, rotation, null, null, null, null, (mixer, model) => {
+    loadGLTF(loadingManager, `${MODEL_PATH}individual_equipments/${folder}.glb`, null, scene, position, scale, rotation, null, null, null, null, (mixer, model) => {
         const animations = {};
         if (mixer) {
             mixer._actions.forEach(action => animations[action._clip.name] = action);
